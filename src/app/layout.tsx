@@ -1,0 +1,101 @@
+import type { Metadata } from "next";
+import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
+import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { cookies } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
+
+import { client } from "@/sanity/lib/client";
+import { contactQuery, activitiesQuery, settingsQuery } from "@/sanity/lib/queries";
+import WhatsAppButton from "@/components/WhatsAppButton";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-plus-jakarta-sans",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-outfit",
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  try {
+    const [settingsData, cookieStore] = await Promise.all([
+      client.fetch(settingsQuery),
+      cookies(),
+    ]);
+    const lang = cookieStore.get('language')?.value || 'fr';
+    
+    const title = lang === 'en' && settingsData?.seoTitleEn 
+      ? settingsData.seoTitleEn 
+      : (settingsData?.seoTitle || "ÉvasionSki | Toni Mancini");
+      
+    const description = lang === 'en' && settingsData?.seoDescriptionEn 
+      ? settingsData.seoDescriptionEn 
+      : (settingsData?.seoDescription || "Moniteur de Ski de Randonnée Toni Mancini. Alpinisme, ski de randonnée, escalade et voyages.");
+
+    return {
+      title,
+      description,
+      openGraph: settingsData?.seoImage ? {
+        images: [{ url: settingsData.seoImage }],
+      } : undefined,
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "ÉvasionSki | Toni Mancini",
+      description: "Moniteur de Ski de Randonnée Toni Mancini. Alpinisme, ski de randonnée, escalade et voyages.",
+    };
+  }
+}
+
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { LanguageProvider } from "@/context/LanguageContext";
+import AnnouncementBanner from "@/components/AnnouncementBanner";
+import ScrollToTop from "@/components/ScrollToTop";
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const [contactData, activitiesData, settingsData] = await Promise.all([
+    client.fetch(contactQuery),
+    client.fetch(activitiesQuery),
+    client.fetch(settingsQuery)
+  ]);
+  const phoneNumber = contactData?.phone;
+  const whatsappNumber = settingsData?.whatsappNumber;
+  const whatsappText = settingsData?.whatsappText;
+
+  return (
+    <html lang="fr" suppressHydrationWarning data-scroll-behavior="smooth" className={`${plusJakartaSans.variable} ${outfit.variable} antialiased scroll-smooth`}>
+      <body className="bg-background text-foreground transition-colors duration-300">
+        <ThemeProvider
+          attribute="data-theme"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LanguageProvider>
+            <AnnouncementBanner settings={settingsData} />
+            <Navbar sanityActivities={activitiesData} />
+            {children}
+            <Footer contactData={contactData} settingsData={settingsData} />
+            <WhatsAppButton
+              phoneNumber={phoneNumber}
+              whatsappNumber={whatsappNumber}
+              whatsappText={whatsappText}
+            />
+            <ScrollToTop />
+          </LanguageProvider>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

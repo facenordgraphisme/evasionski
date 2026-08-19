@@ -39,7 +39,11 @@ const SejourCard = ({ sejour, activitySlug }: SejourCardProps) => {
       'alpinisme': at('Alpinisme'),
       'ski': at('Ski de randonnée'),
       'escalade': at('Escalade'),
-      'voyage': at('Voyages')
+      'voyage': at('Voyages'),
+      'stages-et-raids-a-ski-de-randonnee-hautes-alpes': at('Stage & Raid'),
+      'ski-de-randonnee-engagement-prive': at('Engagement'),
+      'ski-randonnee-hautes-alpes-journee': at('Journée'),
+      'ski-hors-piste-station-hautes-alpes': at('Freerando')
     }
     return map[type] || at(type)
   }
@@ -48,20 +52,20 @@ const SejourCard = ({ sejour, activitySlug }: SejourCardProps) => {
     <Link href={`/${sejour.slug}`} className="group block h-full">
       <div className="glass-card overflow-hidden rounded-[40px] border border-border bg-card/5 h-full flex flex-col shadow-xl">
         {/* Header Badge & Level */}
-        <div className="absolute top-6 left-6 right-6 z-20 flex justify-between items-center pointer-events-none">
-          <span className="px-4 py-1.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg backdrop-blur-md">
+        <div className="absolute top-6 left-6 right-6 z-20 flex justify-between items-center gap-2 pointer-events-none">
+          <span className="px-4 py-1.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg backdrop-blur-md whitespace-nowrap">
             {getActivityLabel(sejour.activityType)}
           </span>
-          <div className="flex gap-2">
+          <div className="flex gap-2 min-w-0">
             {sejour.massif && (
-              <span className="px-3 py-1 bg-background/80 text-foreground text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1">
-                <MapPin size={10} className="text-accent" />
+              <span className="px-3 py-1 bg-background/80 text-foreground text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1 whitespace-nowrap truncate max-w-[120px]">
+                <MapPin size={10} className="text-accent shrink-0" />
                 {at(sejour.massif)}
               </span>
             )}
             {sejour.level && (
-              <span className="px-3 py-1 bg-background/80 text-foreground text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1">
-                <BarChart3 size={10} className="text-accent" />
+              <span className="px-3 py-1 bg-background/80 text-foreground text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1 whitespace-nowrap">
+                <BarChart3 size={10} className="text-accent shrink-0" />
                 {getLevelLabel(sejour.level)}
               </span>
             )}

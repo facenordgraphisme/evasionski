@@ -9,7 +9,6 @@ import ContactHome from "@/components/ContactHome";
 import Testimonials from "@/components/Testimonials";
 import BlogTeaser from "@/components/BlogTeaser";
 import Footer from "@/components/Footer";
-import PartnersSlider from "@/components/PartnersSlider";
 
 import { client } from "@/sanity/lib/client";
 import { homeQuery, sortiesQuery, testimonialsQuery, blogTeaserQuery, activitiesQuery, settingsQuery } from "@/sanity/lib/queries";
@@ -138,8 +137,8 @@ export default async function Home() {
           className="bg-surface"
         />
         {!homeData?.hideTestimonials && (
-          <Testimonials 
-            data={testimonialsData} 
+          <Testimonials
+            data={testimonialsData}
             badge={homeData?.testimonialsBadge}
             title={homeData?.testimonialsTitle}
             titleAccent={homeData?.testimonialsTitleAccent}
@@ -147,16 +146,13 @@ export default async function Home() {
           />
         )}
         {!homeData?.hideBlog && (
-          <BlogTeaser 
-            data={blogTeaserData} 
+          <BlogTeaser
+            data={blogTeaserData}
             badge={homeData?.blogBadge}
             title={homeData?.blogTitle}
             titleAccent={homeData?.blogTitleAccent}
             className="bg-surface"
           />
-        )}
-        {!settingsData?.hidePartners && (
-          <PartnersSlider partners={settingsData?.partners} />
         )}
       </div>
     </main>

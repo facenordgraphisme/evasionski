@@ -95,7 +95,7 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         style={{ top: 'calc(var(--banner-height, 0px) + 24px)' }}
-        className="fixed left-1/2 -translate-x-1/2 z-[60] w-[95%] max-w-6xl glass rounded-full px-6 py-3.5 md:py-4 flex items-center justify-between shadow-2xl transition-[top] duration-300 ease-out"
+        className="fixed left-1/2 -translate-x-1/2 z-[60] w-[95%] max-w-6xl glass rounded-full px-6 py-1.5 md:py-2 flex items-center justify-between shadow-2xl transition-[top] duration-300 ease-out"
       >
         <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
           {mounted && (
@@ -104,7 +104,7 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
               alt="ÉvasionSki"
               width={360}
               height={130}
-              className="h-[70px] md:h-[105px] lg:h-[140px] w-auto object-contain my-[-10px] md:my-[-12px] lg:my-[-15px]"
+              className="h-[60px] md:h-[90px] lg:h-[115px] w-auto object-contain my-[-10px] md:my-[-12px] lg:my-[-14px]"
             />
           )}
         </Link>
@@ -285,25 +285,16 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="w-full overflow-hidden grid grid-cols-1 sm:grid-cols-2 gap-3 py-4"
+                      className="w-full overflow-hidden flex flex-col gap-1 py-3 pl-4 border-l-2 border-accent/20"
                     >
                       {journeeSubmenuItems.map((item) => (
                         <Link
                           key={item.slug}
                           href={`/${item.slug}`}
                           onClick={() => setIsOpen(false)}
-                          className="relative h-20 rounded-xl overflow-hidden group border border-white/10"
+                          className="py-2.5 text-foreground/80 hover:text-accent font-semibold text-sm text-left transition-colors"
                         >
-                          <Image
-                            src={item.image}
-                            alt={at(item.title)}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 300px"
-                            className="object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center">
-                            <span className="text-white font-bold text-sm leading-tight">{at(item.title)}</span>
-                          </div>
+                          {at(item.title)}
                         </Link>
                       ))}
                     </motion.div>
@@ -326,25 +317,16 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="w-full overflow-hidden grid grid-cols-1 sm:grid-cols-2 gap-3 py-4"
+                      className="w-full overflow-hidden flex flex-col gap-1 py-3 pl-4 border-l-2 border-accent/20"
                     >
                       {stagesSubmenuItems.map((item) => (
                         <Link
                           key={item.slug}
                           href={`/${item.slug}`}
                           onClick={() => setIsOpen(false)}
-                          className="relative h-20 rounded-xl overflow-hidden group border border-white/10"
+                          className="py-2.5 text-foreground/80 hover:text-accent font-semibold text-sm text-left transition-colors"
                         >
-                          <Image
-                            src={item.image}
-                            alt={at(item.title)}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 300px"
-                            className="object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/60 flex items-center justify-center p-4 text-center">
-                            <span className="text-white font-bold text-sm leading-tight">{at(item.title)}</span>
-                          </div>
+                          {at(item.title)}
                         </Link>
                       ))}
                     </motion.div>

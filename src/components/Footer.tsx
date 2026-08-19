@@ -25,11 +25,11 @@ const Footer = ({ contactData, settingsData }: FooterProps) => {
   useEffect(() => setMounted(true), [])
 
   return (
-    <footer className="py-20 px-6 bg-background border-t border-border">
+    <footer className="py-12 md:py-20 px-6 bg-background border-t border-border">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-12 mb-10 md:mb-16">
           <div className="col-span-1 md:col-span-2">
-            <Link href="/" className="inline-block mb-8">
+            <Link href="/" className="inline-block mb-6 md:mb-8">
               {mounted && (
                 <img 
                   src={
@@ -44,7 +44,7 @@ const Footer = ({ contactData, settingsData }: FooterProps) => {
                 />
               )}
             </Link>
-            <p className="text-foreground/60 max-w-sm text-lg leading-relaxed mb-8">
+            <p className="text-foreground/60 max-w-sm text-base md:text-lg leading-relaxed mb-6 md:mb-8">
               {language === 'en' && settingsData?.footerDescriptionEn 
                 ? settingsData.footerDescriptionEn 
                 : (settingsData?.footerDescription || at("Vivez l'exceptionnel en altitude avec un moniteur passionné. Sécurité, aventure et respect de la nature."))}

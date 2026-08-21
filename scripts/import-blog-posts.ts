@@ -76,38 +76,39 @@ function htmlToPortableText(html: string): any[] {
   $('p, h2, h3, h4, ul, ol').each((_, elem) => {
     const $elem = $(elem)
     const text = $elem.text().trim()
+    const tagName = (elem as any).name || (elem as any).tagName
 
     if (!text) return
 
-    if (elem.tagName === 'p') {
+    if (tagName === 'p') {
       blocks.push({
         _type: 'block',
         style: 'normal',
         children: [{ _type: 'span', text, marks: [] }],
         markDefs: []
       })
-    } else if (elem.tagName === 'h2') {
+    } else if (tagName === 'h2') {
       blocks.push({
         _type: 'block',
         style: 'h2',
         children: [{ _type: 'span', text, marks: [] }],
         markDefs: []
       })
-    } else if (elem.tagName === 'h3') {
+    } else if (tagName === 'h3') {
       blocks.push({
         _type: 'block',
         style: 'h3',
         children: [{ _type: 'span', text, marks: [] }],
         markDefs: []
       })
-    } else if (elem.tagName === 'ul' || elem.tagName === 'ol') {
+    } else if (tagName === 'ul' || tagName === 'ol') {
       $elem.find('li').each((_, li) => {
         const liText = $(li).text().trim()
         if (liText) {
           blocks.push({
             _type: 'block',
             style: 'normal',
-            listItem: elem.tagName === 'ul' ? 'bullet' : 'number',
+            listItem: tagName === 'ul' ? 'bullet' : 'number',
             children: [{ _type: 'span', text: liText, marks: [] }],
             markDefs: []
           })

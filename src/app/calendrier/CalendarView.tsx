@@ -28,8 +28,18 @@ interface CalendarViewProps {
   sorties: Sortie[]
 }
 
+const MONTH_NAMES = {
+  fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+  en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+}
+
+const DAY_NAMES = {
+  fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+  en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+}
+
 export default function CalendarView({ sorties }: CalendarViewProps) {
-  const { at } = useLanguage()
+  const { at, language } = useLanguage()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
 
@@ -64,15 +74,8 @@ export default function CalendarView({ sorties }: CalendarViewProps) {
   const startDate = new Date(firstDay)
   startDate.setDate(startDate.getDate() - firstDay.getDay())
 
-  const monthNames = at({
-    fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-  }) as string[]
-
-  const dayNames = at({
-    fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
-    en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  }) as string[]
+  const monthNames = MONTH_NAMES[language as keyof typeof MONTH_NAMES] || MONTH_NAMES.fr
+  const dayNames = DAY_NAMES[language as keyof typeof DAY_NAMES] || DAY_NAMES.fr
 
   // Map sorties by date
   const sortiesByDate = useMemo(() => {

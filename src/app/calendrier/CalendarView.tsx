@@ -67,12 +67,12 @@ export default function CalendarView({ sorties }: CalendarViewProps) {
   const monthNames = at({
     fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
     en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-  })
+  }) as string[]
 
   const dayNames = at({
     fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
     en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-  })
+  }) as string[]
 
   // Map sorties by date
   const sortiesByDate = useMemo(() => {

@@ -7,7 +7,7 @@ import { getServerTranslations } from '@/i18n/server';
 // Import queries
 import {
   sejourBySlugQuery,
-  activityBySlugQuery,
+  aLaCarteQuery,
   postBySlugQuery,
   postsPageQuery,
   categoryTagsQuery,
@@ -16,13 +16,10 @@ import {
   contactQuery,
   faqsQuery,
   settingsQuery,
-  sejoursByActivityQuery,
-  postsBySejourQuery,
-  postsByActivityQuery
+  postsBySejourQuery
 } from "@/sanity/lib/queries";
 
 // Import sub-views
-import ActivityView from './views/ActivityView';
 import SejourView from './views/SejourView';
 import AboutView from './views/AboutView';
 import ContactView from './views/ContactView';
@@ -95,19 +92,28 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     };
   }
 
-  // 2. Dynamic content checks
+  // 2. Check for À la carte page
+  if (slug === 'ski-de-randonnee-engagement-prive') {
+    const aLaCarte = await client.fetch(aLaCarteQuery).catch(() => null);
+    if (aLaCarte) {
+      return {
+        title: `${at(aLaCarte.seoTitle || aLaCarte.title)} | ÉvasionSki`,
+        description: at(aLaCarte.seoDescription || aLaCarte.description || ''),
+        openGraph: aLaCarte.heroImage ? { images: [{ url: aLaCarte.heroImage }] } : undefined,
+      };
+    }
+  }
+
+  // 3. Dynamic content checks
   let sejour = null;
-  let activity = null;
   let post = null;
 
   try {
-    const [fetchedSejour, fetchedActivity, fetchedPost] = await Promise.all([
+    const [fetchedSejour, fetchedPost] = await Promise.all([
       client.fetch(sejourBySlugQuery, { slug }).catch(() => null),
-      client.fetch(activityBySlugQuery, { slug }).catch(() => null),
       client.fetch(postBySlugQuery, { slug }).catch(() => null),
     ]);
     sejour = fetchedSejour;
-    activity = fetchedActivity;
     post = fetchedPost;
   } catch (err) {
     console.error("Sanity query error in generateMetadata:", err);
@@ -123,23 +129,11 @@ export async function generateMetadata({ params, searchParams }: PageProps): Pro
     sejour = fallbackSejours[slug];
   }
 
-  if ((!activity || !activity.title) && fallbackActivities[slug]) {
-    activity = fallbackActivities[slug];
-  }
-
   if (sejour) {
     return {
-      title: `${at(sejour.title)} | ÉvasionSki`,
-      description: sejour.description ? at(sejour.description).substring(0, 160) : '',
+      title: `${at(sejour.seoTitle || sejour.title)} | ÉvasionSki`,
+      description: at(sejour.seoDescription || sejour.description || '').substring(0, 160),
       openGraph: sejour.image ? { images: [{ url: sejour.image }] } : undefined,
-    };
-  }
-
-  if (activity) {
-    return {
-      title: `${at(activity.title)} | ÉvasionSki`,
-      description: activity.intro ? at(activity.intro) : (activity.description ? at(activity.description).substring(0, 160) : ''),
-      openGraph: activity.image ? { images: [{ url: activity.image }] } : undefined,
     };
   }
 
@@ -244,19 +238,40 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
     );
   }
 
-  // 2. Dynamic content checks
+  // 2. Check for À la carte page
+  if (slug === 'ski-de-randonnee-engagement-prive') {
+    const aLaCarte = await client.fetch(aLaCarteQuery).catch(() => null);
+    // TODO: Create AlaCarteView component or use fallback
+    if (aLaCarte) {
+      // Pour l'instant, on redirige vers la page de contact ou on affiche un message
+      // Tu devras créer un composant AlaCarteView plus tard
+      return (
+        <main className="relative pt-32 min-h-screen">
+          <div className="container mx-auto px-6 py-20">
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-4 text-gradient">
+              {aLaCarte.heroTitle || aLaCarte.title}
+            </h1>
+            <p className="text-foreground/60 text-lg mb-8">{aLaCarte.heroSubtitle}</p>
+            <p className="text-foreground/80 mb-8">{aLaCarte.description}</p>
+            <a href="/evasion-ski-hautes-alpes-contact" className="btn-primary inline-block">
+              {aLaCarte.ctaText || "Me contacter"}
+            </a>
+          </div>
+        </main>
+      );
+    }
+  }
+
+  // 3. Dynamic content checks
   let sejour = null;
-  let activity = null;
   let post = null;
 
   try {
-    const [fetchedSejour, fetchedActivity, fetchedPost] = await Promise.all([
+    const [fetchedSejour, fetchedPost] = await Promise.all([
       client.fetch(sejourBySlugQuery, { slug }).catch(() => null),
-      client.fetch(activityBySlugQuery, { slug }).catch(() => null),
       client.fetch(postBySlugQuery, { slug }).catch(() => null),
     ]);
     sejour = fetchedSejour;
-    activity = fetchedActivity;
     post = fetchedPost;
   } catch (err) {
     console.error("Sanity query error in DynamicSlugPage:", err);
@@ -277,10 +292,6 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
     sejour = fallbackSejours[slug];
   }
 
-  if ((!activity || !activity.title) && fallbackActivities[slug]) {
-    activity = fallbackActivities[slug];
-  }
-
   // If slug matches a Sejour (trip)
   if (sejour) {
     // Fetch related posts for sidebar/footer
@@ -292,42 +303,9 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
     } catch (e) {
       // Ignored
     }
-    const directIds = directPosts.map((p: any) => p.slug);
-    let activityPosts = [];
-    try {
-      activityPosts = (directPosts.length < 3 && sejour.activityType)
-        ? await client.fetch(postsByActivityQuery, {
-            activityType: sejour.activityType,
-            excludedIds: sejour._id ? [sejour._id] : []
-          }).catch(() => [])
-        : [];
-    } catch (e) {
-      // Ignored
-    }
-    const seenSlugs = new Set(directIds);
-    const extraPosts = activityPosts.filter((p: any) => !seenSlugs.has(p.slug));
-    const relatedPosts = [...directPosts, ...extraPosts].slice(0, 6);
+    const relatedPosts = directPosts.slice(0, 6);
 
     return <SejourView sejour={sejour} relatedPosts={relatedPosts} />;
-  }
-
-  // If slug matches an Activity (category page)
-  if (activity) {
-    let sejours = [];
-    try {
-      sejours = await client.fetch(sejoursByActivityQuery, { activity: slug }).catch(() => []);
-    } catch (e) {
-      // Ignored
-    }
-
-    // If sejours list is empty, let's filter the local fallbackData by activityType!
-    if (!sejours || sejours.length === 0) {
-      sejours = Object.values(fallbackSejours).filter(
-        (s: any) => s.activityType === slug || s.slug === slug
-      );
-    }
-
-    return <ActivityView activity={activity} sejours={sejours} />;
   }
 
   // If slug matches a Blog Post
@@ -335,6 +313,6 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
     return <BlogDetailView post={post} />;
   }
 
-  // 3. Fallback to 404
+  // 4. Fallback to 404
   notFound();
 }

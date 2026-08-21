@@ -104,10 +104,17 @@ export const postType = defineType({
       ],
     }),
     defineField({
-      name: 'activityType',
-      title: 'Catégorie (Type d\'activité)',
-      type: 'reference',
-      to: [{ type: 'activity' }],
+      name: 'categorie',
+      title: 'Catégorie',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Ski de randonnée journée', value: 'journee-ski-rando' },
+          { title: 'Freerando journée', value: 'journee-freerando' },
+          { title: 'Stages & Raids', value: 'stage-raid' },
+          { title: 'Général / Autre', value: 'general' },
+        ],
+      },
       description: 'Catégorie principale de cet article — utilisée pour afficher les articles pertinents sur les pages séjour.',
     }),
     defineField({

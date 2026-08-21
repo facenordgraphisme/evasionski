@@ -267,21 +267,48 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
                     <div className="p-5 space-y-2">
                       {sejour.upcomingSorties && sejour.upcomingSorties.length > 0 ? (
-                        sejour.upcomingSorties.map((s: any, i: number) => (
-                          <div key={i} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${s.isFull ? 'border-border bg-foreground/[0.02] opacity-60' : 'border-accent/20 bg-accent/[0.03] hover:bg-accent/[0.06]'}`}>
-                            {/* Date bullet */}
-                            <div className={`w-2 h-2 rounded-full shrink-0 ${s.isFull ? 'bg-foreground/20' : 'bg-accent'}`} />
-                            <div className="flex-1 min-w-0">
-                              <span className="font-bold text-sm text-foreground block truncate">{at(s.date)}</span>
-                              <span className="text-[10px] text-foreground/40 font-medium">{at(s.availableSpots)} {at('places')}</span>
+                        sejour.upcomingSorties.map((s: any, i: number) => {
+                          const dateDebut = new Date(s.dateDebut).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+                          const dateFin = s.dateFin && s.dateFin !== s.dateDebut
+                            ? ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}`
+                            : '';
+                          const dateDisplay = `${dateDebut}${dateFin}`;
+
+                          // Pour les sorties journées, créer un lien cliquable
+                          const isJournee = sejour.categorie === 'journee-ski-rando' || sejour.categorie === 'journee-freerando';
+                          const cardContent = (
+                            <>
+                              {/* Date bullet */}
+                              <div className={`w-2 h-2 rounded-full shrink-0 ${s.complet || s.placesDisponibles === 0 ? 'bg-foreground/20' : 'bg-accent'}`} />
+                              <div className="flex-1 min-w-0">
+                                <span className="font-bold text-sm text-foreground block truncate">{dateDisplay}</span>
+                                <div className="flex items-center gap-2 text-[10px] text-foreground/40 font-medium">
+                                  <span>{s.placesDisponibles} / {s.placesTotales} {at('places')}</span>
+                                  {s.prix && <span className="text-accent font-bold">• {s.prix}</span>}
+                                </div>
+                              </div>
+                              {s.complet || s.placesDisponibles === 0 ? (
+                                <span className="text-[9px] font-black uppercase text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 shrink-0">{at('Complet')}</span>
+                              ) : (
+                                <span className="text-[9px] font-black uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 shrink-0">{at('Dispo')}</span>
+                              )}
+                            </>
+                          );
+
+                          return isJournee && s.slug ? (
+                            <Link
+                              key={s._id || i}
+                              href={`/sorties/${s.slug}`}
+                              className={`flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer ${s.complet || s.placesDisponibles === 0 ? 'border-border bg-foreground/[0.02] opacity-60' : 'border-accent/20 bg-accent/[0.03] hover:bg-accent/[0.06]'}`}
+                            >
+                              {cardContent}
+                            </Link>
+                          ) : (
+                            <div key={s._id || i} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${s.complet || s.placesDisponibles === 0 ? 'border-border bg-foreground/[0.02] opacity-60' : 'border-accent/20 bg-accent/[0.03] hover:bg-accent/[0.06]'}`}>
+                              {cardContent}
                             </div>
-                            {s.isFull ? (
-                              <span className="text-[9px] font-black uppercase text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 shrink-0">{at('Complet')}</span>
-                            ) : (
-                              <span className="text-[9px] font-black uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 shrink-0">{at('Dispo')}</span>
-                            )}
-                          </div>
-                        ))
+                          );
+                        })
                       ) : (
                         <div className="py-6 text-center">
                           <Calendar size={24} className="text-foreground/20 mx-auto mb-3" />

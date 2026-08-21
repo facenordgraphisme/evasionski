@@ -11,6 +11,8 @@ export const sejourType = defineType({
       name: 'title',
       title: 'Titre du séjour',
       type: 'string',
+      description: 'Ex: Ski de randonnée aux Orres',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
@@ -20,43 +22,45 @@ export const sejourType = defineType({
         source: 'title',
         maxLength: 96,
       },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'activityType',
-      title: 'Type d\'activité principale',
+      name: 'categorie',
+      title: 'Catégorie',
       type: 'string',
       options: {
         list: [
-          { title: 'Ski de randonnée', value: 'ski' },
-          { title: 'Voyage / Raids à ski', value: 'voyage' },
+          { title: 'Ski de randonnée journée', value: 'journee-ski-rando' },
+          { title: 'Freerando journée', value: 'journee-freerando' },
+          { title: 'Stages & Raids', value: 'stage-raid' },
         ],
       },
+      description: 'Catégorie principale de ce séjour.',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'subCategory',
-      title: 'Univers',
-      type: 'reference',
-      to: [{ type: 'univers' }],
+      name: 'massifs',
+      title: 'Massif(s)',
+      type: 'array',
+      of: [{ type: 'string' }],
       options: {
-        filter: ({ document }: any) => {
-          if (!document.activityType) return { filter: '' };
-          return {
-            filter: 'activity->slug.current == $activitySlug',
-            params: { activitySlug: document.activityType }
-          };
-        }
+        list: [
+          { title: 'Écrins', value: 'ecrins' },
+          { title: 'Queyras', value: 'queyras' },
+          { title: 'Ubaye', value: 'ubaye' },
+          { title: 'Clarée', value: 'claree' },
+          { title: 'Cerces', value: 'cerces' },
+          { title: 'Dévoluy', value: 'devoluy' },
+          { title: 'Champsaur', value: 'champsaur' },
+          { title: 'Norvège', value: 'norvege' },
+          { title: 'Autre', value: 'autre' },
+        ],
       },
-      description: 'Choisissez d\'abord le type d\'activité pour filtrer les univers disponibles.',
+      description: 'Sélectionnez un ou plusieurs massifs.',
     }),
     defineField({
-      name: 'massif',
-      title: 'Massif',
-      type: 'string',
-      description: 'Ex: Écrins, Queyras, Mont-Blanc...',
-    }),
-    defineField({
-      name: 'level',
-      title: 'Niveau',
+      name: 'niveauDefaut',
+      title: 'Niveau par défaut',
       type: 'string',
       options: {
         list: [
@@ -66,128 +70,20 @@ export const sejourType = defineType({
           { title: 'Expert', value: 'expert' },
         ],
       },
+      description: 'Niveau technique par défaut (peut être surchargé au niveau de chaque date).',
     }),
     defineField({
-      name: 'season',
-      title: 'Saison',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Été', value: 'ete' },
-          { title: 'Hiver', value: 'hiver' },
-          { title: 'Toutes saisons', value: 'toutes' },
-        ],
-      },
-    }),
-    defineField({
-      name: 'duration',
+      name: 'duree',
       title: 'Durée',
       type: 'string',
-      description: 'Ex: 1 jour, 3 jours, 1 semaine',
-    }),
-    defineField({
-      name: 'basePrice',
-      title: 'Prix "À partir de"',
-      type: 'string',
-    }),
-    defineField({
-      name: 'priceEncadrement',
-      title: 'Tarif encadrement',
-      type: 'string',
-      description: 'Ex: 450€/personne',
-    }),
-    defineField({
-      name: 'priceFraisSejour',
-      title: 'Frais de séjour',
-      type: 'string',
-      description: 'Ex: 180€/personne (hébergement, repas)',
+      description: 'Ex: 1 jour, 3 jours, 5 jours',
     }),
     defineField({
       name: 'image',
       title: 'Image principale',
       type: 'image',
       options: { hotspot: true },
-    }),
-    defineField({
-      name: 'description',
-      title: 'Description détaillée',
-      type: 'text',
-    }),
-    defineField({
-      name: 'content',
-      title: 'Contenu riche (Programme, etc.)',
-      type: 'array',
-      of: [{ type: 'block' }, { type: 'image' }],
-    }),
-    defineField({
-      name: 'programme',
-      title: 'Onglet — Programme',
-      type: 'array',
-      of: [{
-        type: 'block',
-        styles: [
-          { title: 'Normal', value: 'normal' },
-          { title: 'H2', value: 'h2' },
-          { title: 'H3', value: 'h3' },
-          { title: 'Centré', value: 'blockCenter' },
-          { title: 'Justifié', value: 'blockJustify' },
-          { title: 'Droite', value: 'blockRight' },
-        ],
-      }, { type: 'image' }],
-    }),
-    defineField({
-      name: 'budget',
-      title: 'Onglet — Budget',
-      type: 'array',
-      of: [{
-        type: 'block',
-        styles: [
-          { title: 'Normal', value: 'normal' },
-          { title: 'H2', value: 'h2' },
-          { title: 'H3', value: 'h3' },
-          { title: 'Centré', value: 'blockCenter' },
-          { title: 'Justifié', value: 'blockJustify' },
-          { title: 'Droite', value: 'blockRight' },
-        ],
-      }, { type: 'image' }],
-    }),
-    defineField({
-      name: 'infosPratiques',
-      title: 'Onglet — Infos Pratiques',
-      type: 'array',
-      of: [{
-        type: 'block',
-        styles: [
-          { title: 'Normal', value: 'normal' },
-          { title: 'H2', value: 'h2' },
-          { title: 'H3', value: 'h3' },
-          { title: 'Centré', value: 'blockCenter' },
-          { title: 'Justifié', value: 'blockJustify' },
-          { title: 'Droite', value: 'blockRight' },
-        ],
-      }, { type: 'image' }],
-    }),
-    defineField({
-      name: 'materiel',
-      title: 'Onglet — Matériel',
-      type: 'array',
-      of: [{
-        type: 'block',
-        styles: [
-          { title: 'Normal', value: 'normal' },
-          { title: 'H2', value: 'h2' },
-          { title: 'H3', value: 'h3' },
-          { title: 'Centré', value: 'blockCenter' },
-          { title: 'Justifié', value: 'blockJustify' },
-          { title: 'Droite', value: 'blockRight' },
-        ],
-      }, { type: 'image' }],
-    }),
-    defineField({
-      name: 'materielPdf',
-      title: 'Matériel — PDF téléchargeable',
-      type: 'file',
-      options: { accept: '.pdf' },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'gallery',
@@ -207,11 +103,172 @@ export const sejourType = defineType({
       ],
     }),
     defineField({
+      name: 'description',
+      title: 'Description courte',
+      type: 'text',
+      rows: 4,
+      description: 'Résumé affiché sur les cartes et en haut de page.',
+    }),
+    defineField({
+      name: 'prixDefaut',
+      title: 'Prix par défaut (affichage)',
+      type: 'string',
+      description: 'Ex: À partir de 95€/pers (pour l\'affichage sur les cartes)',
+    }),
+
+    // ONGLET PROGRAMME
+    defineField({
+      name: 'programme',
+      title: 'Onglet — Programme',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+        { type: 'image' },
+      ],
+      description: 'Programme détaillé jour par jour.',
+    }),
+
+    // ONGLET MATÉRIEL
+    defineField({
+      name: 'materiel',
+      title: 'Onglet — Matériel (Texte libre)',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+      ],
+      description: 'Description générale du matériel.',
+    }),
+    defineField({
+      name: 'materielInclus',
+      title: 'Matériel — Inclus',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Liste à puces du matériel fourni.',
+    }),
+    defineField({
+      name: 'materielNonInclus',
+      title: 'Matériel — Non inclus / À prévoir',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Liste à puces du matériel à apporter.',
+    }),
+    defineField({
+      name: 'materielPdf',
+      title: 'Matériel — PDF téléchargeable',
+      type: 'file',
+      options: { accept: '.pdf' },
+    }),
+
+    // ONGLET INFOS PRATIQUES
+    defineField({
+      name: 'infosPratiques',
+      title: 'Onglet — Infos Pratiques',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+      ],
+      description: 'Informations pratiques (hébergement, RDV, etc.).',
+    }),
+
+    // ONGLET BUDGET
+    defineField({
+      name: 'budget',
+      title: 'Onglet — Budget (Texte libre)',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+      ],
+      description: 'Explications sur le budget.',
+    }),
+    defineField({
+      name: 'budgetInclus',
+      title: 'Budget — Inclus',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Liste à puces des prestations incluses.',
+    }),
+    defineField({
+      name: 'budgetNonInclus',
+      title: 'Budget — Non inclus',
+      type: 'array',
+      of: [{ type: 'string' }],
+      description: 'Liste à puces des frais non inclus.',
+    }),
+
+    // OPTIONS
+    defineField({
       name: 'hideUpcomingSorties',
       title: 'Masquer le bloc "Prochains Départs"',
       type: 'boolean',
       initialValue: false,
-      description: 'Cochez pour masquer les dates de sorties sur la page de ce séjour (ex: séjour uniquement sur demande privée).',
+      description: 'Cochez pour masquer les dates sur la page (ex: séjour sur demande uniquement).',
+    }),
+
+    // SEO
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO — Titre',
+      type: 'string',
+      description: 'Si vide, utilise le titre du séjour.',
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO — Description',
+      type: 'text',
+      rows: 3,
+      description: 'Meta description pour les moteurs de recherche.',
     }),
   ],
+  preview: {
+    select: {
+      title: 'title',
+      categorie: 'categorie',
+      massifs: 'massifs',
+      media: 'image',
+    },
+    prepare(selection) {
+      const { title, categorie, massifs, media } = selection
+
+      let categorieLabel = ''
+      if (categorie === 'journee-ski-rando') categorieLabel = '📅 Journée ski rando'
+      else if (categorie === 'journee-freerando') categorieLabel = '🎿 Journée freerando'
+      else if (categorie === 'stage-raid') categorieLabel = '🏔️ Stage / Raid'
+
+      const massifStr = massifs && massifs.length > 0 ? ` • ${massifs.join(', ')}` : ''
+
+      return {
+        title: title || 'Sans titre',
+        subtitle: `${categorieLabel}${massifStr}`,
+        media,
+      }
+    },
+  },
 })

@@ -1,21 +1,24 @@
 import { type SchemaTypeDefinition } from 'sanity'
-import { activityType } from './activity'
 import { postType } from './post'
 import { guideType } from './guide'
 import { homeType } from './home'
 import { contactType } from './contact'
 import { testimonialType } from './testimonial'
 import { sejourType } from './sejour'
-import { universType } from './univers'
-import { sortieType } from './sortie'
+import { sejourDateType } from './sejourDate'
+import { aLaCarteType } from './aLaCarte'
 import { settingsType } from './settings'
 import { faqType } from './faq'
 import { tagType } from './tag'
 
+// Anciens schémas archivés (à supprimer plus tard)
+// import { activityType } from './activity'
+// import { universType } from './univers'
+// import { sortieType } from './sortie'
+
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     settingsType,
-    activityType,
     postType,
     tagType,
     guideType,
@@ -23,8 +26,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     contactType,
     testimonialType,
     sejourType,
-    universType,
-    sortieType,
+    sejourDateType,
+    aLaCarteType,
     faqType,
   ],
 }

@@ -53,61 +53,168 @@ export const testimonialsQuery = groq`*[_type == "testimonial"] | order(_created
   "avatar": avatar.asset->url
 }`
 
-export const sortiesQuery = groq`*[_type == "sortie"] | order(startDate asc) {
-  date,
-  startDate,
-  availableSpots,
-  isFull,
-  titleOverride,
+export const sortiesQuery = groq`*[_type == "sejourDate" && dateDebut >= now()] | order(dateDebut asc) {
+  _id,
+  "slug": slug.current,
+  titrePersonnalise,
+  descriptionPersonnalisee,
+  massifSpecifique,
+  dateDebut,
+  dateFin,
+  prix,
+  niveau,
+  placesDisponibles,
+  placesTotales,
+  complet,
+  lieuRdv,
+  heureRdv,
+  "programmeSpecifique": programmeSpecifique[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  "informationsComplementaires": informationsComplementaires[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  "image": image.asset->url,
   "sejour": sejour-> {
     title,
     "slug": slug.current,
-    activityType,
-    "subCategory": subCategory->slug.current,
-    massif,
-    level,
-    season,
-    duration,
-    basePrice,
-    "image": image.asset->url
+    categorie,
+    massifs,
+    niveauDefaut,
+    duree,
+    prixDefaut,
+    "image": image.asset->url,
+    description,
+    "programme": programme[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    },
+    "materiel": materiel[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    },
+    materielInclus,
+    materielNonInclus,
+    "budget": budget[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    },
+    budgetInclus,
+    budgetNonInclus,
+    "infosPratiques": infosPratiques[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    }
+  }
+}`
+
+// Query pour récupérer une sortie spécifique par slug
+export const sortieBySlugQuery = groq`*[_type == "sejourDate" && slug.current == $slug][0] {
+  _id,
+  "slug": slug.current,
+  titrePersonnalise,
+  descriptionPersonnalisee,
+  massifSpecifique,
+  dateDebut,
+  dateFin,
+  prix,
+  niveau,
+  placesDisponibles,
+  placesTotales,
+  complet,
+  lieuRdv,
+  heureRdv,
+  denivele,
+  effortPhysique,
+  "programmeSpecifique": programmeSpecifique[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  "informationsComplementaires": informationsComplementaires[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  "budgetSpecifique": budgetSpecifique[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  budgetInclusSpecifique,
+  budgetNonInclusSpecifique,
+  "infosPratiquesSpecifiques": infosPratiquesSpecifiques[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  "image": image.asset->url,
+  "sejour": sejour-> {
+    _id,
+    title,
+    "slug": slug.current,
+    categorie,
+    massifs,
+    niveauDefaut,
+    duree,
+    prixDefaut,
+    "image": image.asset->url,
+    description,
+    "programme": programme[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    },
+    "materiel": materiel[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    },
+    materielInclus,
+    materielNonInclus,
+    "budget": budget[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    },
+    budgetInclus,
+    budgetNonInclus,
+    "infosPratiques": infosPratiques[]{
+      ...,
+      _type == "image" => { ..., "asset": asset-> }
+    }
   }
 }`
 
 export const sejoursQuery = groq`*[_type == "sejour"] | order(title asc) {
   title,
   "slug": slug.current,
-  activityType,
-  "subCategory": subCategory->slug.current,
-  massif,
-  level,
-  season,
-  duration,
-  basePrice,
+  categorie,
+  massifs,
+  niveauDefaut,
+  duree,
+  prixDefaut,
   "image": image.asset->url,
   description
 }`
 
-export const sejoursByActivityQuery = groq`*[_type == "sejour" && activityType == $activity] | order(title asc) {
+export const sejoursByCategoryQuery = groq`*[_type == "sejour" && categorie == $categorie] | order(title asc) {
   title,
   "slug": slug.current,
-  activityType,
-  "subCategory": subCategory->slug.current,
-  massif,
-  level,
-  season,
-  duration,
-  basePrice,
+  categorie,
+  massifs,
+  niveauDefaut,
+  duree,
+  prixDefaut,
   "image": image.asset->url,
   description
 }`
 
 export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $slug][0] {
-  ...,
+  title,
   "slug": slug.current,
-  "subCategory": subCategory->slug.current,
+  categorie,
+  massifs,
+  niveauDefaut,
+  duree,
+  prixDefaut,
   "image": image.asset->url,
-  priceEncadrement,
-  priceFraisSejour,
+  description,
   hideUpcomingSorties,
   "programme": programme[]{
     ...,
@@ -117,6 +224,8 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
     ...,
     _type == "image" => { ..., "asset": asset-> }
   },
+  "budgetInclus": budgetInclus,
+  "budgetNonInclus": budgetNonInclus,
   "infosPratiques": infosPratiques[]{
     ...,
     _type == "image" => { ..., "asset": asset-> }
@@ -125,13 +234,24 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
     ...,
     _type == "image" => { ..., "asset": asset-> }
   },
+  "materielInclus": materielInclus,
+  "materielNonInclus": materielNonInclus,
   "materielPdf": materielPdf.asset->url,
   "gallery": gallery[]{alt, "url": asset->url},
-  "upcomingSorties": *[_type == "sortie" && sejour._ref == ^._id && startDate >= now()] | order(startDate asc) {
-    date,
-    availableSpots,
-    isFull
-  }
+  "upcomingSorties": *[_type == "sejourDate" && sejour._ref == ^._id && dateDebut >= now()] | order(dateDebut asc) {
+    _id,
+    "slug": slug.current,
+    titrePersonnalise,
+    dateDebut,
+    dateFin,
+    prix,
+    niveau,
+    placesDisponibles,
+    placesTotales,
+    complet
+  },
+  seoTitle,
+  seoDescription
 }`
 
 export const postsBySejourQuery = groq`*[_type == "post" && relatedSejour._ref == $sejourId] | order(publishedAt desc)[0...6] {
@@ -154,70 +274,69 @@ export const postsByActivityQuery = groq`*[_type == "post" && (activityType == $
   excerpt
 }`
 
-export const sortieBySlugQuery = groq`*[_type == "sortie" && slug.current == $slug][0] {
+// DEPRECATED - Ancien schéma sortie (archivé)
+// export const sortieBySlugQuery = groq`*[_type == "sortie" && slug.current == $slug][0] { ... }`
+
+// DEPRECATED - Anciens schémas Activity & Univers (archivés)
+// export const activitiesQuery = groq`*[_type == "activity"] | order(title asc) { ... }`
+// export const activityBySlugQuery = groq`*[_type == "activity" && slug.current == $slug][0] { ... }`
+
+// Nouvelle query pour la page À la carte
+export const aLaCarteQuery = groq`*[_type == "aLaCarte"][0] {
   title,
   "slug": slug.current,
-  date,
-  location,
-  duration,
+  heroTitle,
+  heroSubtitle,
+  "heroImage": heroImage.asset->url,
   description,
-  price,
-  "image": image.asset->url,
-  activityType,
-  isFull
+  "content": content[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  "tarifs": tarifs[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
+  prestationsIncluses,
+  prestationsNonIncluses,
+  ctaText,
+  ctaSubtext,
+  "gallery": gallery[]{alt, "url": asset->url},
+  seoTitle,
+  seoDescription
 }`
 
-export const activitiesQuery = groq`*[_type == "activity"] | order(title asc) {
-  title,
-  "slug": slug.current,
-  subtitle,
-  intro,
-  description,
-  "image": image.asset->url,
-  keyPoints,
-  details,
-  universBadge,
-  universTitle,
-  universDescription,
-  "univers": *[_type == "univers" && activity._ref == ^._id] {
-    title,
-    "slug": slug.current,
-    description,
-    "image": image.asset->url
+// Queries pour lister les activités/catégories (pour la page /activites)
+export const activitiesQuery = groq`[
+  {
+    "title": "Engagement Privé / À la carte",
+    "slug": "ski-de-randonnee-engagement-prive",
+    "description": "Sortie privée sur mesure. En famille, entre amis ou en solo, tracez votre propre voie.",
+    "price": "À partir de 400€/jour",
+    "image": "/images/hero.jpg"
   },
-  price,
-  period,
-  location,
-  showUpcomingSorties,
-  type,
-  customTripText,
-  customTripCTA
-}`
-
-export const activityBySlugQuery = groq`*[_type == "activity" && slug.current == $slug][0] {
-  title,
-  "slug": slug.current,
-  subtitle,
-  intro,
-  description,
-  "image": image.asset->url,
-  keyPoints,
-  details,
-  universBadge,
-  universTitle,
-  universDescription,
-  "univers": *[_type == "univers" && activity._ref == ^._id] {
-    title,
-    "slug": slug.current,
-    description,
-    "image": image.asset->url
+  {
+    "title": "Ski de randonnée journée",
+    "slug": "journee-ski-rando",
+    "description": "Des sorties à la journée pour s'évader, découvrir de nouveaux massifs et s'initier ou se perfectionner.",
+    "price": "95€ / pers",
+    "image": *[_type == "sejour" && categorie == "journee-ski-rando"][0].image.asset->url
   },
-  price,
-  period,
-  location,
-  showUpcomingSorties,
-  type
-}`
+  {
+    "title": "Freerando & Hors-piste",
+    "slug": "journee-freerando",
+    "description": "Profitez des remontées mécaniques pour accéder à de longs hors-pistes et de superbes combes sauvages.",
+    "price": "95€ / pers",
+    "image": *[_type == "sejour" && categorie == "journee-freerando"][0].image.asset->url
+  },
+  {
+    "title": "Stages et raids à ski",
+    "slug": "stages-et-raids-a-ski-de-randonnee-hautes-alpes",
+    "description": "L'immersion totale en montagne. De refuge en gîte, vivez des raids à ski d'exception de plusieurs jours.",
+    "price": "À partir de 295€",
+    "image": "/images/stages_raids_hub.jpg"
+  }
+]`
 
 export const blogTeaserQuery = groq`*[_type == "post"] | order(publishedAt desc)[0...$limit] {
   title,
@@ -271,6 +390,7 @@ export const postsPageQuery = groq`{
     && (!defined($category) || $category in tags[]->slug.current)
     && (!defined($massif) || $massif in tags[]->slug.current)
   ] | order(publishedAt desc) [$start...$end] {
+    _id,
     title,
     "slug": slug.current,
     "date": publishedAt,

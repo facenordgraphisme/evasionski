@@ -44,15 +44,10 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
   ]
 
   const stagesSubmenuItems = [
-    { 
-      title: { fr: "Stages et raids en ski de randonnée", en: "Ski touring stages & raids" }, 
-      slug: "stages-et-raids-a-ski-de-randonnee-hautes-alpes", 
-      image: "/images/stages_raids_hub.jpg" 
-    },
-    { 
-      title: { fr: "Stage de ski freerando Les Orres / Crévoux", en: "Freerando stage Les Orres / Crévoux" }, 
-      slug: "stage-de-ski-freerando-les-orres-crevoux", 
-      image: "/images/freerando_les_orres.jpg" 
+    {
+      title: { fr: "Stage de ski freerando Les Orres / Crévoux", en: "Freerando stage Les Orres / Crévoux" },
+      slug: "stage-de-ski-freerando-les-orres-crevoux",
+      image: "/images/freerando_les_orres.jpg"
     },
     { 
       title: { fr: "Ski de randonnée dans le Queyras 5 jours", en: "Ski touring in Queyras 5 days" }, 
@@ -154,14 +149,14 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
 
             {/* Stages & Raids with Submenu Cards */}
             <div className="relative group/menu py-4">
-              <span className="hover:text-accent transition-colors flex items-center gap-1 cursor-pointer">
+              <Link href="/stages-et-raids-a-ski-de-randonnee-hautes-alpes" className="hover:text-accent transition-colors flex items-center gap-1">
                 {at({ fr: "Stages & Raids", en: "Stages & Raids" })}
                 <ChevronDown className="w-3.5 h-3.5 group-hover/menu:rotate-180 transition-transform" />
-              </span>
+              </Link>
 
               {/* Submenu Grid */}
               <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 translate-y-4 pointer-events-none group-hover/menu:opacity-100 group-hover/menu:translate-y-0 group-hover/menu:pointer-events-auto transition-all duration-300">
-                <div className="glass-card rounded-[32px] p-6 w-[940px] grid grid-cols-4 gap-4 shadow-2xl border border-white/15">
+                <div className="glass-card rounded-[32px] p-6 w-[720px] grid grid-cols-3 gap-5 shadow-2xl border border-white/15">
                   {stagesSubmenuItems.map((item, idx) => (
                     <Link
                       key={item.slug}
@@ -190,6 +185,11 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
                 </div>
               </div>
             </div>
+
+            {/* Calendrier Link */}
+            <Link href="/calendrier" className="hover:text-accent transition-colors py-4">
+              {at({ fr: "Calendrier", en: "Calendar" })}
+            </Link>
 
             {/* Infos Dropdown (Text-only) */}
             <div className="relative group/info py-4">
@@ -304,13 +304,21 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
 
               {/* Stages & Raids Dropdown */}
               <div className="w-full">
-                <button 
-                  onClick={() => setIsStagesOpen(!isStagesOpen)}
-                  className="w-full flex items-center justify-between py-4 text-lg font-bold uppercase tracking-wider border-b border-foreground/10"
-                >
-                  <span>{at({ fr: "Stages & Raids", en: "Stages & Raids" })}</span>
-                  <ChevronDown className={`w-5 h-5 transition-transform ${isStagesOpen ? 'rotate-180' : ''}`} />
-                </button>
+                <div className="flex items-center border-b border-foreground/10">
+                  <Link
+                    href="/stages-et-raids-a-ski-de-randonnee-hautes-alpes"
+                    onClick={() => setIsOpen(false)}
+                    className="flex-1 py-4 text-lg font-bold uppercase tracking-wider hover:text-accent transition-colors text-left pl-4"
+                  >
+                    {at({ fr: "Stages & Raids", en: "Stages & Raids" })}
+                  </Link>
+                  <button
+                    onClick={() => setIsStagesOpen(!isStagesOpen)}
+                    className="px-4 py-4"
+                  >
+                    <ChevronDown className={`w-5 h-5 transition-transform ${isStagesOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                </div>
                 <AnimatePresence>
                   {isStagesOpen && (
                     <motion.div
@@ -332,6 +340,17 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
+
+              {/* Calendrier Link */}
+              <div className="w-full border-b border-foreground/10">
+                <Link
+                  href="/calendrier"
+                  onClick={() => setIsOpen(false)}
+                  className="w-full py-4 text-lg font-bold uppercase tracking-wider hover:text-accent transition-colors block text-center"
+                >
+                  {at({ fr: "Calendrier", en: "Calendar" })}
+                </Link>
               </div>
 
               {/* Infos Dropdown */}

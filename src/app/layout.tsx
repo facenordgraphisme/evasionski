@@ -40,6 +40,13 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title,
       description,
+      icons: {
+        icon: [
+          { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+          { url: '/logo.png', sizes: '16x16', type: 'image/png' },
+        ],
+        apple: '/logo.png',
+      },
       openGraph: settingsData?.seoImage ? {
         images: [{ url: settingsData.seoImage }],
       } : undefined,
@@ -48,6 +55,13 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Error generating metadata:", error);
     return {
       title: "ÉvasionSki | Toni Mancini",
+      icons: {
+        icon: [
+          { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+          { url: '/logo.png', sizes: '16x16', type: 'image/png' },
+        ],
+        apple: '/logo.png',
+      },
       description: "Moniteur de Ski de Randonnée Toni Mancini. Alpinisme, ski de randonnée, escalade et voyages.",
     };
   }

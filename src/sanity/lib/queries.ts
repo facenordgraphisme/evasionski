@@ -354,12 +354,15 @@ export const guideQuery = groq`*[_type == "guide"][0] {
   titleAccent,
   quote,
   "image": image.asset->url,
+  introText,
   bioTitle,
   bio,
   certification,
   certificationSub,
   experience,
   experienceSub,
+  mission,
+  valuesText,
   values
 }`
 

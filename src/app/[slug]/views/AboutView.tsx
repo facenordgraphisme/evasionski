@@ -52,6 +52,49 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
         </div>
       </section>
 
+      {/* Intro Section */}
+      {data.introText && (
+        <section className="py-16 bg-foreground/[0.02]">
+          <div className="container mx-auto px-6">
+            <div className="max-w-6xl mx-auto">
+              <div className="grid lg:grid-cols-2 gap-12 items-start">
+                {/* Gauche - Titre */}
+                <div>
+                  <span className="text-accent font-bold tracking-[0.3em] uppercase text-xs mb-6 block">
+                    EVASIONSKI
+                  </span>
+                  <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    {at('Moniteur de ski de randonnée dans les Hautes-Alpes 05')}
+                  </h2>
+                </div>
+
+                {/* Droite - Contenu */}
+                <div className="space-y-6">
+                  <p className="text-lg text-foreground/80 leading-relaxed">
+                    {at('EvasionSki propose des expériences de ski uniques dans les Hautes-Alpes, plus particulièrement dans les vallées des Ecrins, du Queyras et de l\'Ubaye. Découvrez le hors-piste, le freerando, et le ski de randonnée avec un moniteur de ski expérimenté et moniteur de ski de randonnée, Toni Mancini.')}
+                  </p>
+
+                  <p className="text-sm">
+                    <a
+                      href="https://www.ensm.sports.gouv.fr/prerogatives-dexercice-du-moniteur-de-ski-alpin-ensa/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-accent hover:text-accent/80 underline transition-colors font-medium"
+                    >
+                      {at('Prérogatives d\'exercice du moniteur de ski alpin.')}
+                    </a>
+                  </p>
+
+                  <p className="text-xl font-semibold text-foreground/90 italic pt-4">
+                    {at('Offrez-vous des souvenirs inoubliables.')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Main Bio Section */}
       <section className="py-20">
         <div className="container mx-auto px-6">
@@ -100,20 +143,86 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
         </div>
       </section>
 
-      {/* Philosophy / Values Section */}
-      <section className="py-20 bg-accent/5">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">{at('Mes Valeurs')}</h2>
-            <div className="w-20 h-1.5 bg-accent mx-auto rounded-full" />
+      {/* Ma Mission & Mes Valeurs Section */}
+      {(data.mission || data.valuesText) && (
+        <section className="py-20">
+          <div className="container mx-auto px-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Ma Mission */}
+              {data.mission && (
+                <div className="space-y-6">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                    <Image
+                      src="/a-propos/mission.jpg"
+                      alt="Ma Mission"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold mb-6 uppercase tracking-tight">
+                      {at('Ma Mission')}
+                    </h2>
+                    <div className="prose prose-invert max-w-none text-foreground/70 space-y-4 [&_p]:text-base [&_p]:leading-relaxed">
+                      <PortableText value={translatePortableText(data.mission)} />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Mes Valeurs */}
+              {data.valuesText && (
+                <div className="space-y-6">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                    <Image
+                      src="/a-propos/valeurs.jpg"
+                      alt="Mes Valeurs"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h2 className="text-3xl font-bold mb-6 uppercase tracking-tight">
+                      {at('Mes Valeurs')}
+                    </h2>
+                    <div className="prose prose-invert max-w-none text-foreground/70 space-y-4 [&_p]:text-base [&_p]:leading-relaxed">
+                      <PortableText value={translatePortableText(data.valuesText)} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {(data.values || fallback.values).map((v: any, index: number) => (
-              <div key={index} className="glass p-10 rounded-[40px] hover:border-accent transition-colors border border-border">
-                <h3 className="text-2xl font-bold mb-4 text-accent">{at(v.title)}</h3>
-                <p className="text-foreground/60">{at(v.description)}</p>
-              </div>
-            ))}
+        </section>
+      )}
+
+      {/* Philosophy / Values Cards Section */}
+      <section className="py-20 bg-foreground/[0.02]">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-16 items-start">
+            {/* Left: Title and intro */}
+            <div className="space-y-6 lg:sticky lg:top-32">
+              <span className="text-accent font-bold tracking-[0.3em] uppercase text-xs">
+                {at('Pourquoi choisir Evasion Ski ?')}
+              </span>
+              <h2 className="text-4xl md:text-5xl font-bold leading-tight">
+                {at('Une expérience humaine, locale et professionnelle au cœur des Alpes')}
+              </h2>
+            </div>
+
+            {/* Right: Value cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {(data.values || fallback.values).map((v: any, index: number) => {
+                const icons = ['👤', '🗺️', '🔒'];
+                return (
+                  <div key={index} className="bg-background border border-border rounded-3xl p-8 hover:border-accent transition-colors">
+                    <div className="text-4xl mb-4">{icons[index]}</div>
+                    <h3 className="text-xl font-bold mb-3 uppercase tracking-tight">{at(v.title)}</h3>
+                    <p className="text-foreground/60 text-sm leading-relaxed">{at(v.description)}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>

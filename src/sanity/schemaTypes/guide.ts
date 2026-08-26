@@ -35,6 +35,13 @@ export const guideType = defineType({
       options: { hotspot: true },
     }),
     defineField({
+      name: 'introText',
+      title: 'Texte d\'introduction',
+      type: 'array',
+      of: [{ type: 'block' }],
+      description: 'Texte affiché avant la section "Qui suis-je ?"',
+    }),
+    defineField({
       name: 'bioTitle',
       title: 'Titre de la Bio',
       type: 'string',
@@ -66,8 +73,22 @@ export const guideType = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'mission',
+      title: 'Ma Mission',
+      type: 'array',
+      of: [{ type: 'block' }],
+      description: 'Section "Ma mission"',
+    }),
+    defineField({
+      name: 'valuesText',
+      title: 'Mes Valeurs (Texte)',
+      type: 'array',
+      of: [{ type: 'block' }],
+      description: 'Texte de la section "Mes valeurs"',
+    }),
+    defineField({
       name: 'values',
-      title: 'Mes Valeurs',
+      title: 'Mes Valeurs (Cards)',
       type: 'array',
       of: [
         {

@@ -317,14 +317,14 @@ export const activitiesQuery = groq`[
   },
   {
     "title": "Ski de randonnée journée",
-    "slug": "journee-ski-rando",
+    "slug": "ski-randonnee-hautes-alpes-journee",
     "description": "Des sorties à la journée pour s'évader, découvrir de nouveaux massifs et s'initier ou se perfectionner.",
     "price": "95€ / pers",
     "image": *[_type == "sejour" && categorie == "journee-ski-rando"][0].image.asset->url
   },
   {
     "title": "Freerando & Hors-piste",
-    "slug": "journee-freerando",
+    "slug": "ski-hors-piste-station-hautes-alpes",
     "description": "Profitez des remontées mécaniques pour accéder à de longs hors-pistes et de superbes combes sauvages.",
     "price": "95€ / pers",
     "image": *[_type == "sejour" && categorie == "journee-freerando"][0].image.asset->url

@@ -67,27 +67,27 @@ const ActivitySection = ({
   
   const activities = [
     {
-      title: at('Engagement Privé'),
+      title: at('Engagement Privé / À la carte'),
       slug: 'ski-de-randonnee-engagement-prive',
       description: at('Ski de randonnée sur mesure selon vos envies. En famille, entre amis ou en solo, tracez votre propre voie.'),
       image: '/images/hero.jpg',
     },
     {
-      title: at('Ski de rando journée'),
+      title: at('Ski de randonnée journée'),
       slug: 'ski-randonnee-hautes-alpes-journee',
       description: at('Des sorties à la journée pour s\'évader, découvrir de nouveaux massifs et s\'initier ou se perfectionner.'),
       image: '/photos/DSC_6701.jpg',
     },
     {
-      title: at('Freerando journée'),
+      title: at('Freerando & Hors-piste'),
       slug: 'ski-hors-piste-station-hautes-alpes',
       description: at('Profitez des remontées mécaniques pour accéder à de longs hors-pistes et de superbes combes sauvages.'),
       image: '/photos/DSC_6612.jpg',
     },
     {
-      title: at('Stages & Raids'),
+      title: at('Stages et raids à ski'),
       slug: 'stages-et-raids-a-ski-de-randonnee-hautes-alpes',
-      description: at('L\'immersion totale en montagne. De refuge en gîte, vivez des raids à ski d\'exception.'),
+      description: at('L\'immersion totale en montagne. De refuge en gîte, vivez des raids à ski d\'exception de plusieurs jours.'),
       image: '/images/ski.jpg',
     }
   ]
@@ -113,9 +113,9 @@ const ActivitySection = ({
               {at(description)}
             </p>
           </div>
-          <button className="text-sm font-bold tracking-widest uppercase border-b border-accent pb-1 text-foreground/60 hover:text-accent transition-colors">
+          <Link href="/activites" className="text-sm font-bold tracking-widest uppercase border-b border-accent pb-1 text-foreground/60 hover:text-accent transition-colors">
             {t('common.viewAll')}
-          </button>
+          </Link>
         </div>
  
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

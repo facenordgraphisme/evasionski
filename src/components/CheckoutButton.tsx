@@ -11,6 +11,7 @@ interface CheckoutButtonProps {
   date?: string;
   label?: string;
   className?: string;
+  scrollToId?: string; // ID de l'élément vers lequel scroller au lieu de checkout
 }
 
 export default function CheckoutButton({
@@ -21,11 +22,22 @@ export default function CheckoutButton({
   date,
   label = 'Réserver et payer en ligne',
   className = '',
+  scrollToId,
 }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
     if (loading) return;
+
+    // Si scrollToId est fourni, scroller vers l'élément au lieu de checkout
+    if (scrollToId) {
+      const element = document.getElementById(scrollToId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+
     setLoading(true);
 
     try {

@@ -235,11 +235,12 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                   <div className="p-6 space-y-3 border-t border-border">
                     {numericPrice > 0 ? (
                       <>
-                        <CheckoutButton 
+                        <CheckoutButton
                           title={at(sejour.title)}
                           price={numericPrice}
                           image={sejour.image}
                           slug={sejour.slug}
+                          scrollToId="prochains-departs"
                         />
                         <Link href="/evasion-ski-hautes-alpes-contact" className="w-full block text-center text-foreground/50 hover:text-foreground/80 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors">
                           {at('Demander un devis personnalisé')}
@@ -258,7 +259,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
                 {/* Bloc 2 — Prochains Départs (horizontal timeline) */}
                 {!sejour.hideUpcomingSorties && (
-                  <div className="rounded-[32px] border border-border shadow-xl overflow-hidden bg-card">
+                  <div id="prochains-departs" className="rounded-[32px] border border-border shadow-xl overflow-hidden bg-card scroll-mt-32">
 
                     <div className="px-7 pt-6 pb-4 border-b border-border flex items-center gap-2">
                       <Calendar size={14} className="text-accent" />
@@ -276,14 +277,20 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
                           // Pour les sorties journées, créer un lien cliquable
                           const isJournee = sejour.categorie === 'journee-ski-rando' || sejour.categorie === 'journee-freerando';
+                          const sortieTitle = s.titrePersonnalise || sejour.title;
+                          const sortieNiveau = s.niveau || sejour.niveauDefaut;
                           const cardContent = (
                             <>
                               {/* Date bullet */}
-                              <div className={`w-2 h-2 rounded-full shrink-0 ${s.complet || s.placesDisponibles === 0 ? 'bg-foreground/20' : 'bg-accent'}`} />
-                              <div className="flex-1 min-w-0">
-                                <span className="font-bold text-sm text-foreground block truncate">{dateDisplay}</span>
+                              <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${s.complet || s.placesDisponibles === 0 ? 'bg-foreground/20' : 'bg-accent'}`} />
+                              <div className="flex-1 min-w-0 space-y-1">
+                                <div>
+                                  <span className="font-bold text-sm text-foreground block">{at(sortieTitle)}</span>
+                                  <span className="text-xs text-foreground/60 font-medium">{dateDisplay}</span>
+                                </div>
                                 <div className="flex items-center gap-2 text-[10px] text-foreground/40 font-medium">
                                   <span>{s.placesDisponibles} / {s.placesTotales} {at('places')}</span>
+                                  {sortieNiveau && <span className="text-accent font-bold">• {getLevelLabel(sortieNiveau)}</span>}
                                   {s.prix && <span className="text-accent font-bold">• {s.prix}</span>}
                                 </div>
                               </div>

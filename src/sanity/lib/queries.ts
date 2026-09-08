@@ -68,6 +68,7 @@ export const sortiesQuery = groq`*[_type == "sejourDate" && dateDebut >= now()] 
   complet,
   lieuRdv,
   heureRdv,
+  outplannersLink,
   "programmeSpecifique": programmeSpecifique[]{
     ...,
     _type == "image" => { ..., "asset": asset-> }
@@ -128,6 +129,7 @@ export const sortieBySlugQuery = groq`*[_type == "sejourDate" && slug.current ==
   heureRdv,
   denivele,
   effortPhysique,
+  outplannersLink,
   "programmeSpecifique": programmeSpecifique[]{
     ...,
     _type == "image" => { ..., "asset": asset-> }

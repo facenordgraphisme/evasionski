@@ -235,6 +235,15 @@ export const sejourDateType = defineType({
       rows: 3,
       description: 'Notes privées (non affichées sur le site).',
     }),
+    defineField({
+      name: 'outplannersLink',
+      title: 'Lien de réservation Outplanners',
+      type: 'url',
+      description: 'Lien vers la page de réservation/paiement Outplanners (ex: https://outplanners.vercel.app/r/test-beta-1/traversee-du-col-de-la-vanoise)',
+      validation: (Rule) => Rule.uri({
+        scheme: ['http', 'https']
+      })
+    }),
   ],
   preview: {
     select: {

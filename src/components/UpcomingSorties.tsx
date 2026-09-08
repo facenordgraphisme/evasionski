@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, Users, MapPin, Clock } from 'lucide-react'
+import BookingPopup from './BookingPopup'
 
 interface Sejour {
   title: string
@@ -32,6 +33,7 @@ interface Sortie {
   image?: string
   lieuRdv?: string
   heureRdv?: string
+  outplannersLink?: string
   sejour: Sejour
 }
 
@@ -58,6 +60,8 @@ const UpcomingSorties = ({
 }: UpcomingSortiesProps) => {
   const { at, t } = useLanguage()
   const [filter, setFilter] = useState(initialFilter)
+  const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false)
+  const [selectedBooking, setSelectedBooking] = useState<{ url: string, title: string } | null>(null)
 
   const categories = [
     at('Tous les séjours'),
@@ -202,8 +206,25 @@ const UpcomingSorties = ({
                   </div>
 
                   {(() => {
-                    // Pour les sorties à la journée, lien vers la page de la sortie
-                    // Pour les stages/raids, lien vers la page du séjour parent
+                    // Si un lien Outplanners existe, bouton de réservation avec popup
+                    if (s.outplannersLink) {
+                      return (
+                        <button
+                          onClick={() => {
+                            setSelectedBooking({
+                              url: s.outplannersLink!,
+                              title: at(s.titrePersonnalise || s.sejour?.title)
+                            })
+                            setIsBookingPopupOpen(true)
+                          }}
+                          className="w-full py-4 bg-accent text-white hover:bg-accent/90 transition-all rounded-2xl text-center text-xs font-black uppercase tracking-widest shadow-lg hover:shadow-accent/50"
+                        >
+                          {at('Réserver ma place')}
+                        </button>
+                      );
+                    }
+
+                    // Sinon, lien vers la page de détail
                     const isJournee = s.sejour?.categorie === 'journee-ski-rando' || s.sejour?.categorie === 'journee-freerando'
                     const href = isJournee && s.slug ? `/sorties/${s.slug}` : `/${s.sejour?.slug}`
 
@@ -228,6 +249,19 @@ const UpcomingSorties = ({
           </div>
         )}
       </div>
+
+      {/* Popup de réservation */}
+      {selectedBooking && (
+        <BookingPopup
+          isOpen={isBookingPopupOpen}
+          onClose={() => {
+            setIsBookingPopupOpen(false)
+            setSelectedBooking(null)
+          }}
+          bookingUrl={selectedBooking.url}
+          title={selectedBooking.title}
+        />
+      )}
     </section>
   )
 }

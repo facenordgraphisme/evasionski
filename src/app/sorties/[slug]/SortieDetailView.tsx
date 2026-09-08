@@ -1,11 +1,12 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Calendar, MapPin, Users, Clock, ChevronLeft, TrendingUp, Activity } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import RichContent from '@/components/RichContent'
+import BookingPopup from '@/components/BookingPopup'
 
 interface SortieDetailViewProps {
   sortie: any
@@ -13,6 +14,7 @@ interface SortieDetailViewProps {
 
 export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
   const { at, t } = useLanguage()
+  const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false)
 
   console.log('🎨 Rendering SortieDetailView with:', {
     hasProgramme: !!sortie.programmeSpecifique,
@@ -350,15 +352,34 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
 
           {/* CTA Réservation */}
           <div className="text-center">
-            <Link
-              href="/evasion-ski-hautes-alpes-contact"
-              className="btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest"
-            >
-              {at(sortie.complet || sortie.placesDisponibles === 0 ? 'Liste d\'attente' : 'Réserver ma place')}
-            </Link>
+            {sortie.outplannersLink ? (
+              <button
+                onClick={() => setIsBookingPopupOpen(true)}
+                className="btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest cursor-pointer"
+              >
+                {at(sortie.complet || sortie.placesDisponibles === 0 ? 'Liste d\'attente' : 'Réserver ma place')}
+              </button>
+            ) : (
+              <Link
+                href="/evasion-ski-hautes-alpes-contact"
+                className="btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest"
+              >
+                {at(sortie.complet || sortie.placesDisponibles === 0 ? 'Liste d\'attente' : 'Réserver ma place')}
+              </Link>
+            )}
           </div>
         </div>
       </section>
+
+      {/* Popup de réservation */}
+      {sortie.outplannersLink && (
+        <BookingPopup
+          isOpen={isBookingPopupOpen}
+          onClose={() => setIsBookingPopupOpen(false)}
+          bookingUrl={sortie.outplannersLink}
+          title={at(titre)}
+        />
+      )}
     </main>
   )
 }

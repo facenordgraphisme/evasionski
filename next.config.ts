@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    unoptimized: true, // Désactive l'optimisation Vercel pour éviter le quota - Sanity optimise déjà les images
     remotePatterns: [
       {
         protocol: 'https',

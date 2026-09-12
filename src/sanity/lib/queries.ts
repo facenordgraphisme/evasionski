@@ -208,16 +208,25 @@ export const sejoursByCategoryQuery = groq`*[_type == "sejour" && categorie == $
 }`
 
 export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $slug][0] {
+  _id,
   title,
   "slug": slug.current,
   categorie,
   massifs,
+  "massif": massifs[0],
   niveauDefaut,
+  "level": niveauDefaut,
   duree,
+  "duration": duree,
   prixDefaut,
+  "basePrice": prixDefaut,
   "image": image.asset->url,
   description,
   hideUpcomingSorties,
+  "essentiel": essentiel[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
   "programme": programme[]{
     ...,
     _type == "image" => { ..., "asset": asset-> }
@@ -301,6 +310,11 @@ export const aLaCarteQuery = groq`*[_type == "aLaCarte"][0] {
   },
   prestationsIncluses,
   prestationsNonIncluses,
+  infoDuree,
+  infoMassif,
+  infoTarif,
+  infoFlexibilite,
+  infoGroupes,
   ctaText,
   ctaSubtext,
   "gallery": gallery[]{alt, "url": asset->url},
@@ -356,6 +370,11 @@ export const guideQuery = groq`*[_type == "guide"][0] {
   titleAccent,
   quote,
   "image": image.asset->url,
+  introTitle,
+  introParagraph,
+  introLinkText,
+  introLinkUrl,
+  introClosure,
   introText,
   bioTitle,
   bio,
@@ -363,8 +382,14 @@ export const guideQuery = groq`*[_type == "guide"][0] {
   certificationSub,
   experience,
   experienceSub,
+  missionTitle,
+  "missionImage": missionImage.asset->url,
   mission,
+  valuesTitle,
+  "valuesImage": valuesImage.asset->url,
   valuesText,
+  whyChooseTitle,
+  whyChooseSubtitle,
   values
 }`
 

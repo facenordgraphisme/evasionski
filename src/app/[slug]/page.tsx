@@ -27,6 +27,7 @@ import BlogView from './views/BlogView';
 import BlogDetailView from './views/BlogDetailView';
 import NiveauView from './views/NiveauView';
 import LegalView from './views/LegalView';
+import AlaCarteView from './views/AlaCarteView';
 
 // Import local fallback data
 import { fallbackSejours, fallbackActivities } from "@/utils/fallbackData";
@@ -240,26 +241,17 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
 
   // 2. Check for À la carte page
   if (slug === 'ski-de-randonnee-engagement-prive') {
-    const aLaCarte = await client.fetch(aLaCarteQuery).catch(() => null);
-    // TODO: Create AlaCarteView component or use fallback
-    if (aLaCarte) {
-      // Pour l'instant, on redirige vers la page de contact ou on affiche un message
-      // Tu devras créer un composant AlaCarteView plus tard
-      return (
-        <main className="relative pt-32 min-h-screen">
-          <div className="container mx-auto px-6 py-20">
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-4 text-gradient">
-              {aLaCarte.heroTitle || aLaCarte.title}
-            </h1>
-            <p className="text-foreground/60 text-lg mb-8">{aLaCarte.heroSubtitle}</p>
-            <p className="text-foreground/80 mb-8">{aLaCarte.description}</p>
-            <a href="/evasion-ski-hautes-alpes-contact" className="btn-primary inline-block">
-              {aLaCarte.ctaText || "Me contacter"}
-            </a>
-          </div>
-        </main>
-      );
+    let aLaCarte = null;
+    let settings = null;
+    try {
+      [aLaCarte, settings] = await Promise.all([
+        client.fetch(aLaCarteQuery).catch(() => null),
+        client.fetch(settingsQuery).catch(() => null)
+      ]);
+    } catch (e) {
+      console.error(e);
     }
+    return <AlaCarteView data={aLaCarte} settings={settings} />;
   }
 
   // 3. Dynamic content checks

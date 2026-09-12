@@ -1,5 +1,5 @@
 import type { StructureBuilder } from 'sanity/structure'
-import { Home, UserRound, Mail, Settings } from 'lucide-react'
+import { Home, UserRound, Mail, Settings, Sparkles } from 'lucide-react'
 
 export const structure = (S: StructureBuilder) =>
   S.list()
@@ -31,11 +31,17 @@ export const structure = (S: StructureBuilder) =>
         .id('contact')
         .icon(Mail)
         .child(S.document().schemaType('contact').documentId('contact').title('Page Contact')),
-      
+
+      S.listItem()
+        .title('Page À la Carte / Engagement Privé')
+        .id('ski-de-randonnee-engagement-prive')
+        .icon(Sparkles)
+        .child(S.document().schemaType('aLaCarte').documentId('ski-de-randonnee-engagement-prive').title('Page À la Carte')),
+
       S.divider(),
 
       // Regular document types, filtered to exclude singletons
       ...S.documentTypeListItems().filter(
-        (listItem) => !['home', 'guide', 'contact', 'settings'].includes(listItem.getId() || '')
+        (listItem) => !['home', 'guide', 'contact', 'settings', 'aLaCarte'].includes(listItem.getId() || '')
       ),
     ])

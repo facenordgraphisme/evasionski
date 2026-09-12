@@ -116,6 +116,25 @@ export const sejourType = defineType({
       description: 'Ex: À partir de 95€/pers (pour l\'affichage sur les cartes)',
     }),
 
+    // ONGLET ESSENTIEL
+    defineField({
+      name: 'essentiel',
+      title: 'Onglet — Essentiel de la sortie',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+        { type: 'image' },
+      ],
+      description: 'Informations essentielles, tarifs, conditions (affiché en premier onglet).',
+    }),
+
     // ONGLET PROGRAMME
     defineField({
       name: 'programme',

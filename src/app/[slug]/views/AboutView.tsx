@@ -53,7 +53,7 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
       </section>
 
       {/* Intro Section */}
-      {data.introText && (
+      {(data.introTitle || data.introParagraph) && (
         <section className="py-16 bg-foreground/[0.02]">
           <div className="container mx-auto px-6">
             <div className="max-w-6xl mx-auto">
@@ -64,30 +64,36 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
                     EVASIONSKI
                   </span>
                   <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                    {at('Moniteur de ski de randonnée dans les Hautes-Alpes 05')}
+                    {at(data.introTitle || 'Moniteur de ski de randonnée dans les Hautes-Alpes 05')}
                   </h2>
                 </div>
 
                 {/* Droite - Contenu */}
                 <div className="space-y-6">
-                  <p className="text-lg text-foreground/80 leading-relaxed">
-                    {at('EvasionSki propose des expériences de ski uniques dans les Hautes-Alpes, plus particulièrement dans les vallées des Ecrins, du Queyras et de l\'Ubaye. Découvrez le hors-piste, le freerando, et le ski de randonnée avec un moniteur de ski expérimenté et moniteur de ski de randonnée, Toni Mancini.')}
-                  </p>
+                  {data.introParagraph && (
+                    <p className="text-lg text-foreground/80 leading-relaxed">
+                      {at(data.introParagraph)}
+                    </p>
+                  )}
 
-                  <p className="text-sm">
-                    <a
-                      href="https://www.ensm.sports.gouv.fr/prerogatives-dexercice-du-moniteur-de-ski-alpin-ensa/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-accent hover:text-accent/80 underline transition-colors font-medium"
-                    >
-                      {at('Prérogatives d\'exercice du moniteur de ski alpin.')}
-                    </a>
-                  </p>
+                  {data.introLinkText && data.introLinkUrl && (
+                    <p className="text-sm">
+                      <a
+                        href={data.introLinkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:text-accent/80 underline transition-colors font-medium"
+                      >
+                        {at(data.introLinkText)}
+                      </a>
+                    </p>
+                  )}
 
-                  <p className="text-xl font-semibold text-foreground/90 italic pt-4">
-                    {at('Offrez-vous des souvenirs inoubliables.')}
-                  </p>
+                  {data.introClosure && (
+                    <p className="text-xl font-semibold text-foreground/90 italic pt-4">
+                      {at(data.introClosure)}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -151,17 +157,19 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
               {/* Ma Mission */}
               {data.mission && (
                 <div className="space-y-6">
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                    <Image
-                      src="/a-propos/mission.jpg"
-                      alt="Ma Mission"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                  {data.missionImage && (
+                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                      <Image
+                        src={data.missionImage}
+                        alt={at(data.missionTitle || 'Ma Mission')}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
                   <div>
                     <h2 className="text-3xl font-bold mb-6 uppercase tracking-tight">
-                      {at('Ma Mission')}
+                      {at(data.missionTitle || 'Ma Mission')}
                     </h2>
                     <div className="prose prose-invert max-w-none text-foreground/70 space-y-4 [&_p]:text-base [&_p]:leading-relaxed">
                       <PortableText value={translatePortableText(data.mission)} />
@@ -173,17 +181,19 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
               {/* Mes Valeurs */}
               {data.valuesText && (
                 <div className="space-y-6">
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
-                    <Image
-                      src="/a-propos/valeurs.jpg"
-                      alt="Mes Valeurs"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
+                  {data.valuesImage && (
+                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                      <Image
+                        src={data.valuesImage}
+                        alt={at(data.valuesTitle || 'Mes Valeurs')}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  )}
                   <div>
                     <h2 className="text-3xl font-bold mb-6 uppercase tracking-tight">
-                      {at('Mes Valeurs')}
+                      {at(data.valuesTitle || 'Mes Valeurs')}
                     </h2>
                     <div className="prose prose-invert max-w-none text-foreground/70 space-y-4 [&_p]:text-base [&_p]:leading-relaxed">
                       <PortableText value={translatePortableText(data.valuesText)} />
@@ -203,10 +213,10 @@ export default async function AboutView({ guide, settings }: AboutViewProps) {
             {/* Left: Title and intro */}
             <div className="space-y-6 lg:sticky lg:top-32">
               <span className="text-accent font-bold tracking-[0.3em] uppercase text-xs">
-                {at('Pourquoi choisir Evasion Ski ?')}
+                {at(data.whyChooseTitle || 'Pourquoi choisir Evasion Ski ?')}
               </span>
               <h2 className="text-4xl md:text-5xl font-bold leading-tight">
-                {at('Une expérience humaine, locale et professionnelle au cœur des Alpes')}
+                {at(data.whyChooseSubtitle || 'Une expérience humaine, locale et professionnelle au cœur des Alpes')}
               </h2>
             </div>
 

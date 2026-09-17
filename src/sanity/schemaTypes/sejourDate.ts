@@ -44,21 +44,9 @@ export const sejourDateType = defineType({
     defineField({
       name: 'massifSpecifique',
       title: 'Massif de cette sortie',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Écrins', value: 'ecrins' },
-          { title: 'Queyras', value: 'queyras' },
-          { title: 'Ubaye', value: 'ubaye' },
-          { title: 'Clarée', value: 'claree' },
-          { title: 'Cerces', value: 'cerces' },
-          { title: 'Dévoluy', value: 'devoluy' },
-          { title: 'Champsaur', value: 'champsaur' },
-          { title: 'Norvège', value: 'norvege' },
-          { title: 'Autre', value: 'autre' },
-        ],
-      },
-      description: 'Massif spécifique de cette sortie.',
+      type: 'reference',
+      to: [{ type: 'massif' }],
+      description: 'Massif spécifique de cette sortie (optionnel, sinon utilise celui du séjour).',
     }),
     defineField({
       name: 'dateDebut',

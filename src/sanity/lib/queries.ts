@@ -58,7 +58,7 @@ export const sortiesQuery = groq`*[_type == "sejourDate" && dateDebut >= now()] 
   "slug": slug.current,
   titrePersonnalise,
   descriptionPersonnalisee,
-  massifSpecifique,
+  "massifSpecifique": massifSpecifique->nom,
   dateDebut,
   dateFin,
   prix,
@@ -82,7 +82,7 @@ export const sortiesQuery = groq`*[_type == "sejourDate" && dateDebut >= now()] 
     title,
     "slug": slug.current,
     categorie,
-    massifs,
+    "massifs": massifs[]->nom,
     niveauDefaut,
     duree,
     prixDefaut,
@@ -117,7 +117,7 @@ export const sortieBySlugQuery = groq`*[_type == "sejourDate" && slug.current ==
   "slug": slug.current,
   titrePersonnalise,
   descriptionPersonnalisee,
-  massifSpecifique,
+  "massifSpecifique": massifSpecifique->nom,
   dateDebut,
   dateFin,
   prix,
@@ -154,7 +154,7 @@ export const sortieBySlugQuery = groq`*[_type == "sejourDate" && slug.current ==
     title,
     "slug": slug.current,
     categorie,
-    massifs,
+    "massifs": massifs[]->nom,
     niveauDefaut,
     duree,
     prixDefaut,
@@ -187,7 +187,7 @@ export const sejoursQuery = groq`*[_type == "sejour"] | order(title asc) {
   title,
   "slug": slug.current,
   categorie,
-  massifs,
+  "massifs": massifs[]->nom,
   niveauDefaut,
   duree,
   prixDefaut,
@@ -199,7 +199,7 @@ export const sejoursByCategoryQuery = groq`*[_type == "sejour" && categorie == $
   title,
   "slug": slug.current,
   categorie,
-  massifs,
+  "massifs": massifs[]->nom,
   niveauDefaut,
   duree,
   prixDefaut,
@@ -212,8 +212,8 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
   title,
   "slug": slug.current,
   categorie,
-  massifs,
-  "massif": massifs[0],
+  "massifs": massifs[]->nom,
+  "massif": massifs[0]->nom,
   niveauDefaut,
   "level": niveauDefaut,
   duree,
@@ -448,6 +448,15 @@ export const postsPageQuery = groq`{
 export const categoryTagsQuery = groq`*[_type == "tag" && tagType == "category"] | order(name asc) { name, "slug": slug.current }`
 
 export const massifTagsQuery = groq`*[_type == "tag" && tagType == "massif"] | order(name asc) { name, "slug": slug.current }`
+
+export const massifsQuery = groq`*[_type == "massif"] | order(ordre asc, nom asc) {
+  _id,
+  nom,
+  nomEn,
+  "slug": slug.current,
+  description,
+  ordre
+}`
 
 export const postBySlugQuery = groq`*[_type == "post" && slug.current == $slug][0] {
   title,

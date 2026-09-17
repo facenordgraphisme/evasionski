@@ -42,20 +42,7 @@ export const sejourType = defineType({
       name: 'massifs',
       title: 'Massif(s)',
       type: 'array',
-      of: [{ type: 'string' }],
-      options: {
-        list: [
-          { title: 'Écrins', value: 'ecrins' },
-          { title: 'Queyras', value: 'queyras' },
-          { title: 'Ubaye', value: 'ubaye' },
-          { title: 'Clarée', value: 'claree' },
-          { title: 'Cerces', value: 'cerces' },
-          { title: 'Dévoluy', value: 'devoluy' },
-          { title: 'Champsaur', value: 'champsaur' },
-          { title: 'Norvège', value: 'norvege' },
-          { title: 'Autre', value: 'autre' },
-        ],
-      },
+      of: [{ type: 'reference', to: [{ type: 'massif' }] }],
       description: 'Sélectionnez un ou plusieurs massifs.',
     }),
     defineField({

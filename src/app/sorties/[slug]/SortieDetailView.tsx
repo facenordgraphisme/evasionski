@@ -16,13 +16,39 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
   const { at, t } = useLanguage()
   const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false)
 
+  const titre = sortie.titrePersonnalise || sortie.sejour?.title
+
+  // Composant CTA réutilisable
+  const CTAButton = ({ className = '' }: { className?: string }) => {
+    const buttonText = at(sortie.complet || sortie.placesDisponibles === 0 ? 'Liste d\'attente' : 'Réserver ma place')
+
+    if (sortie.outplannersLink) {
+      return (
+        <button
+          onClick={() => setIsBookingPopupOpen(true)}
+          className={`btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest cursor-pointer ${className}`}
+        >
+          {buttonText}
+        </button>
+      )
+    }
+
+    return (
+      <Link
+        href="/evasion-ski-hautes-alpes-contact"
+        className={`btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest ${className}`}
+      >
+        {buttonText}
+      </Link>
+    )
+  }
+
   console.log('🎨 Rendering SortieDetailView with:', {
     hasProgramme: !!sortie.programmeSpecifique,
     hasInfos: !!sortie.informationsComplementaires,
     hasSejour: !!sortie.sejour,
   })
 
-  const titre = sortie.titrePersonnalise || sortie.sejour?.title
   const description = sortie.descriptionPersonnalisee || sortie.sejour?.description
   const image = sortie.image || sortie.sejour?.image
   const massif = sortie.massifSpecifique || sortie.sejour?.massifs?.[0]
@@ -171,7 +197,7 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
             </div>
           )}
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
             {/* Prix */}
             <div className="glass rounded-3xl p-6">
               <div className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-2">
@@ -216,6 +242,11 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
                 </div>
               </div>
             )}
+          </div>
+
+          {/* CTA En haut */}
+          <div className="text-center mb-16">
+            <CTAButton />
           </div>
 
           {/* Programme */}
@@ -350,23 +381,9 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
             </div>
           )}
 
-          {/* CTA Réservation */}
+          {/* CTA Réservation en bas */}
           <div className="text-center">
-            {sortie.outplannersLink ? (
-              <button
-                onClick={() => setIsBookingPopupOpen(true)}
-                className="btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest cursor-pointer"
-              >
-                {at(sortie.complet || sortie.placesDisponibles === 0 ? 'Liste d\'attente' : 'Réserver ma place')}
-              </button>
-            ) : (
-              <Link
-                href="/evasion-ski-hautes-alpes-contact"
-                className="btn-primary inline-block px-12 py-4 text-lg font-bold uppercase tracking-widest"
-              >
-                {at(sortie.complet || sortie.placesDisponibles === 0 ? 'Liste d\'attente' : 'Réserver ma place')}
-              </Link>
-            )}
+            <CTAButton />
           </div>
         </div>
       </section>

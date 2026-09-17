@@ -223,6 +223,10 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
   "image": image.asset->url,
   description,
   hideUpcomingSorties,
+  "intro": intro[]{
+    ...,
+    _type == "image" => { ..., "asset": asset-> }
+  },
   "essentiel": essentiel[]{
     ...,
     _type == "image" => { ..., "asset": asset-> }
@@ -249,6 +253,12 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
   "materielNonInclus": materielNonInclus,
   "materielPdf": materielPdf.asset->url,
   "gallery": gallery[]{alt, "url": asset->url},
+  "faqs": faqs[]{
+    question,
+    questionEn,
+    answer,
+    answerEn
+  },
   "upcomingSorties": *[_type == "sejourDate" && sejour._ref == ^._id && dateDebut >= now()] | order(dateDebut asc) {
     _id,
     "slug": slug.current,
@@ -501,5 +511,35 @@ export const faqsQuery = groq`*[_type == "faq"] | order(order asc, _createdAt de
   answer,
   answerEn,
   category
+}`
+
+export const niveauSkiQuery = groq`*[_type == "niveauSki" && _id == "niveauSki"][0]{
+  badge,
+  title,
+  introText,
+  adviceTitle,
+  adviceText,
+  ctaText,
+  ctaLink,
+  technicalTabLabel,
+  physicalTabLabel,
+  technicalLevels[]{
+    level,
+    title,
+    titleEn,
+    description,
+    summary,
+    summaryEn,
+    trips
+  },
+  physicalLevels[]{
+    level,
+    title,
+    titleEn,
+    description,
+    summary,
+    summaryEn,
+    trips
+  }
 }`
 

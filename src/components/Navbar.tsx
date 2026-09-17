@@ -290,12 +290,12 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
             </button>
           </div>
 
-          {/* Reserve Button */}
+          {/* Contact Button */}
           <Link
             href="/evasion-ski-hautes-alpes-contact"
             className="button-glow"
           >
-            {at({ fr: "Réserver", en: "Book" })}
+            {at({ fr: "Contact", en: "Contact" })}
           </Link>
         </div>
 

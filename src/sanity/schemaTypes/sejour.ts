@@ -116,6 +116,25 @@ export const sejourType = defineType({
       description: 'Ex: À partir de 95€/pers (pour l\'affichage sur les cartes)',
     }),
 
+    // CONTENU INTRO
+    defineField({
+      name: 'intro',
+      title: 'Introduction / Présentation',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+        { type: 'image' },
+      ],
+      description: 'Texte d\'introduction affiché en haut de la page.',
+    }),
+
     // ONGLET ESSENTIEL
     defineField({
       name: 'essentiel',
@@ -240,6 +259,55 @@ export const sejourType = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Liste à puces des frais non inclus.',
+    }),
+
+    // FAQs
+    defineField({
+      name: 'faqs',
+      title: 'Questions Fréquentes (FAQs)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'question',
+              title: 'Question',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'questionEn',
+              title: 'Question (EN)',
+              type: 'string',
+            }),
+            defineField({
+              name: 'answer',
+              title: 'Réponse',
+              type: 'text',
+              rows: 4,
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'answerEn',
+              title: 'Réponse (EN)',
+              type: 'text',
+              rows: 4,
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'question',
+            },
+            prepare({ title }) {
+              return {
+                title: title || 'Question sans titre',
+              }
+            },
+          },
+        },
+      ],
+      description: 'Questions/Réponses affichées sous les onglets.',
     }),
 
     // OPTIONS

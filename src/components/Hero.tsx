@@ -138,17 +138,22 @@ const Hero = ({
         </p>
         
         <div className="hero-buttons flex flex-col sm:flex-row items-center justify-center gap-5">
-          <Link 
-            href="/activites" 
+          <button
+            onClick={() => {
+              const element = document.getElementById('activites');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }}
             className="btn-primary !bg-amber-500 hover:!bg-amber-400 text-slate-950 font-black uppercase tracking-widest text-xs px-8 py-4 shadow-lg shadow-amber-500/20 w-full sm:w-auto"
           >
-            {t('hero.discover') || 'Découvrir les sorties'}
-          </Link>
-          <Link 
-            href="/prochaines-sorties" 
+            {t('hero.discover') || 'Découvrir les activités'}
+          </button>
+          <Link
+            href="/calendrier"
             className="px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 rounded-full text-xs font-black uppercase tracking-widest transition-all text-white w-full sm:w-auto hover:scale-105"
           >
-            {t('hero.departures') || 'Prochaines dates'}
+            {t('hero.departures') || 'Prochains départs'}
           </Link>
         </div>
       </div>

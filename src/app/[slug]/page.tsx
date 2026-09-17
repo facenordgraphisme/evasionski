@@ -16,7 +16,8 @@ import {
   contactQuery,
   faqsQuery,
   settingsQuery,
-  postsBySejourQuery
+  postsBySejourQuery,
+  niveauSkiQuery
 } from "@/sanity/lib/queries";
 
 // Import sub-views
@@ -183,7 +184,13 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
   }
 
   if (slug === 'niveau-en-ski') {
-    return <NiveauView />;
+    let niveauSki = null;
+    try {
+      niveauSki = await client.fetch(niveauSkiQuery).catch(() => null);
+    } catch (e) {
+      console.error(e);
+    }
+    return <NiveauView data={niveauSki} />;
   }
 
   if (

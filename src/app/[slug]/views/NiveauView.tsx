@@ -6,7 +6,41 @@ import { BarChart3, Heart, ArrowRight, Activity, HelpCircle } from 'lucide-react
 import Link from 'next/link';
 import { useLanguage } from '@/context/LanguageContext';
 
-export default function NiveauView() {
+interface NiveauSkiData {
+  badge?: string;
+  title?: string;
+  introText?: string;
+  adviceTitle?: string;
+  adviceText?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  technicalTabLabel?: string;
+  physicalTabLabel?: string;
+  technicalLevels?: Array<{
+    level: number;
+    title: string;
+    titleEn?: string;
+    description: string[];
+    summary: string;
+    summaryEn?: string;
+    trips: string[];
+  }>;
+  physicalLevels?: Array<{
+    level: number;
+    title: string;
+    titleEn?: string;
+    description: string[];
+    summary: string;
+    summaryEn?: string;
+    trips: string[];
+  }>;
+}
+
+interface NiveauViewProps {
+  data?: NiveauSkiData | null;
+}
+
+export default function NiveauView({ data }: NiveauViewProps) {
   const { at, t, language } = useLanguage();
   const [activeTab, setActiveTab] = useState<'technical' | 'physical'>('technical');
 
@@ -156,7 +190,10 @@ export default function NiveauView() {
     }
   ];
 
-  const levels = activeTab === 'technical' ? technicalLevels : physicalLevels;
+  // Use Sanity data if available, otherwise fallback to hardcoded data
+  const displayTechnicalLevels = data?.technicalLevels || technicalLevels;
+  const displayPhysicalLevels = data?.physicalLevels || physicalLevels;
+  const levels = activeTab === 'technical' ? displayTechnicalLevels : displayPhysicalLevels;
 
   return (
     <main className="relative pt-32 min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -165,16 +202,16 @@ export default function NiveauView() {
       <section className="relative py-20 bg-muted/10 border-b border-border/50">
         <div className="container relative z-10 px-6 max-w-4xl mx-auto text-center">
           <span className="text-accent font-black tracking-[0.4em] uppercase text-xs mb-4 block">
-            {language === 'en' ? 'SELF-EVALUATION' : 'AUTO-ÉVALUATION'}
+            {data?.badge || (language === 'en' ? 'SELF-EVALUATION' : 'AUTO-ÉVALUATION')}
           </span>
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-6 text-foreground">
-            {language === 'en' ? 'Evaluate Your Ski Level' : 'Évaluer son niveau en ski'}
+            {data?.title || (language === 'en' ? 'Evaluate Your Ski Level' : 'Évaluer son niveau en ski')}
           </h1>
           <p className="text-lg text-foreground/60 max-w-2xl mx-auto leading-relaxed font-medium">
-            {language === 'en'
+            {data?.introText || (language === 'en'
               ? 'This page provides all the information needed to correctly evaluate your level, ensuring safety and fun for everyone on our ski tours.'
               : 'Cette page a pour but de fournir toutes les informations nécessaires pour permettre à chacun d\'évaluer son niveau en ski avec justesse et de s\'inscrire à la sortie idéale.'
-            }
+            )}
           </p>
         </div>
       </section>
@@ -186,21 +223,21 @@ export default function NiveauView() {
             <div>
               <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
                 <HelpCircle className="text-accent w-5 h-5" />
-                {language === 'en' ? 'Why evaluate honestly?' : 'Pourquoi s\'évaluer honnêtement ?'}
+                {data?.adviceTitle || (language === 'en' ? 'Why evaluate honestly?' : 'Pourquoi s\'évaluer honnêtement ?')}
               </h3>
               <p className="text-sm text-foreground/60 leading-relaxed">
-                {language === 'en'
+                {data?.adviceText || (language === 'en'
                   ? 'Overestimating your level puts yourself and the group in difficulty. If you have any doubt, do not hesitate to contact me to discuss it!'
                   : 'Se surestimer peut mettre en difficulté la personne concernée ainsi que le reste du groupe. En cas de doute, contactez-moi pour en parler !'
-                }
+                )}
               </p>
             </div>
             <div className="flex justify-center md:justify-end">
               <Link
-                href="/evasion-ski-hautes-alpes-contact"
+                href={data?.ctaLink || "/evasion-ski-hautes-alpes-contact"}
                 className="btn-primary px-6 py-3.5 text-xs font-black uppercase tracking-widest !text-white"
               >
-                {language === 'en' ? 'CONTACT ME' : 'CONTACTER TONI'}
+                {data?.ctaText || (language === 'en' ? 'CONTACT ME' : 'CONTACTER TONI')}
               </Link>
             </div>
           </div>
@@ -219,7 +256,7 @@ export default function NiveauView() {
             }`}
           >
             <BarChart3 size={16} />
-            {language === 'en' ? 'Technical level' : 'Niveau Technique'}
+            {data?.technicalTabLabel || (language === 'en' ? 'Technical level' : 'Niveau Technique')}
           </button>
           <button
             onClick={() => setActiveTab('physical')}
@@ -230,7 +267,7 @@ export default function NiveauView() {
             }`}
           >
             <Heart size={16} />
-            {language === 'en' ? 'Physical level' : 'Niveau Physique'}
+            {data?.physicalTabLabel || (language === 'en' ? 'Physical level' : 'Niveau Physique')}
           </button>
         </div>
       </section>

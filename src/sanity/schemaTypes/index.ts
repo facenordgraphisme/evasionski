@@ -7,6 +7,7 @@ import { testimonialType } from './testimonial'
 import { sejourType } from './sejour'
 import { sejourDateType } from './sejourDate'
 import { aLaCarteType } from './aLaCarte'
+import { niveauSki } from './niveauSki'
 import { settingsType } from './settings'
 import { faqType } from './faq'
 import { tagType } from './tag'
@@ -28,6 +29,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     sejourType,
     sejourDateType,
     aLaCarteType,
+    niveauSki,
     faqType,
   ],
 }

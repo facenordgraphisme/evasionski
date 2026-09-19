@@ -122,10 +122,76 @@ export const sejourType = defineType({
       description: 'Texte d\'introduction affiché en haut de la page.',
     }),
 
-    // ONGLET ESSENTIEL
+    // ONGLET ESSENTIEL - Version structurée
+    defineField({
+      name: 'essentielStructure',
+      title: 'Onglet — Essentiel (Structuré) ✨',
+      type: 'object',
+      fields: [
+        defineField({
+          name: 'tarifs',
+          title: '💶 Tarifs & Budget',
+          type: 'text',
+          rows: 3,
+          description: 'Ex: Tarif : 95€ / pers en formule collective',
+        }),
+        defineField({
+          name: 'niveau',
+          title: '📊 Niveau & Effort',
+          type: 'text',
+          rows: 3,
+          description: 'Ex: Skieurs : débrouillés-intermédiaires • Effort : modéré',
+        }),
+        defineField({
+          name: 'destinations',
+          title: '🗺️ Destinations & Massifs',
+          type: 'text',
+          rows: 2,
+          description: 'Ex: Terrains préservés des Hautes-Alpes : sorties dans le Queyras, l\'Ubaye...',
+        }),
+        defineField({
+          name: 'hebergement',
+          title: '🏠 Hébergement',
+          type: 'text',
+          rows: 3,
+          description: 'Ex: Hébergement en pension complète à Abriès au gîte l\'Edelweiss',
+        }),
+        defineField({
+          name: 'logistique',
+          title: '🚐 Logistique & Transport',
+          type: 'text',
+          rows: 3,
+          description: 'Ex: Prêt de sac à dos de montagne et kit secours (DVA, pelle, sonde)',
+        }),
+        defineField({
+          name: 'materiel',
+          title: '🛡️ Matériel & Secours',
+          type: 'text',
+          rows: 3,
+          description: 'Ex: Prêt de DVA, pelle, sonde sur demande',
+        }),
+        defineField({
+          name: 'duree',
+          title: '⏱️ Durée & Format',
+          type: 'text',
+          rows: 2,
+          description: 'Ex: Une journée accessible, parfait pour découvrir le ski de rando',
+        }),
+        defineField({
+          name: 'autresInfos',
+          title: 'ℹ️ Autres informations',
+          type: 'text',
+          rows: 3,
+          description: 'Informations supplémentaires (optionnel)',
+        }),
+      ],
+      description: '✨ RECOMMANDÉ : Remplissez chaque section séparément pour un affichage optimisé',
+    }),
+
+    // ONGLET ESSENTIEL - Version texte libre (fallback)
     defineField({
       name: 'essentiel',
-      title: 'Onglet — Essentiel de la sortie',
+      title: 'Onglet — Essentiel (Texte libre - Ancien format)',
       type: 'array',
       of: [
         {
@@ -138,7 +204,7 @@ export const sejourType = defineType({
         },
         { type: 'image' },
       ],
-      description: 'Informations essentielles, tarifs, conditions (affiché en premier onglet).',
+      description: '⚠️ Utilisez plutôt "Essentiel (Structuré)" ci-dessus pour un meilleur contrôle',
     }),
 
     // ONGLET PROGRAMME

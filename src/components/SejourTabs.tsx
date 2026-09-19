@@ -17,11 +17,23 @@ import {
 } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
+interface EssentielStructure {
+  tarifs?: string
+  niveau?: string
+  destinations?: string
+  hebergement?: string
+  logistique?: string
+  materiel?: string
+  duree?: string
+  autresInfos?: string
+}
+
 interface Tab {
   id: string
   label: string
   content: any[] | null
   pdf?: string | null
+  structure?: EssentielStructure | null
 }
 
 interface SejourTabsProps {
@@ -242,9 +254,53 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
         <div className="px-8 py-8 prose-custom max-w-none animate-in fade-in duration-300">
           
           {/* Custom Essentiel Tab Layout */}
-          {activeTab === 'essentiel' && current.content ? (
+          {activeTab === 'essentiel' && (current.structure || current.content) ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {(() => {
+                // Priorité à la structure si disponible
+                if (current.structure) {
+                  const sections = [
+                    { key: 'tarifs', title: 'Tarifs & Budget', icon: 'Euro', color: 'text-emerald-500 bg-emerald-500/10 dark:text-emerald-400 dark:bg-emerald-400/10' },
+                    { key: 'niveau', title: 'Niveau & Effort', icon: 'Activity', color: 'text-amber-500 bg-amber-500/10 dark:text-amber-400 dark:bg-amber-400/10' },
+                    { key: 'destinations', title: 'Destinations & Massifs', icon: 'MapPin', color: 'text-cyan-500 bg-cyan-500/10 dark:text-cyan-400 dark:bg-cyan-400/10' },
+                    { key: 'hebergement', title: 'Hébergement', icon: 'Home', color: 'text-blue-500 bg-blue-500/10 dark:text-blue-400 dark:bg-blue-400/10' },
+                    { key: 'logistique', title: 'Logistique & Transport', icon: 'Bus', color: 'text-indigo-500 bg-indigo-500/10 dark:text-indigo-400 dark:bg-indigo-400/10' },
+                    { key: 'materiel', title: 'Matériel & Secours', icon: 'Shield', color: 'text-red-500 bg-red-500/10 dark:text-red-400 dark:bg-red-400/10' },
+                    { key: 'duree', title: 'Durée & Format', icon: 'Clock', color: 'text-purple-500 bg-purple-500/10 dark:text-purple-400 dark:bg-purple-400/10' },
+                    { key: 'autresInfos', title: 'À savoir', icon: 'Info', color: 'text-zinc-500 bg-zinc-500/10 dark:text-zinc-400 dark:bg-zinc-400/10' },
+                  ] as const;
+
+                  return sections
+                    .filter(section => current.structure?.[section.key])
+                    .map((section, index) => {
+                      const IconComp = IconMap[section.icon] || Info;
+                      const content = current.structure![section.key]!;
+                      const categoryLabel = language === 'en'
+                        ? categoryTitles[section.title]?.en || section.title
+                        : categoryTitles[section.title]?.fr || section.title;
+
+                      return (
+                        <div
+                          key={section.key}
+                          className="glass p-6 rounded-3xl border border-border flex gap-5 hover:border-accent/30 transition-all duration-300 shadow-sm"
+                        >
+                          <div className={`w-12 h-12 rounded-full shrink-0 flex items-center justify-center ${section.color}`}>
+                            <IconComp className="w-5 h-5" />
+                          </div>
+                          <div className="space-y-1.5 flex-1">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-foreground/40 block">
+                              {categoryLabel}
+                            </span>
+                            <p className="text-foreground/80 leading-relaxed text-sm font-medium whitespace-pre-line">
+                              {content}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    });
+                }
+
+                // Sinon, fallback sur l'analyse automatique du texte
                 const textContent = blocksToText(current.content);
                 const points = textContent
                   .split('\n\n')

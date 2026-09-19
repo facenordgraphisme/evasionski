@@ -39,13 +39,14 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     return level ? map[level] || level : '';
   };
 
-  const hasTabs = sejour.essentiel || sejour.programme || sejour.materiel || sejour.inclus || sejour.budget || sejour.infosPratiques;
+  const hasTabs = sejour.essentielStructure || sejour.essentiel || sejour.programme || sejour.materiel || sejour.inclus || sejour.budget || sejour.infosPratiques;
 
   const tabs = [
-    { 
-      id: 'essentiel', 
-      label: at('Essentiel de la sortie'), 
-      content: sejour.essentiel ? translatePortableText(sejour.essentiel) : (sejour.infosPratiques ? translatePortableText(sejour.infosPratiques) : null) 
+    {
+      id: 'essentiel',
+      label: at('Essentiel de la sortie'),
+      content: sejour.essentiel ? translatePortableText(sejour.essentiel) : (sejour.infosPratiques ? translatePortableText(sejour.infosPratiques) : null),
+      structure: sejour.essentielStructure || null
     },
     { 
       id: 'programme', 

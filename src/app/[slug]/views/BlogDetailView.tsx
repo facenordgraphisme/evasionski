@@ -15,9 +15,10 @@ interface BlogDetailViewProps {
 // Portable Text components for styling
 const components = {
   block: {
-    h1: ({ children }: any) => <h1 className="text-4xl md:text-5xl font-bold mb-8 mt-12 text-foreground">{children}</h1>,
-    h2: ({ children }: any) => <h2 className="text-3xl md:text-4xl font-bold mb-6 mt-10 text-foreground">{children}</h2>,
-    h3: ({ children }: any) => <h3 className="text-2xl md:text-3xl font-bold mb-4 mt-8 text-foreground">{children}</h3>,
+    h1: ({ children }: any) => <h1 className="text-5xl md:text-6xl font-bold mb-8 mt-12 text-foreground">{children}</h1>,
+    h2: ({ children }: any) => <h2 className="text-4xl md:text-5xl font-bold mb-6 mt-10 text-foreground">{children}</h2>,
+    h3: ({ children }: any) => <h3 className="text-3xl md:text-4xl font-bold mb-5 mt-8 text-foreground">{children}</h3>,
+    h4: ({ children }: any) => <h4 className="text-2xl md:text-3xl font-bold mb-4 mt-6 text-foreground">{children}</h4>,
     normal: ({ children }: any) => <p className="text-lg md:text-xl text-foreground/70 leading-relaxed mb-6">{children}</p>,
     blockquote: ({ children }: any) => (
       <blockquote className="border-l-4 border-accent pl-6 py-4 my-10 italic text-2xl text-foreground/90 bg-accent/5 rounded-r-2xl">

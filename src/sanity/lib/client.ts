@@ -11,7 +11,9 @@ const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false, // Set to true for production
+  useCdn: true, // CDN activé pour économiser les requêtes API
+  perspective: 'published', // Seulement le contenu publié
+  stega: false, // Pas de données d'édition
 })
 
 export const client = {

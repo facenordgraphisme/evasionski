@@ -15,6 +15,9 @@ import { homeQuery, sortiesQuery, testimonialsQuery, blogTeaserQuery, activities
 
 import { mockHome, mockSorties, mockTestimonials, mockPosts, mockActivities, mockSettings } from "@/sanity/lib/mockData";
 
+// Cache cette page pendant 60 secondes (ISR) pour réduire les appels API Sanity
+export const revalidate = 60;
+
 export default async function Home() {
   let homeData = null;
   try {

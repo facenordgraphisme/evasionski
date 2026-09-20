@@ -33,6 +33,9 @@ import AlaCarteView from './views/AlaCarteView';
 // Import local fallback data
 import { fallbackSejours, fallbackActivities } from "@/utils/fallbackData";
 
+// Cache les pages pendant 60 secondes (ISR) pour réduire les appels API Sanity
+export const revalidate = 60;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;

@@ -301,6 +301,8 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
                 }
 
                 // Sinon, fallback sur l'analyse automatique du texte
+                if (!current.content) return null;
+
                 const textContent = blocksToText(current.content);
                 const points = textContent
                   .split('\n\n')

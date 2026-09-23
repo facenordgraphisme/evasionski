@@ -29,9 +29,9 @@ export const structure = (S: StructureBuilder) =>
 
       S.listItem()
         .title('Page Activités')
-        .id('activities')
+        .id('activitiesPage')
         .icon(Activity)
-        .child(S.document().schemaType('activities').documentId('activities').title('Page Activités')),
+        .child(S.document().schemaType('activitiesPage').documentId('activitiesPage').title('Page Activités')),
 
       S.listItem()
         .title('Page Calendrier')

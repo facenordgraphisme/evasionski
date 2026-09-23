@@ -101,8 +101,18 @@ export default async function Home() {
         images={homeData?.heroImages}
       />
       <div className="space-y-0">
-        <PresentationSection />
-        <ActivitySection 
+        <PresentationSection
+          badge={homeData?.presentationBadge}
+          badgeEn={homeData?.presentationBadgeEn}
+          title={homeData?.presentationTitle}
+          titleEn={homeData?.presentationTitleEn}
+          titleAccent={homeData?.presentationTitleAccent}
+          titleAccentEn={homeData?.presentationTitleAccentEn}
+          description={homeData?.presentationDescription}
+          descriptionEn={homeData?.presentationDescriptionEn}
+          cards={homeData?.presentationCards}
+        />
+        <ActivitySection
           title={homeData?.activitiesTitle}
           titleAccent={homeData?.activitiesTitleAccent}
           description={homeData?.activitiesDescription}

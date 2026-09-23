@@ -5,13 +5,22 @@ export const homeQuery = groq`*[_type == "home"][0]{
   heroSubtitle,
   heroDescription,
   "heroImages": heroImages[].asset->url,
-  
-  aboutBadge,
-  aboutTitle,
-  aboutTitleAccent,
-  aboutDescription,
-  "aboutImage": aboutImage.asset->url,
-  experienceYears,
+
+  presentationBadge,
+  presentationBadgeEn,
+  presentationTitle,
+  presentationTitleEn,
+  presentationTitleAccent,
+  presentationTitleAccentEn,
+  presentationDescription,
+  presentationDescriptionEn,
+  presentationCards[]{
+    icon,
+    title,
+    titleEn,
+    text,
+    textEn
+  },
 
   activitiesTitle,
   activitiesTitleAccent,
@@ -21,17 +30,24 @@ export const homeQuery = groq`*[_type == "home"][0]{
   sortiesTitle,
   sortiesTitleAccent,
 
+  aboutBadge,
+  aboutTitle,
+  aboutTitleAccent,
+  aboutDescription,
+  "aboutImage": aboutImage.asset->url,
+  experienceYears,
+
+  contactBadge,
+  contactTitle,
+  contactTitleAccent,
+  contactDescription,
+
   adventureBadge,
   adventureTitle,
   adventureTitleAccent,
   adventureDescription,
   adventureFeatures,
   "adventureImage": adventureImage.asset->url,
-
-  contactBadge,
-  contactTitle,
-  contactTitleAccent,
-  contactDescription,
 
   testimonialsBadge,
   testimonialsTitle,

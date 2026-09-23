@@ -566,3 +566,12 @@ export const niveauSkiQuery = groq`*[_type == "niveauSki" && _id == "niveauSki"]
   }
 }`
 
+
+export const legalPagesQuery = groq`*[_type == "legalPages"][0]{
+  mentionsLegales,
+  mentionsLegalesEn,
+  confidentialite,
+  confidentialiteEn,
+  cgv,
+  cgvEn
+}`

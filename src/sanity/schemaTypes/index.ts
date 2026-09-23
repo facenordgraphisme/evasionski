@@ -13,6 +13,7 @@ import { settingsType } from './settings'
 import { faqType } from './faq'
 import { tagType } from './tag'
 import { activitiesType } from './activities'
+import { legalPagesType } from './legalPages'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -30,5 +31,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     niveauSki,
     faqType,
     activitiesType,
+    legalPagesType,
   ],
 }

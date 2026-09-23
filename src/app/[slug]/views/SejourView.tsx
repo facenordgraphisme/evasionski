@@ -53,18 +53,22 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
       label: at('Programme type'), 
       content: sejour.programme ? translatePortableText(sejour.programme) : null 
     },
-    { 
-      id: 'materiel', 
-      label: at('Matériel et assurances'), 
-      content: sejour.materiel ? translatePortableText(sejour.materiel) : null, 
-      pdf: sejour.materielPdf ?? null 
+    {
+      id: 'materiel',
+      label: at('Matériel et assurances'),
+      content: sejour.materiel ? translatePortableText(sejour.materiel) : null,
+      pdf: sejour.materielPdf ?? null
     },
-    { 
-      id: 'inclus', 
-      label: at('Inclus / Non inclus'), 
-      content: sejour.inclus ? translatePortableText(sejour.inclus) : (sejour.budget ? translatePortableText(sejour.budget) : null) 
+    {
+      id: 'inclus',
+      label: at('Inclus / Non inclus'),
+      content: sejour.inclus ? translatePortableText(sejour.inclus) : (sejour.budget ? translatePortableText(sejour.budget) : null),
+      budgetStructure: (sejour.budgetInclus || sejour.budgetNonInclus) ? {
+        inclus: sejour.budgetInclus || [],
+        nonInclus: sejour.budgetNonInclus || []
+      } : null
     },
-  ].filter(tab => tab.content !== null || tab.pdf !== null);
+  ].filter(tab => tab.content !== null || tab.pdf !== null || tab.budgetStructure !== null);
 
   const jsonLd = {
     "@context": "https://schema.org",

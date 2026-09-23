@@ -33,6 +33,12 @@ interface BudgetStructure {
   nonInclus: string[]
 }
 
+interface ProgrammeJour {
+  jour: string
+  titre?: string
+  description?: string
+}
+
 interface Tab {
   id: string
   label: string
@@ -40,6 +46,7 @@ interface Tab {
   pdf?: string | null
   structure?: EssentielStructure | null
   budgetStructure?: BudgetStructure | null
+  programmeStructure?: ProgrammeJour[] | null
 }
 
 interface SejourTabsProps {
@@ -227,7 +234,11 @@ const portableTextComponents: PortableTextComponents = {
 export default function SejourTabs({ tabs }: SejourTabsProps) {
   const { language } = useLanguage()
   const visibleTabs = tabs.filter(tab =>
-    (tab.content && tab.content.length > 0) || tab.pdf
+    (tab.content && tab.content.length > 0) ||
+    tab.pdf ||
+    (tab.budgetStructure && (tab.budgetStructure.inclus.length > 0 || tab.budgetStructure.nonInclus.length > 0)) ||
+    (tab.programmeStructure && tab.programmeStructure.length > 0) ||
+    tab.structure
   )
 
   const [activeTab, setActiveTab] = useState(visibleTabs[0]?.id ?? '')
@@ -362,13 +373,40 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
                 });
               })()}
             </div>
+          ) : activeTab === 'programme' && current.programmeStructure ? (
+            /* Programme Structuré Timeline */
+            <div className="relative pl-8 md:pl-10 border-l-2 border-accent/20 ml-3 md:ml-4 space-y-10 py-2">
+              {current.programmeStructure.map((jour, index) => (
+                <div key={index} className="relative group">
+                  {/* Circle bullet with index */}
+                  <div className="absolute -left-[45px] md:-left-[53px] top-1.5 w-8 h-8 rounded-full bg-background border-2 border-accent flex items-center justify-center text-xs font-black text-accent shadow-md group-hover:scale-110 group-hover:bg-accent group-hover:text-white transition-all duration-300">
+                    {index + 1}
+                  </div>
+                  <div className="glass p-6 md:p-8 rounded-3xl border border-border shadow-sm group-hover:border-accent/30 transition-all duration-300">
+                    <h4 className="text-lg font-black uppercase tracking-tight text-foreground mb-2">
+                      {jour.jour}
+                      {jour.titre && (
+                        <span className="font-normal text-foreground/80 normal-case block text-base mt-1">
+                          {jour.titre}
+                        </span>
+                      )}
+                    </h4>
+                    {jour.description && (
+                      <p className="text-foreground/75 leading-relaxed font-medium text-sm whitespace-pre-line mt-4">
+                        {jour.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : activeTab === 'programme' && current.content ? (
-            /* Custom Programme Timeline Layout */
+            /* Custom Programme Timeline Layout (fallback ancien format) */
             <div>
               {(() => {
                 const textContent = blocksToText(current.content);
                 const parts = textContent.split(/(?=Jours? [0-9]|Brief mat|Premier run|Second run|Retour entre|Accueil et installation|Soirée libre|Vie au gîte|8h[3-9][0-9]|9h[0-9][0-9]|Transport sur|Montée en peaux|Pique-nique en altitude|Descente plaisir|Départ matinal|Restitution de)/gi);
-                
+
                 const intro = parts[0]?.replace(/\*\*/g, '').replace(/###/g, '').trim();
                 const milestones = parts.slice(1);
 

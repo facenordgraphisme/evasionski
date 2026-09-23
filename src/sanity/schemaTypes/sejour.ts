@@ -207,10 +207,57 @@ export const sejourType = defineType({
       description: '⚠️ Utilisez plutôt "Essentiel (Structuré)" ci-dessus pour un meilleur contrôle',
     }),
 
-    // ONGLET PROGRAMME
+    // ONGLET PROGRAMME - Version structurée
+    defineField({
+      name: 'programmeStructure',
+      title: 'Onglet — Programme (Structuré) ✨',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'jour',
+              title: '📅 Intitulé du jour',
+              type: 'string',
+              description: 'Ex: Jour 1, Jour 2, 8H30 - Rendez-vous',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'titre',
+              title: '📝 Titre / Résumé',
+              type: 'string',
+              description: 'Ex: Sommet sauvage et grand itinéraire hors-piste',
+            }),
+            defineField({
+              name: 'description',
+              title: '📄 Description',
+              type: 'text',
+              rows: 5,
+              description: 'Description détaillée de la journée',
+            }),
+          ],
+          preview: {
+            select: {
+              jour: 'jour',
+              titre: 'titre',
+            },
+            prepare({ jour, titre }) {
+              return {
+                title: jour || 'Jour',
+                subtitle: titre || '',
+              }
+            },
+          },
+        },
+      ],
+      description: '✨ RECOMMANDÉ : Créez chaque jour séparément pour un affichage optimisé',
+    }),
+
+    // ONGLET PROGRAMME - Version texte libre (fallback)
     defineField({
       name: 'programme',
-      title: 'Onglet — Programme',
+      title: 'Onglet — Programme (Texte libre - Ancien format)',
       type: 'array',
       of: [
         {
@@ -223,7 +270,7 @@ export const sejourType = defineType({
         },
         { type: 'image' },
       ],
-      description: 'Programme détaillé jour par jour.',
+      description: '⚠️ Utilisez plutôt "Programme (Structuré)" ci-dessus pour un meilleur contrôle',
     }),
 
     // ONGLET MATÉRIEL

@@ -258,6 +258,11 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
     ...,
     _type == "image" => { ..., "asset": asset-> }
   },
+  programmeStructure[]{
+    jour,
+    titre,
+    description
+  },
   "budget": budget[]{
     ...,
     _type == "image" => { ..., "asset": asset-> }

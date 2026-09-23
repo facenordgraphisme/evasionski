@@ -39,7 +39,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     return level ? map[level] || level : '';
   };
 
-  const hasTabs = sejour.essentielStructure || sejour.essentiel || sejour.programme || sejour.materiel || sejour.inclus || sejour.budget || sejour.infosPratiques;
+  const hasTabs = sejour.essentielStructure || sejour.essentiel || sejour.programmeStructure || sejour.programme || sejour.materiel || sejour.inclus || sejour.budget || sejour.infosPratiques;
 
   const tabs = [
     {
@@ -48,10 +48,11 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
       content: sejour.essentiel ? translatePortableText(sejour.essentiel) : (sejour.infosPratiques ? translatePortableText(sejour.infosPratiques) : null),
       structure: sejour.essentielStructure || null
     },
-    { 
-      id: 'programme', 
-      label: at('Programme type'), 
-      content: sejour.programme ? translatePortableText(sejour.programme) : null 
+    {
+      id: 'programme',
+      label: at('Programme type'),
+      content: sejour.programme ? translatePortableText(sejour.programme) : null,
+      programmeStructure: sejour.programmeStructure || null
     },
     {
       id: 'materiel',
@@ -68,7 +69,12 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
         nonInclus: sejour.budgetNonInclus || []
       } : null
     },
-  ].filter(tab => tab.content !== null || tab.pdf !== null || tab.budgetStructure !== null);
+  ].filter(tab =>
+    tab.content !== null ||
+    tab.pdf !== null ||
+    tab.budgetStructure !== null ||
+    (tab.programmeStructure && tab.programmeStructure.length > 0)
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -212,9 +218,14 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                     <div className="p-5 flex flex-col gap-1 border-r border-border">
                       <div className="flex items-center gap-1.5 text-foreground/40 mb-1">
                         <MapPin size={12} />
-                        <span className="text-[9px] font-black uppercase tracking-widest">{at('Massif')}</span>
+                        <span className="text-[9px] font-black uppercase tracking-widest">{sejour.massifs && sejour.massifs.length > 1 ? at('Massifs') : at('Massif')}</span>
                       </div>
-                      <span className="text-base font-bold text-foreground leading-tight">{at(sejour.massif) || '—'}</span>
+                      <span className="text-base font-bold text-foreground leading-tight">
+                        {sejour.massifs && sejour.massifs.length > 0
+                          ? sejour.massifs.map((m: string) => at(m)).join(', ')
+                          : (at(sejour.massif) || '—')
+                        }
+                      </span>
                     </div>
 
                     <div className="p-5 flex flex-col gap-1">

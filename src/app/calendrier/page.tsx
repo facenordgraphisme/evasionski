@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import { client } from '@/sanity/lib/client'
-import { sortiesQuery } from '@/sanity/lib/queries'
+import { sortiesQuery, calendarPageQuery } from '@/sanity/lib/queries'
 import { getServerTranslations } from '@/i18n/server'
 import CalendarView from './CalendarView'
 
@@ -17,8 +17,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function CalendrierPage() {
-  // Fetch all upcoming sorties
-  const sorties = await client.fetch(sortiesQuery)
+  // Fetch all upcoming sorties and calendar page data
+  const [sorties, calendarData] = await Promise.all([
+    client.fetch(sortiesQuery).catch(() => []),
+    client.fetch(calendarPageQuery).catch(() => null)
+  ])
 
-  return <CalendarView sorties={sorties} />
+  return (
+    <CalendarView
+      sorties={sorties}
+      pageData={calendarData}
+    />
+  )
 }

@@ -14,6 +14,7 @@ import { faqType } from './faq'
 import { tagType } from './tag'
 import { activitiesType } from './activities'
 import { legalPagesType } from './legalPages'
+import { calendarPageType } from './calendarPage'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -32,5 +33,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     faqType,
     activitiesType,
     legalPagesType,
+    calendarPageType,
   ],
 }

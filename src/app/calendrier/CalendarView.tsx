@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Calendar, MapPin, Users, X } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
@@ -24,8 +25,21 @@ interface Sortie {
   }
 }
 
+interface PageData {
+  heroImage?: string
+  badge?: string
+  badgeEn?: string
+  title?: string
+  titleEn?: string
+  titleAccent?: string
+  titleAccentEn?: string
+  description?: string
+  descriptionEn?: string
+}
+
 interface CalendarViewProps {
   sorties: Sortie[]
+  pageData?: PageData | null
 }
 
 const MONTH_NAMES = {
@@ -38,10 +52,19 @@ const DAY_NAMES = {
   en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 }
 
-export default function CalendarView({ sorties }: CalendarViewProps) {
+export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
   const { at, language } = useLanguage()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+
+  // Textes avec fallback
+  const badge = at({ fr: pageData?.badge || 'Calendrier', en: pageData?.badgeEn || 'Calendar' })
+  const title = at({ fr: pageData?.title || 'PROCHAINS', en: pageData?.titleEn || 'UPCOMING' })
+  const titleAccent = at({ fr: pageData?.titleAccent || 'DÉPARTS', en: pageData?.titleAccentEn || 'TRIPS' })
+  const description = at({
+    fr: pageData?.description || 'Consultez le calendrier de toutes nos sorties de ski de randonnée, freerando et raids à ski dans les Hautes-Alpes.',
+    en: pageData?.descriptionEn || 'Check the calendar of all our ski touring, freerando and ski raid trips in the Hautes-Alpes.'
+  })
 
   // Get category color
   const getCategoryColor = (categorie: string) => {
@@ -132,23 +155,36 @@ export default function CalendarView({ sorties }: CalendarViewProps) {
   const selectedDaySorties = selectedDate ? sortiesByDate[selectedDate] || [] : []
 
   return (
-    <main className="relative pt-32 pb-24 min-h-screen px-6">
-      <div className="container mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-12 text-center">
-          <span className="text-accent font-bold tracking-widest uppercase text-sm mb-4 block">
-            {at({ fr: 'Calendrier', en: 'Calendar' })}
-          </span>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gradient">
-            {at({ fr: 'Toutes nos sorties', en: 'All our trips' })}
-          </h1>
-          <p className="text-foreground/60 max-w-2xl mx-auto">
-            {at({
-              fr: 'Consultez toutes nos dates de sorties à la journée, stages et raids à ski.',
-              en: 'Check all our day trips, ski touring stages and raids dates.'
-            })}
-          </p>
+    <>
+      {/* Hero Image */}
+      {pageData?.heroImage && (
+        <div className="relative w-full h-[30vh] overflow-hidden">
+          <Image
+            src={pageData.heroImage}
+            alt={title}
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-background" />
         </div>
+      )}
+
+      <main className="relative pb-24 min-h-screen px-6" style={{ paddingTop: pageData?.heroImage ? '3rem' : '8rem' }}>
+        <div className="container mx-auto max-w-7xl">
+          {/* Header */}
+          <div className="mb-12 text-center">
+            <span className="text-accent font-bold tracking-widest uppercase text-sm mb-4 block">
+              {badge}
+            </span>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gradient uppercase leading-tight">
+              {title} <br />
+              <span className="text-accent italic font-normal">{titleAccent}</span>
+            </h1>
+            <p className="text-foreground/60 text-lg max-w-2xl mx-auto leading-relaxed">
+              {description}
+            </p>
+          </div>
 
         {/* Legend */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
@@ -346,5 +382,6 @@ export default function CalendarView({ sorties }: CalendarViewProps) {
         </AnimatePresence>
       </div>
     </main>
+    </>
   )
 }

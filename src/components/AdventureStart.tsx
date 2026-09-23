@@ -18,6 +18,7 @@ interface AdventureProps {
   titleAccent?: string
   description?: string
   image?: string
+  features?: string[]
   faqs?: Faq[]
   className?: string
 }
@@ -61,6 +62,7 @@ const AdventureStart = ({
   titleAccent = "ÉvasionSki y répond",
   description = "Retrouvez les réponses aux questions les plus courantes sur l'organisation des sorties en ski de randonnée.",
   image = "/photos/DSC_6701.jpg",
+  features,
   faqs,
   className = "bg-surface"
 }: AdventureProps) => {
@@ -87,6 +89,20 @@ const AdventureStart = ({
             <p className="text-lg text-foreground/80 mb-10 max-w-xl leading-relaxed">
               {at(description)}
             </p>
+
+            {/* Points forts */}
+            {features && features.length > 0 && (
+              <div className="mb-10 space-y-3">
+                {features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center mt-1 shrink-0">
+                      <div className="w-2 h-2 rounded-full bg-accent" />
+                    </div>
+                    <p className="text-foreground/80 leading-relaxed">{feature}</p>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Accordion list */}
             <div className="space-y-4 max-w-2xl">

@@ -597,3 +597,15 @@ export const legalPagesQuery = groq`*[_type == "legalPages"][0]{
   cgv,
   cgvEn
 }`
+
+export const calendarPageQuery = groq`*[_type == "calendarPage"][0]{
+  "heroImage": heroImage.asset->url,
+  badge,
+  badgeEn,
+  title,
+  titleEn,
+  titleAccent,
+  titleAccentEn,
+  description,
+  descriptionEn
+}`

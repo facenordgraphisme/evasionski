@@ -56,9 +56,7 @@ export default async function Home() {
   if (!sortiesData || sortiesData.length === 0) {
     sortiesData = mockSorties;
   }
-  if (!testimonialsData || testimonialsData.length === 0) {
-    testimonialsData = mockTestimonials;
-  }
+  // Pas de fallback pour testimonials - le composant a ses propres fallbacks
   if (!blogTeaserData || blogTeaserData.length === 0) {
     blogTeaserData = mockPosts;
   }
@@ -147,6 +145,7 @@ export default async function Home() {
           titleAccent={homeData?.adventureTitleAccent}
           description={homeData?.adventureDescription}
           image={homeData?.adventureImage}
+          features={homeData?.adventureFeatures}
           faqs={homeData?.adventureFaqs}
           className="bg-surface"
         />

@@ -73,7 +73,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     tab.content !== null ||
     tab.pdf !== null ||
     tab.budgetStructure !== null ||
-    (tab.programmeStructure && tab.programmeStructure.length > 0)
+    ('programmeStructure' in tab && tab.programmeStructure && tab.programmeStructure.length > 0)
   );
 
   const jsonLd = {

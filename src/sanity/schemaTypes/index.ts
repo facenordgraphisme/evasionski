@@ -12,11 +12,7 @@ import { massifType } from './massif'
 import { settingsType } from './settings'
 import { faqType } from './faq'
 import { tagType } from './tag'
-
-// Anciens schémas archivés (à supprimer plus tard)
-// import { activityType } from './activity'
-// import { universType } from './univers'
-// import { sortieType } from './sortie'
+import { activitiesType } from './activities'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -33,5 +29,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     aLaCarteType,
     niveauSki,
     faqType,
+    activitiesType,
   ],
 }

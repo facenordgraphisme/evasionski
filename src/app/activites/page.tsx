@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import React from 'react'
 import Link from 'next/link';
 import { client } from "@/sanity/lib/client";
-import { activitiesQuery } from "@/sanity/lib/queries";
+import { activitiesPageQuery } from "@/sanity/lib/queries";
 import Image from 'next/image';
 
 import { getServerTranslations } from '@/i18n/server';
@@ -16,47 +16,56 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ActivitesPage() {
-  const sanityActivities = await client.fetch(activitiesQuery);
+  const pageData = await client.fetch(activitiesPageQuery).catch(() => null);
   const { at, t } = await getServerTranslations();
-  
-  const fallback = [
-    {
-      title: at('Engagement Privé / À la carte'),
-      slug: 'ski-de-randonnee-engagement-prive',
-      description: at('Sortie privée sur mesure. En famille, entre amis ou en solo, tracez votre propre voie.'),
-      price: at('À partir de 400€/jour'),
-      image: '/images/hero.jpg'
-    },
-    {
-      title: at('Ski de randonnée journée'),
-      slug: 'ski-randonnee-hautes-alpes-journee',
-      description: at('Des sorties à la journée pour s\'évader, découvrir de nouveaux massifs et s\'initier ou se perfectionner.'),
-      price: at('95€ / pers'),
-      image: '/photos/DSC_6701.jpg'
-    },
-    {
-      title: at('Freerando & Hors-piste'),
-      slug: 'ski-hors-piste-station-hautes-alpes',
-      description: at('Profitez des remontées mécaniques pour accéder à de longs hors-pistes et de superbes combes sauvages.'),
-      price: at('95€ / pers'),
-      image: '/photos/DSC_6612.jpg'
-    },
-    {
-      title: at('Stages et raids à ski'),
-      slug: 'stages-et-raids-a-ski-de-randonnee-hautes-alpes',
-      description: at('L\'immersion totale en montagne. De refuge en gîte, vivez des raids à ski d\'exception de plusieurs jours.'),
-      price: at('À partir de 295€'),
-      image: '/photos/DSC_6683.jpg'
-    }
-  ];
 
-  const activities = sanityActivities?.length > 0 ? sanityActivities : fallback;
+  // Fallback minimal en cas d'erreur Sanity
+  const fallbackData = {
+    pageTitle: 'NOS ACTIVITÉS',
+    pageDescription: 'Découvrez toutes les activités que je propose. Chaque sortie est encadrée avec passion et une sécurité absolue.',
+    activities: [
+      {
+        title: 'Engagement Privé / À la carte',
+        slug: 'ski-de-randonnee-engagement-prive',
+        description: 'Sortie privée sur mesure. En famille, entre amis ou en solo, tracez votre propre voie.',
+        price: 'À partir de 400€/jour',
+        image: '/images/hero.jpg'
+      },
+      {
+        title: 'Ski de randonnée journée',
+        slug: 'ski-randonnee-hautes-alpes-journee',
+        description: 'Des sorties à la journée pour s\'évader, découvrir de nouveaux massifs et s\'initier ou se perfectionner.',
+        price: '95€ / pers',
+        image: '/photos/DSC_6701.jpg'
+      },
+      {
+        title: 'Freerando & Hors-piste',
+        slug: 'ski-hors-piste-station-hautes-alpes',
+        description: 'Profitez des remontées mécaniques pour accéder à de longs hors-pistes et de superbes combes sauvages.',
+        price: '95€ / pers',
+        image: '/photos/DSC_6612.jpg'
+      },
+      {
+        title: 'Stages et raids à ski',
+        slug: 'stages-et-raids-a-ski-de-randonnee-hautes-alpes',
+        description: 'L\'immersion totale en montagne. De refuge en gîte, vivez des raids à ski d\'exception de plusieurs jours.',
+        price: 'À partir de 295€',
+        image: '/photos/DSC_6683.jpg'
+      }
+    ]
+  };
+
+  const data = pageData || fallbackData;
+  const pageTitle = at(data.pageTitle) || at(fallbackData.pageTitle);
+  const pageDescription = at(data.pageDescription) || at(fallbackData.pageDescription);
+  const activities = data.activities || fallbackData.activities;
+
   return (
     <main className="relative pt-32 min-h-screen">
       <div className="container mx-auto px-6 py-20">
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-4 text-gradient">{at('NOS ACTIVITÉS')}</h1>
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tighter mb-4 text-gradient">{pageTitle}</h1>
         <p className="text-foreground/60 text-lg mb-16 max-w-2xl">
-          {at('Découvrez toutes les activités que je propose. Chaque sortie est encadrée avec passion et une sécurité absolue.')}
+          {pageDescription}
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

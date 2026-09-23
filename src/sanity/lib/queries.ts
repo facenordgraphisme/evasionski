@@ -296,14 +296,7 @@ export const postsByActivityQuery = groq`*[_type == "post" && (activityType == $
   excerpt
 }`
 
-// DEPRECATED - Ancien schéma sortie (archivé)
-// export const sortieBySlugQuery = groq`*[_type == "sortie" && slug.current == $slug][0] { ... }`
-
-// DEPRECATED - Anciens schémas Activity & Univers (archivés)
-// export const activitiesQuery = groq`*[_type == "activity"] | order(title asc) { ... }`
-// export const activityBySlugQuery = groq`*[_type == "activity" && slug.current == $slug][0] { ... }`
-
-// Nouvelle query pour la page À la carte
+// Query pour la page À la carte
 export const aLaCarteQuery = groq`*[_type == "aLaCarte"][0] {
   title,
   "slug": slug.current,
@@ -333,7 +326,27 @@ export const aLaCarteQuery = groq`*[_type == "aLaCarte"][0] {
   seoDescription
 }`
 
-// Queries pour lister les activités/catégories (pour la page /activites)
+// Query pour la page /activites (nouveau schéma Sanity)
+export const activitiesPageQuery = groq`*[_type == "activitiesPage"][0]{
+  pageTitle,
+  pageTitleEn,
+  pageDescription,
+  pageDescriptionEn,
+  "activities": activities[] | order(order asc) {
+    title,
+    titleEn,
+    slug,
+    description,
+    descriptionEn,
+    price,
+    priceEn,
+    "image": image.asset->url,
+    order,
+    featured
+  }
+}`
+
+// DEPRECATED - À supprimer après migration vers activitiesPageQuery
 export const activitiesQuery = groq`[
   {
     "title": "Engagement Privé / À la carte",

@@ -41,7 +41,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
   const hasTabs = sejour.essentielStructure || sejour.essentiel || sejour.programmeStructure || sejour.programme || sejour.materiel || sejour.inclus || sejour.budget || sejour.infosPratiques;
 
-  const tabs = [
+  const allTabs = [
     {
       id: 'essentiel',
       label: at('Essentiel de la sortie'),
@@ -69,11 +69,13 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
         nonInclus: sejour.budgetNonInclus || []
       } : null
     },
-  ].filter(tab =>
+  ] as const;
+
+  const tabs = allTabs.filter((tab: any) =>
     tab.content !== null ||
     tab.pdf !== null ||
     tab.budgetStructure !== null ||
-    ('programmeStructure' in tab && tab.programmeStructure && tab.programmeStructure.length > 0)
+    (tab.programmeStructure && Array.isArray(tab.programmeStructure) && tab.programmeStructure.length > 0)
   );
 
   const jsonLd = {

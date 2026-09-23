@@ -126,3 +126,29 @@ export const mockSettings = {
   hidePartners: false,
   partners: [],
 };
+
+// Exports manquants référencés par client.ts
+export const mockContact = {
+  title: "Contact",
+  description: "Contactez-nous",
+  email: "",
+  phone: "",
+  location: "",
+};
+
+export const mockGuide = {
+  badge: "",
+  titleNormal: "Guide",
+  titleAccent: "",
+  quote: "",
+  image: "",
+};
+
+export const mockSejours = [
+  {
+    title: "Contenu temporairement indisponible",
+    slug: "mock",
+    activityType: "",
+    subCategory: "",
+  },
+];

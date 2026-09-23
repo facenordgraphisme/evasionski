@@ -356,6 +356,54 @@ export const homeType = defineType({
       options: { hotspot: true },
       group: 'adventure',
     }),
+    defineField({
+      name: 'adventureFaqs',
+      title: 'Questions / Réponses FAQ',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'questionFr',
+              title: 'Question (FR)',
+              type: 'string',
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'questionEn',
+              title: 'Question (EN)',
+              type: 'string',
+            }),
+            defineField({
+              name: 'answerFr',
+              title: 'Réponse (FR)',
+              type: 'text',
+              rows: 6,
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'answerEn',
+              title: 'Réponse (EN)',
+              type: 'text',
+              rows: 6,
+            }),
+          ],
+          preview: {
+            select: {
+              title: 'questionFr',
+            },
+            prepare({ title }) {
+              return {
+                title: title || 'Question sans titre',
+              }
+            },
+          },
+        },
+      ],
+      group: 'adventure',
+      validation: (Rule) => Rule.max(10),
+    }),
 
     // ========================================
     // 8️⃣ TESTIMONIALS SECTION

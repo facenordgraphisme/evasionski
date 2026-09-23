@@ -5,12 +5,20 @@ import Image from 'next/image'
 import { useLanguage } from '@/context/LanguageContext'
 import { ChevronDown, HelpCircle } from 'lucide-react'
 
+interface Faq {
+  questionFr: string
+  questionEn: string
+  answerFr: string
+  answerEn: string
+}
+
 interface AdventureProps {
   badge?: string
   title?: string
   titleAccent?: string
   description?: string
   image?: string
+  faqs?: Faq[]
   className?: string
 }
 
@@ -53,16 +61,20 @@ const AdventureStart = ({
   titleAccent = "ÉvasionSki y répond",
   description = "Retrouvez les réponses aux questions les plus courantes sur l'organisation des sorties en ski de randonnée.",
   image = "/photos/DSC_6701.jpg",
+  faqs,
   className = "bg-surface"
 }: AdventureProps) => {
   const { language, at } = useLanguage()
   const [activeIdx, setActiveIdx] = useState<number | null>(0)
 
+  // Utilise les FAQs de Sanity ou fallback sur les FAQs hardcodées
+  const displayFaqs = faqs && faqs.length > 0 ? faqs : HOME_FAQS
+
   return (
     <section className={`py-24 px-6 overflow-hidden transition-colors duration-300 ${className}`}>
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-          
+
           {/* FAQ Column */}
           <div className="lg:col-span-7 order-2 lg:order-1">
             <span className="inline-block px-4 py-1.5 bg-highlight text-white text-[10px] font-black uppercase tracking-widest rounded-full mb-6">
@@ -78,7 +90,7 @@ const AdventureStart = ({
 
             {/* Accordion list */}
             <div className="space-y-4 max-w-2xl">
-              {HOME_FAQS.map((faq, idx) => {
+              {displayFaqs.map((faq, idx) => {
                 const isOpen = activeIdx === idx
                 const question = language === 'en' ? faq.questionEn : faq.questionFr
                 const answer = language === 'en' ? faq.answerEn : faq.answerFr

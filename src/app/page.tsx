@@ -141,12 +141,13 @@ export default async function Home() {
           titleAccent={homeData?.contactTitleAccent}
           description={homeData?.contactDescription}
         />
-        <AdventureStart 
+        <AdventureStart
           badge={homeData?.adventureBadge}
           title={homeData?.adventureTitle}
           titleAccent={homeData?.adventureTitleAccent}
           description={homeData?.adventureDescription}
           image={homeData?.adventureImage}
+          faqs={homeData?.adventureFaqs}
           className="bg-surface"
         />
         {!homeData?.hideTestimonials && (

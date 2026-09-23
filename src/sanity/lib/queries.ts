@@ -48,6 +48,12 @@ export const homeQuery = groq`*[_type == "home"][0]{
   adventureDescription,
   adventureFeatures,
   "adventureImage": adventureImage.asset->url,
+  adventureFaqs[]{
+    questionFr,
+    questionEn,
+    answerFr,
+    answerEn
+  },
 
   testimonialsBadge,
   testimonialsTitle,

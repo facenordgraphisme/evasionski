@@ -8,6 +8,7 @@ import RichContent from '@/components/RichContent';
 import BlogCard from '@/components/BlogCard';
 import CheckoutButton from '@/components/CheckoutButton';
 import SejourFAQ from '@/components/SejourFAQ';
+import SejourGallery from '@/components/SejourGallery';
 
 interface SejourViewProps {
   sejour: any;
@@ -293,8 +294,6 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                             : '';
                           const dateDisplay = `${dateDebut}${dateFin}`;
 
-                          // Pour les sorties journées, créer un lien cliquable
-                          const isJournee = sejour.categorie === 'journee-ski-rando' || sejour.categorie === 'journee-freerando';
                           const sortieTitle = s.titrePersonnalise || sejour.title;
                           const sortieNiveau = s.niveau || sejour.niveauDefaut;
                           const cardContent = (
@@ -320,7 +319,8 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                             </>
                           );
 
-                          return isJournee && s.slug ? (
+                          // Toutes les dates avec un slug sont cliquables
+                          return s.slug ? (
                             <Link
                               key={s._id || i}
                               href={`/sorties/${s.slug}`}
@@ -366,29 +366,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
       </section>
 
       {/* Photo Gallery */}
-      {sejour.gallery && sejour.gallery.length > 0 && (
-        <section className="pb-24">
-          <div className="container mx-auto px-6">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase mb-10">
-              {at('Galerie')} <span className="text-accent italic">{at('Photos')}</span>
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {sejour.gallery.map((photo: { url: string; alt?: string }, i: number) => (
-                <div key={i} className="relative aspect-square overflow-hidden rounded-2xl group">
-                  <Image
-                    src={photo.url}
-                    alt={photo.alt || at(sejour.title)}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      <SejourGallery gallery={sejour.gallery} sejourTitle={sejour.title} />
 
       {/* Related Blog Posts */}
       {relatedPosts && relatedPosts.length > 0 && (

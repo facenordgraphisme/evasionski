@@ -56,6 +56,8 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
   const { at, language } = useLanguage()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null)
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
 
   // Textes avec fallback
   const badge = at({ fr: pageData?.badge || 'Calendrier', en: pageData?.badgeEn || 'Calendar' })
@@ -203,7 +205,7 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
         </div>
 
         {/* Calendar */}
-        <div className="glass rounded-[40px] p-6 md:p-8 shadow-2xl border border-border max-w-5xl mx-auto">
+        <div className="glass rounded-[40px] p-6 md:p-8 shadow-2xl border border-border max-w-4xl mx-auto">
           {/* Month Navigation */}
           <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
             <button
@@ -247,8 +249,19 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                 <motion.button
                   key={dateKey}
                   onClick={() => sorties.length > 0 && setSelectedDate(dateKey)}
+                  onMouseEnter={(e) => {
+                    if (sorties.length > 0) {
+                      setHoveredDate(dateKey)
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      setTooltipPosition({
+                        x: rect.left + rect.width / 2,
+                        y: rect.top - 10
+                      })
+                    }
+                  }}
+                  onMouseLeave={() => setHoveredDate(null)}
                   className={`
-                    relative aspect-square rounded-xl p-1.5 md:p-2 transition-all
+                    relative aspect-[4/3] rounded-xl p-1.5 md:p-2 transition-all
                     ${isCurrentMonth ? 'text-foreground' : 'text-foreground/30'}
                     ${isToday ? 'ring-2 ring-accent font-bold' : ''}
                     ${sorties.length > 0 ? 'hover:scale-105 cursor-pointer' : 'cursor-default'}
@@ -283,6 +296,60 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
             })}
           </div>
         </div>
+
+        {/* Hover Tooltip */}
+        <AnimatePresence>
+          {hoveredDate && sortiesByDate[hoveredDate] && sortiesByDate[hoveredDate].length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.15 }}
+              className="fixed z-[60] pointer-events-none"
+              style={{
+                left: tooltipPosition.x,
+                top: tooltipPosition.y,
+                transform: 'translate(-50%, -100%)'
+              }}
+            >
+              <div className="glass rounded-2xl p-4 shadow-2xl border border-border max-w-sm">
+                {sortiesByDate[hoveredDate].map((sortie, i) => {
+                  const image = sortie.image || sortie.sejour?.image
+                  return (
+                    <div key={i} className={i > 0 ? 'mt-3 pt-3 border-t border-border' : ''}>
+                      {image && (
+                        <div className="relative w-full h-24 rounded-lg overflow-hidden mb-2">
+                          <Image
+                            src={image}
+                            alt={sortie.titrePersonnalise || sortie.sejour.title}
+                            fill
+                            sizes="300px"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex items-start gap-2">
+                        <div
+                          className={`w-2 h-2 rounded-full ${getCategoryColor(sortie.sejour.categorie)} mt-1.5 shrink-0`}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-bold text-sm text-foreground leading-tight">
+                            {at(sortie.titrePersonnalise || sortie.sejour.title)}
+                          </h4>
+                          <p className="text-xs text-foreground/60 mt-0.5">
+                            {sortie.prix}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              {/* Arrow */}
+              <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-card border-r border-b border-border" />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Selected Date Modal */}
         <AnimatePresence>
@@ -331,44 +398,63 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                   {selectedDaySorties.map((sortie) => {
                     const isJournee = sortie.sejour.categorie === 'journee-ski-rando' || sortie.sejour.categorie === 'journee-freerando'
                     const href = isJournee && sortie.slug ? `/sorties/${sortie.slug}` : `/${sortie.sejour.slug}`
+                    const image = sortie.image || sortie.sejour?.image
 
                     return (
                       <Link
                         key={sortie._id}
                         href={href}
-                        className="block p-6 glass rounded-3xl border border-border hover:border-accent/50 transition-all group"
+                        className="block glass rounded-3xl border border-border hover:border-accent/50 transition-all group overflow-hidden"
                       >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className={`px-3 py-1 ${getCategoryColor(sortie.sejour.categorie)} text-white text-xs font-black uppercase tracking-widest rounded-full`}>
-                                {getCategoryLabel(sortie.sejour.categorie)}
-                              </span>
-                              {(sortie.complet || sortie.placesDisponibles === 0) && (
-                                <span className="px-3 py-1 bg-red-500 text-white text-xs font-black uppercase tracking-widest rounded-full">
-                                  {at({ fr: 'Complet', en: 'Full' })}
-                                </span>
-                              )}
+                        <div className="flex items-start gap-4">
+                          {/* Image */}
+                          {image && (
+                            <div className="relative w-32 h-32 shrink-0 rounded-2xl overflow-hidden">
+                              <Image
+                                src={image}
+                                alt={sortie.titrePersonnalise || sortie.sejour.title}
+                                fill
+                                sizes="128px"
+                                className="object-cover group-hover:scale-110 transition-transform duration-500"
+                              />
                             </div>
-                            <h4 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
-                              {at(sortie.titrePersonnalise || sortie.sejour.title)}
-                            </h4>
-                            <div className="flex flex-wrap gap-4 text-sm text-foreground/60">
-                              {sortie.sejour.massifs && sortie.sejour.massifs.length > 0 && (
-                                <div className="flex items-center gap-1">
-                                  <MapPin size={14} className="text-accent" />
-                                  {at(sortie.sejour.massifs[0])}
+                          )}
+
+                          {/* Content */}
+                          <div className="flex-1 py-6 pr-6">
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className={`px-3 py-1 ${getCategoryColor(sortie.sejour.categorie)} text-white text-xs font-black uppercase tracking-widest rounded-full`}>
+                                    {getCategoryLabel(sortie.sejour.categorie)}
+                                  </span>
+                                  {(sortie.complet || sortie.placesDisponibles === 0) && (
+                                    <span className="px-3 py-1 bg-red-500 text-white text-xs font-black uppercase tracking-widest rounded-full">
+                                      {at({ fr: 'Complet', en: 'Full' })}
+                                    </span>
+                                  )}
                                 </div>
-                              )}
-                              <div className="flex items-center gap-1">
-                                <Users size={14} className="text-accent" />
-                                {sortie.placesDisponibles} / {sortie.placesTotales} {at({ fr: 'places', en: 'spots' })}
+                                <h4 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
+                                  {at(sortie.titrePersonnalise || sortie.sejour.title)}
+                                </h4>
+                                <div className="flex flex-wrap gap-4 text-sm text-foreground/60">
+                                  {sortie.sejour.massifs && sortie.sejour.massifs.length > 0 && (
+                                    <div className="flex items-center gap-1">
+                                      <MapPin size={14} className="text-accent" />
+                                      {at(sortie.sejour.massifs[0])}
+                                    </div>
+                                  )}
+                                  <div className="flex items-center gap-1">
+                                    <Users size={14} className="text-accent" />
+                                    {sortie.placesDisponibles} / {sortie.placesTotales} {at({ fr: 'places', en: 'spots' })}
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-black text-accent">
-                              {sortie.prix}
+                              <div className="text-right">
+                                <div className="text-2xl font-black text-accent">
+                                  {sortie.prix}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>

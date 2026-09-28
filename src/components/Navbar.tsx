@@ -26,21 +26,44 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
   const [isInfosOpen, setIsInfosOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
+  const scrollPos = useRef(0)
 
   useEffect(() => {
     setMounted(true)
 
-    // Initial entry animation
+    // Initial animation
     gsap.fromTo(navRef.current,
       { y: -100, opacity: 0 },
       { y: 0, opacity: 1, duration: 1.2, ease: 'power4.out', delay: 0.2 }
     )
 
-    // Scroll listener for glassmorphism
+    // Scroll handler
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20)
+      const currentScrollPos = window.scrollY
+
+      // Glassmorphism effect
+      setIsScrolled(currentScrollPos > 20)
+
+      // Hide/show navbar based on scroll direction with GSAP
+      if (currentScrollPos < 100) {
+        // Always show at top
+        gsap.to(navRef.current, { y: 0, duration: 0.3, ease: 'power2.out' })
+        setIsVisible(true)
+      } else if (currentScrollPos > scrollPos.current && currentScrollPos > 150) {
+        // Scrolling down - hide navbar
+        gsap.to(navRef.current, { y: -100, duration: 0.3, ease: 'power2.in' })
+        setIsVisible(false)
+      } else if (currentScrollPos < scrollPos.current) {
+        // Scrolling up - show navbar
+        gsap.to(navRef.current, { y: 0, duration: 0.3, ease: 'power2.out' })
+        setIsVisible(true)
+      }
+
+      scrollPos.current = currentScrollPos
     }
-    window.addEventListener('scroll', handleScroll)
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 

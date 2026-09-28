@@ -100,290 +100,387 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
   }
 
   return (
-    <main className="relative pt-32 min-h-screen">
+    <div className="relative min-h-screen bg-background text-foreground transition-colors duration-300">
       {/* Hero Section */}
-      <section className="relative h-[60vh] min-h-[500px] overflow-hidden">
-        {image && (
-          <Image
-            src={image}
-            alt={at(titre)}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+      <section className="relative h-[70vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          {image && (
+            <Image
+              src={image}
+              alt={at(titre)}
+              fill
+              sizes="100vw"
+              priority
+              className="object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/40 bg-gradient-to-t from-background via-transparent to-black/20" />
+        </div>
 
-        <div className="absolute inset-0 flex items-end">
-          <div className="container mx-auto px-6 pb-16">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-foreground/60 hover:text-accent transition-colors mb-6 font-medium"
-            >
-              <ChevronLeft size={20} />
-              {at('Retour aux sorties')}
-            </Link>
+        <div className="container relative z-10 px-6 pt-32 max-w-5xl">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-accent font-bold mb-8 hover:gap-4 transition-all duration-300"
+          >
+            <ChevronLeft size={20} />
+            {at('RETOUR AUX SORTIES')}
+          </Link>
 
-            <div className="flex items-center gap-3 mb-4">
-              {sortie.sejour?.categorie && (
-                <span className="px-4 py-1.5 bg-accent text-white text-xs font-black uppercase tracking-widest rounded-full">
-                  {getCategorieLabel(sortie.sejour.categorie)}
-                </span>
-              )}
-              {sortie.complet || sortie.placesDisponibles === 0 ? (
-                <span className="px-4 py-1.5 bg-red-500 text-white text-xs font-black uppercase tracking-widest rounded-full">
-                  {at('Complet')}
-                </span>
-              ) : sortie.placesDisponibles <= 2 ? (
-                <span className="px-4 py-1.5 bg-orange-500 text-white text-xs font-black uppercase tracking-widest rounded-full">
-                  {at('Dernières places')}
-                </span>
-              ) : null}
-            </div>
-
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 text-gradient max-w-4xl">
-              {at(titre)}
-            </h1>
-
-            <div className="flex flex-wrap gap-6 text-foreground/80">
-              <div className="flex items-center gap-2">
-                <Calendar size={20} className="text-accent" />
-                <span className="font-medium">{dateDebut}</span>
-                {dateFin && <span> - {dateFin}</span>}
-              </div>
-              {massif && (
-                <div className="flex items-center gap-2">
-                  <MapPin size={20} className="text-accent" />
-                  <span className="font-medium">{at(massif)}</span>
-                </div>
-              )}
-              {niveau && (
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{getNiveauLabel(niveau)}</span>
-                </div>
-              )}
-              {sortie.denivele && (
-                <div className="flex items-center gap-2">
-                  <TrendingUp size={20} className="text-accent" />
-                  <span className="font-medium">{sortie.denivele}</span>
-                </div>
-              )}
-              {sortie.effortPhysique && (
-                <div className="flex items-center gap-2">
-                  <Activity size={20} className="text-accent" />
-                  <span className="font-medium">{getEffortLabel(sortie.effortPhysique)}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <Users size={20} className="text-accent" />
-                <span className="font-medium">
-                  {sortie.placesDisponibles} / {sortie.placesTotales} {at('places')}
-                </span>
-              </div>
-            </div>
+          <div className="flex flex-wrap gap-4 mb-8">
+            {sortie.sejour?.categorie && (
+              <span className="px-4 py-1.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                {getCategorieLabel(sortie.sejour.categorie)}
+              </span>
+            )}
+            {massif && (
+              <span className="px-3 py-1 bg-background/50 text-white text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1">
+                <MapPin size={10} className="text-accent" />
+                {at(massif)}
+              </span>
+            )}
+            {sortie.complet || sortie.placesDisponibles === 0 ? (
+              <span className="px-4 py-1.5 bg-red-500/90 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                {at('Complet')}
+              </span>
+            ) : sortie.placesDisponibles <= 2 ? (
+              <span className="px-4 py-1.5 bg-orange-500/90 backdrop-blur-sm text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
+                {at('Dernières places')}
+              </span>
+            ) : null}
           </div>
+
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight text-white">
+            {at(titre)}
+          </h1>
         </div>
       </section>
 
       {/* Content Section */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-5xl">
-          {description && (
-            <div className="mb-12">
-              <p className="text-xl text-foreground/80 leading-relaxed">
-                {at(description)}
-              </p>
-            </div>
-          )}
+      <section className="pt-24 lg:pt-32 pb-24">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {/* Prix */}
-            <div className="glass rounded-3xl p-6">
-              <div className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-2">
-                {at('Prix')}
-              </div>
-              <div className="text-3xl font-black text-accent">
-                {sortie.prix}
-              </div>
-            </div>
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-12">
+              {description && (
+                <p className="text-2xl font-medium leading-relaxed text-foreground/80">
+                  {at(description)}
+                </p>
+              )}
 
-            {/* Rendez-vous */}
-            {(sortie.lieuRdv || sortie.heureRdv) && (
-              <div className="glass rounded-3xl p-6">
-                <div className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-2">
-                  {at('Rendez-vous')}
-                </div>
-                <div className="space-y-1">
-                  {sortie.heureRdv && (
-                    <div className="flex items-center gap-2 text-foreground font-medium">
-                      <Clock size={16} className="text-accent" />
-                      {sortie.heureRdv}
+              {/* Programme */}
+              {(sortie.programmeSpecifique || sortie.sejour?.programme) && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6 text-gradient">
+                    {at('Programme')}
+                  </h2>
+                  <div className="glass rounded-[40px] border border-border shadow-xl overflow-hidden">
+                    <div className="p-8 prose prose-lg max-w-none">
+                      <RichContent
+                        value={sortie.programmeSpecifique || sortie.sejour.programme}
+                      />
                     </div>
-                  )}
-                  {sortie.lieuRdv && (
-                    <div className="flex items-center gap-2 text-foreground/70 text-sm">
-                      <MapPin size={16} className="text-accent" />
-                      {sortie.lieuRdv}
+                  </div>
+                </div>
+              )}
+
+              {/* Informations complémentaires */}
+              {sortie.informationsComplementaires && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6 text-gradient">
+                    {at('Informations complémentaires')}
+                  </h2>
+                  <div className="glass rounded-[40px] border border-border shadow-xl overflow-hidden">
+                    <div className="p-8 prose prose-lg max-w-none">
+                      <RichContent value={sortie.informationsComplementaires} />
                     </div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Durée */}
-            {sortie.sejour?.duree && (
-              <div className="glass rounded-3xl p-6">
-                <div className="text-sm font-bold text-foreground/40 uppercase tracking-widest mb-2">
-                  {at('Durée')}
-                </div>
-                <div className="text-xl font-bold text-foreground">
-                  {at(sortie.sejour.duree)}
-                </div>
-              </div>
-            )}
-          </div>
+              {/* Matériel */}
+              {sortie.sejour?.materiel && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6 text-gradient">
+                    {at('Matériel')}
+                  </h2>
+                  <div className="glass rounded-[40px] border border-border shadow-xl overflow-hidden p-8">
+                    <RichContent value={sortie.sejour.materiel} />
 
-          {/* CTA En haut */}
-          <div className="text-center mb-16">
-            <CTAButton />
-          </div>
-
-          {/* Programme */}
-          {(sortie.programmeSpecifique || sortie.sejour?.programme) && (
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold mb-8 text-gradient">
-                {at('Programme')}
-              </h2>
-              <div className="glass rounded-3xl p-8 prose prose-lg max-w-none">
-                <RichContent
-                  value={sortie.programmeSpecifique || sortie.sejour.programme}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Informations complémentaires */}
-          {sortie.informationsComplementaires && (
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold mb-8 text-gradient">
-                {at('Informations complémentaires')}
-              </h2>
-              <div className="glass rounded-3xl p-8 prose prose-lg max-w-none">
-                <RichContent value={sortie.informationsComplementaires} />
-              </div>
-            </div>
-          )}
-
-          {/* Matériel */}
-          {sortie.sejour?.materiel && (
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold mb-8 text-gradient">
-                {at('Matériel')}
-              </h2>
-              <div className="glass rounded-3xl p-8">
-                <RichContent value={sortie.sejour.materiel} />
-
-                {(sortie.sejour.materielInclus || sortie.sejour.materielNonInclus) && (
-                  <div className="grid md:grid-cols-2 gap-8 mt-8">
-                    {sortie.sejour.materielInclus && (
-                      <div>
-                        <h3 className="font-bold text-lg mb-4 text-accent">
-                          ✓ {at('Inclus')}
-                        </h3>
-                        <ul className="space-y-2">
-                          {sortie.sejour.materielInclus.map((item: string, i: number) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <span className="text-accent mt-1">•</span>
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {sortie.sejour.materielNonInclus && (
-                      <div>
-                        <h3 className="font-bold text-lg mb-4 text-foreground/60">
-                          ✗ {at('Non inclus / À prévoir')}
-                        </h3>
-                        <ul className="space-y-2">
-                          {sortie.sejour.materielNonInclus.map((item: string, i: number) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <span className="text-foreground/40 mt-1">•</span>
-                              <span className="text-foreground/70">{item}</span>
-                            </li>
-                          ))}
-                        </ul>
+                    {(sortie.sejour.materielInclus || sortie.sejour.materielNonInclus) && (
+                      <div className="grid md:grid-cols-2 gap-8 mt-8">
+                        {sortie.sejour.materielInclus && (
+                          <div>
+                            <h3 className="font-bold text-lg mb-4 text-emerald-500">
+                              ✓ {at('Inclus')}
+                            </h3>
+                            <ul className="space-y-2">
+                              {sortie.sejour.materielInclus.map((item: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-emerald-500 mt-1">•</span>
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {sortie.sejour.materielNonInclus && (
+                          <div>
+                            <h3 className="font-bold text-lg mb-4 text-red-500">
+                              ✗ {at('Non inclus / À prévoir')}
+                            </h3>
+                            <ul className="space-y-2">
+                              {sortie.sejour.materielNonInclus.map((item: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-red-500 mt-1">•</span>
+                                  <span className="text-foreground/70">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
-              </div>
-            </div>
-          )}
+                </div>
+              )}
 
-          {/* Budget / Tarif */}
-          {(sortie.budgetSpecifique || sortie.sejour?.budget) && (
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold mb-8 text-gradient">
-                {at('Tarif & Budget')}
-              </h2>
-              <div className="glass rounded-3xl p-8">
-                <RichContent value={sortie.budgetSpecifique || sortie.sejour.budget} />
+              {/* Budget / Tarif */}
+              {(sortie.budgetSpecifique || sortie.sejour?.budget) && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6 text-gradient">
+                    {at('Tarif & Budget')}
+                  </h2>
+                  <div className="glass rounded-[40px] border border-border shadow-xl overflow-hidden p-8">
+                    <RichContent value={sortie.budgetSpecifique || sortie.sejour.budget} />
 
-                {((sortie.budgetInclusSpecifique || sortie.sejour?.budgetInclus) || (sortie.budgetNonInclusSpecifique || sortie.sejour?.budgetNonInclus)) && (
-                  <div className="grid md:grid-cols-2 gap-8 mt-8">
-                    {(sortie.budgetInclusSpecifique || sortie.sejour?.budgetInclus) && (
-                      <div>
-                        <h3 className="font-bold text-lg mb-4 text-accent">
-                          ✓ {at('Inclus dans le prix')}
-                        </h3>
-                        <ul className="space-y-2">
-                          {(sortie.budgetInclusSpecifique || sortie.sejour.budgetInclus).map((item: string, i: number) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <span className="text-accent mt-1">•</span>
-                              <span>{item}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {(sortie.budgetNonInclusSpecifique || sortie.sejour?.budgetNonInclus) && (
-                      <div>
-                        <h3 className="font-bold text-lg mb-4 text-foreground/60">
-                          ✗ {at('Non inclus')}
-                        </h3>
-                        <ul className="space-y-2">
-                          {(sortie.budgetNonInclusSpecifique || sortie.sejour.budgetNonInclus).map((item: string, i: number) => (
-                            <li key={i} className="flex items-start gap-2">
-                              <span className="text-foreground/40 mt-1">•</span>
-                              <span className="text-foreground/70">{item}</span>
-                            </li>
-                          ))}
-                        </ul>
+                    {((sortie.budgetInclusSpecifique || sortie.sejour?.budgetInclus) || (sortie.budgetNonInclusSpecifique || sortie.sejour?.budgetNonInclus)) && (
+                      <div className="grid md:grid-cols-2 gap-8 mt-8">
+                        {(sortie.budgetInclusSpecifique || sortie.sejour?.budgetInclus) && (
+                          <div>
+                            <h3 className="font-bold text-lg mb-4 text-emerald-500">
+                              ✓ {at('Inclus dans le prix')}
+                            </h3>
+                            <ul className="space-y-2">
+                              {(sortie.budgetInclusSpecifique || sortie.sejour.budgetInclus).map((item: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-emerald-500 mt-1">•</span>
+                                  <span>{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {(sortie.budgetNonInclusSpecifique || sortie.sejour?.budgetNonInclus) && (
+                          <div>
+                            <h3 className="font-bold text-lg mb-4 text-red-500">
+                              ✗ {at('Non inclus')}
+                            </h3>
+                            <ul className="space-y-2">
+                              {(sortie.budgetNonInclusSpecifique || sortie.sejour.budgetNonInclus).map((item: string, i: number) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="text-red-500 mt-1">•</span>
+                                  <span className="text-foreground/70">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Infos pratiques */}
+              {(sortie.infosPratiquesSpecifiques || sortie.sejour?.infosPratiques) && (
+                <div>
+                  <h2 className="text-3xl font-bold mb-6 text-gradient">
+                    {at('Informations pratiques')}
+                  </h2>
+                  <div className="glass rounded-[40px] border border-border shadow-xl overflow-hidden">
+                    <div className="p-8 prose prose-lg max-w-none">
+                      <RichContent value={sortie.infosPratiquesSpecifiques || sortie.sejour.infosPratiques} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-36 space-y-5">
+
+                {/* Bloc 1 — Stats + Prix + CTA */}
+                <div className="rounded-[32px] border border-border shadow-2xl overflow-hidden bg-card">
+
+                  {/* Header */}
+                  <div className="px-7 pt-7 pb-5 border-b border-border">
+                    <span className="text-[9px] font-black uppercase tracking-[0.25em] text-accent">
+                      {at('Fiche Technique')}
+                    </span>
+                  </div>
+
+                  {/* Stats Grid 2×2 */}
+                  <div className="grid grid-cols-2 divide-x divide-y divide-border">
+                    {/* Durée */}
+                    {sortie.sejour?.duree && (
+                      <div className="p-5 bg-foreground/[0.01] hover:bg-foreground/[0.02] transition-colors">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
+                            {at('Durée')}
+                          </span>
+                          <span className="text-base font-bold text-foreground leading-tight">
+                            {at(sortie.sejour.duree)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Niveau */}
+                    {niveau && (
+                      <div className="p-5 bg-foreground/[0.01] hover:bg-foreground/[0.02] transition-colors">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
+                            {at('Niveau')}
+                          </span>
+                          <span className="text-base font-bold text-foreground leading-tight">
+                            {getNiveauLabel(niveau)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Dénivelé */}
+                    {sortie.denivele && (
+                      <div className="p-5 bg-foreground/[0.01] hover:bg-foreground/[0.02] transition-colors">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
+                            {at('Dénivelé')}
+                          </span>
+                          <span className="text-base font-bold text-foreground leading-tight">
+                            {sortie.denivele}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Effort */}
+                    {sortie.effortPhysique && (
+                      <div className="p-5 bg-foreground/[0.01] hover:bg-foreground/[0.02] transition-colors">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
+                            {at('Effort')}
+                          </span>
+                          <span className="text-base font-bold text-foreground leading-tight">
+                            {getEffortLabel(sortie.effortPhysique)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Prix */}
+                  <div className="px-7 py-6 bg-gradient-to-br from-accent/5 to-transparent border-t border-border">
+                    <div className="flex items-baseline justify-between">
+                      <span className="text-[9px] font-black uppercase tracking-widest text-foreground/40">
+                        {at('Prix')}
+                      </span>
+                      <div className="text-right">
+                        <div className="text-2xl font-black text-accent">
+                          {sortie.prix}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <div className="p-6 border-t border-border">
+                    <CTAButton className="w-full text-center" />
+                  </div>
+                </div>
+
+                {/* Bloc 2 — Dates et Rendez-vous */}
+                <div className="rounded-[32px] border border-border shadow-xl overflow-hidden bg-card">
+                  <div className="px-7 pt-6 pb-4 border-b border-border flex items-center gap-2">
+                    <Calendar size={14} className="text-accent" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.25em] text-accent">
+                      {at('Dates & Rendez-vous')}
+                    </span>
+                  </div>
+
+                  <div className="p-5 space-y-4">
+                    {/* Date */}
+                    <div>
+                      <div className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mb-2">
+                        {at('Date')}
+                      </div>
+                      <div className="text-sm font-medium text-foreground/80">
+                        {dateDebut}
+                        {dateFin && (
+                          <>
+                            <br />→ {dateFin}
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Heure RDV */}
+                    {sortie.heureRdv && (
+                      <div>
+                        <div className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mb-2">
+                          {at('Heure')}
+                        </div>
+                        <div className="flex items-center gap-2 text-sm font-medium text-foreground/80">
+                          <Clock size={14} className="text-accent" />
+                          {sortie.heureRdv}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Lieu RDV */}
+                    {sortie.lieuRdv && (
+                      <div>
+                        <div className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mb-2">
+                          {at('Lieu de rendez-vous')}
+                        </div>
+                        <div className="flex items-center gap-2 text-sm font-medium text-foreground/80">
+                          <MapPin size={14} className="text-accent" />
+                          {sortie.lieuRdv}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Places */}
+                    <div className="pt-4 border-t border-border">
+                      <div className="text-[9px] font-black uppercase tracking-widest text-foreground/40 mb-2">
+                        {at('Disponibilité')}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Users size={14} className="text-accent" />
+                        <span className="text-sm font-bold text-foreground">
+                          {sortie.placesDisponibles} / {sortie.placesTotales} {at('places')}
+                        </span>
+                        {sortie.complet || sortie.placesDisponibles === 0 ? (
+                          <span className="ml-auto text-[9px] font-black uppercase text-red-400 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
+                            {at('Complet')}
+                          </span>
+                        ) : sortie.placesDisponibles <= 2 ? (
+                          <span className="ml-auto text-[9px] font-black uppercase text-orange-400 bg-orange-500/10 px-2 py-1 rounded-full border border-orange-500/20">
+                            {at('Dernières places')}
+                          </span>
+                        ) : (
+                          <span className="ml-auto text-[9px] font-black uppercase text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20">
+                            {at('Disponible')}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
-          )}
-
-          {/* Infos pratiques */}
-          {(sortie.infosPratiquesSpecifiques || sortie.sejour?.infosPratiques) && (
-            <div className="mb-16">
-              <h2 className="text-3xl font-bold mb-8 text-gradient">
-                {at('Informations pratiques')}
-              </h2>
-              <div className="glass rounded-3xl p-8 prose prose-lg max-w-none">
-                <RichContent value={sortie.infosPratiquesSpecifiques || sortie.sejour.infosPratiques} />
-              </div>
-            </div>
-          )}
-
-          {/* CTA Réservation en bas */}
-          <div className="text-center">
-            <CTAButton />
           </div>
         </div>
       </section>
@@ -397,6 +494,6 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
           title={at(titre)}
         />
       )}
-    </main>
+    </div>
   )
 }

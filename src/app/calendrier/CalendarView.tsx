@@ -17,11 +17,13 @@ interface Sortie {
   placesDisponibles: number
   placesTotales: number
   complet: boolean
+  image?: string
   sejour: {
     title: string
     slug: string
     categorie: string
     massifs: string[]
+    image?: string
   }
 }
 

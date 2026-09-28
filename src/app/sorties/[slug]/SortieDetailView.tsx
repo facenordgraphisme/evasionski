@@ -7,6 +7,7 @@ import { Calendar, MapPin, Users, Clock, ChevronLeft, TrendingUp, Activity } fro
 import { useLanguage } from '@/context/LanguageContext'
 import RichContent from '@/components/RichContent'
 import BookingPopup from '@/components/BookingPopup'
+import MobileCTA from '@/components/MobileCTA'
 
 interface SortieDetailViewProps {
   sortie: any
@@ -494,6 +495,15 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
           title={at(titre)}
         />
       )}
+
+      {/* Mobile CTA */}
+      <MobileCTA
+        prix={sortie.prix}
+        complet={sortie.complet}
+        placesDisponibles={sortie.placesDisponibles}
+        outplannersLink={sortie.outplannersLink}
+        onBookingClick={() => setIsBookingPopupOpen(true)}
+      />
     </div>
   )
 }

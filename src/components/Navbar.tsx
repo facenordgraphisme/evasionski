@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useAnimation } from 'framer-motion'
 import { useTheme } from 'next-themes'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
@@ -127,6 +127,7 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
   ]
 
   return (
+    <>
     <nav
       ref={navRef}
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'py-2' : 'py-5'}`}
@@ -334,112 +335,217 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
           {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
       </div>
-
-      {/* Mobile Menu */}
-      <div className={`lg:hidden fixed inset-0 w-full h-screen bg-[#f8f9fa] overflow-y-auto transition-all duration-500 ${isOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-full'}`}>
-        <div className="pt-32 pb-24 px-8 flex flex-col space-y-10">
-          {/* À la journée */}
-          <div>
-            <button
-              onClick={() => setIsJourneeOpen(!isJourneeOpen)}
-              className="w-full flex items-center justify-between text-slate-900 hover:text-accent transition-colors text-3xl font-black uppercase tracking-tight py-2"
-            >
-              {at({ fr: "À la journée", en: "Daily" })}
-              <ChevronDown className={`w-6 h-6 transition-transform ${isJourneeOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {isJourneeOpen && (
-              <div className="pl-4 mt-4 space-y-3">
-                {journeeSubmenuItems.map((item) => (
-                  <Link
-                    key={item.slug}
-                    href={`/${item.slug}`}
-                    onClick={() => setIsOpen(false)}
-                    className="block text-xl text-slate-700 hover:text-accent transition-colors font-bold"
-                  >
-                    {at(item.title)}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Stages & Raids */}
-          <div>
-            <button
-              onClick={() => setIsStagesOpen(!isStagesOpen)}
-              className="w-full flex items-center justify-between text-slate-900 hover:text-accent transition-colors text-3xl font-black uppercase tracking-tight py-2"
-            >
-              {at({ fr: "Stages & Raids", en: "Stages & Raids" })}
-              <ChevronDown className={`w-6 h-6 transition-transform ${isStagesOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {isStagesOpen && (
-              <div className="pl-4 mt-4 space-y-3">
-                {stagesSubmenuItems.map((item) => (
-                  <Link
-                    key={item.slug}
-                    href={`/${item.slug}`}
-                    onClick={() => setIsOpen(false)}
-                    className="block text-xl text-slate-700 hover:text-accent transition-colors font-bold"
-                  >
-                    {at(item.title)}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="h-px bg-slate-200" />
-
-          <Link href="/calendrier" onClick={() => setIsOpen(false)} className="text-3xl font-black tracking-tight text-slate-800 uppercase">
-            {at({ fr: "Calendrier", en: "Calendar" })}
-          </Link>
-
-          {/* Infos */}
-          <div>
-            <button
-              onClick={() => setIsInfosOpen(!isInfosOpen)}
-              className="w-full flex items-center justify-between text-slate-900 hover:text-accent transition-colors text-3xl font-black uppercase tracking-tight py-2"
-            >
-              {at({ fr: "Infos", en: "Info" })}
-              <ChevronDown className={`w-6 h-6 transition-transform ${isInfosOpen ? 'rotate-180' : ''}`} />
-            </button>
-            {isInfosOpen && (
-              <div className="pl-4 mt-4 space-y-3">
-                {infosSubmenuItems.map((item) => (
-                  <Link
-                    key={item.slug}
-                    href={`/${item.slug}`}
-                    onClick={() => setIsOpen(false)}
-                    className="block text-xl text-slate-700 hover:text-accent transition-colors font-bold"
-                  >
-                    {at(item.title)}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="pt-10">
-            <button
-              onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
-              className="inline-flex items-center gap-4 px-8 py-4 rounded-full border border-slate-200 font-black text-slate-800 bg-white shadow-lg uppercase text-xs tracking-widest"
-            >
-              <img
-                src={language === 'fr' ? "https://flagcdn.com/w40/gb.png" : "https://flagcdn.com/w40/fr.png"}
-                alt={language === 'fr' ? 'EN' : 'FR'}
-                className="w-6 h-6 rounded-full"
-              />
-              {language === 'fr' ? 'English Version' : 'Version Française'}
-            </button>
-          </div>
-        </div>
-
-        {/* Close button for mobile */}
-        <button className="fixed top-8 right-8 w-14 h-14 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-2xl z-50 text-slate-900" onClick={() => setIsOpen(false)}>
-          <X size={28} />
-        </button>
-      </div>
     </nav>
+
+    {/* Mobile Menu */}
+    <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
+              onClick={() => setIsOpen(false)}
+            />
+
+            {/* Menu Panel */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{
+                type: 'spring',
+                damping: 25,
+                stiffness: 200
+              }}
+              className="lg:hidden fixed right-0 top-0 h-full w-[85%] max-w-md bg-background shadow-2xl z-[70] overflow-y-auto"
+            >
+              <div className="pt-32 pb-24 px-8">
+                <motion.div
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                  variants={{
+                    open: {
+                      transition: { staggerChildren: 0.07, delayChildren: 0.2 }
+                    },
+                    closed: {
+                      transition: { staggerChildren: 0.05, staggerDirection: -1 }
+                    }
+                  }}
+                  className="flex flex-col space-y-8"
+                >
+                  {/* À la journée */}
+                  <motion.div
+                    variants={{
+                      open: { opacity: 1, x: 0 },
+                      closed: { opacity: 0, x: 50 }
+                    }}
+                  >
+                    <button
+                      onClick={() => setIsJourneeOpen(!isJourneeOpen)}
+                      className="w-full flex items-center justify-between hover:text-accent transition-colors text-3xl font-black uppercase tracking-tight py-2"
+                    >
+                      {at({ fr: "À la journée", en: "Daily" })}
+                      <ChevronDown className={`w-6 h-6 transition-transform ${isJourneeOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {isJourneeOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="pl-4 mt-4 space-y-3 overflow-hidden"
+                        >
+                          {journeeSubmenuItems.map((item) => (
+                            <Link
+                              key={item.slug}
+                              href={`/${item.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className="block text-xl hover:text-accent transition-colors font-bold"
+                            >
+                              {at(item.title)}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  {/* Stages & Raids */}
+                  <motion.div
+                    variants={{
+                      open: { opacity: 1, x: 0 },
+                      closed: { opacity: 0, x: 50 }
+                    }}
+                  >
+                    <button
+                      onClick={() => setIsStagesOpen(!isStagesOpen)}
+                      className="w-full flex items-center justify-between hover:text-accent transition-colors text-3xl font-black uppercase tracking-tight py-2"
+                    >
+                      {at({ fr: "Stages & Raids", en: "Stages & Raids" })}
+                      <ChevronDown className={`w-6 h-6 transition-transform ${isStagesOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {isStagesOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="pl-4 mt-4 space-y-3 overflow-hidden"
+                        >
+                          {stagesSubmenuItems.map((item) => (
+                            <Link
+                              key={item.slug}
+                              href={`/${item.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className="block text-xl hover:text-accent transition-colors font-bold"
+                            >
+                              {at(item.title)}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  <motion.div
+                    variants={{
+                      open: { opacity: 1, x: 0 },
+                      closed: { opacity: 0, x: 50 }
+                    }}
+                    className="h-px bg-border"
+                  />
+
+                  <motion.div
+                    variants={{
+                      open: { opacity: 1, x: 0 },
+                      closed: { opacity: 0, x: 50 }
+                    }}
+                  >
+                    <Link href="/calendrier" onClick={() => setIsOpen(false)} className="text-3xl font-black tracking-tight uppercase block">
+                      {at({ fr: "Calendrier", en: "Calendar" })}
+                    </Link>
+                  </motion.div>
+
+                  {/* Infos */}
+                  <motion.div
+                    variants={{
+                      open: { opacity: 1, x: 0 },
+                      closed: { opacity: 0, x: 50 }
+                    }}
+                  >
+                    <button
+                      onClick={() => setIsInfosOpen(!isInfosOpen)}
+                      className="w-full flex items-center justify-between hover:text-accent transition-colors text-3xl font-black uppercase tracking-tight py-2"
+                    >
+                      {at({ fr: "Infos", en: "Info" })}
+                      <ChevronDown className={`w-6 h-6 transition-transform ${isInfosOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    <AnimatePresence>
+                      {isInfosOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="pl-4 mt-4 space-y-3 overflow-hidden"
+                        >
+                          {infosSubmenuItems.map((item) => (
+                            <Link
+                              key={item.slug}
+                              href={`/${item.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className="block text-xl hover:text-accent transition-colors font-bold"
+                            >
+                              {at(item.title)}
+                            </Link>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+
+                  <motion.div
+                    variants={{
+                      open: { opacity: 1, x: 0 },
+                      closed: { opacity: 0, x: 50 }
+                    }}
+                    className="pt-10"
+                  >
+                    <button
+                      onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
+                      className="inline-flex items-center gap-4 px-8 py-4 rounded-full border border-border font-black bg-card shadow-lg uppercase text-xs tracking-widest hover:scale-105 transition-transform"
+                    >
+                      <img
+                        src={language === 'fr' ? "https://flagcdn.com/w40/gb.png" : "https://flagcdn.com/w40/fr.png"}
+                        alt={language === 'fr' ? 'EN' : 'FR'}
+                        className="w-6 h-6 rounded-full"
+                      />
+                      {language === 'fr' ? 'English Version' : 'Version Française'}
+                    </button>
+                  </motion.div>
+
+                </motion.div>
+              </div>
+
+              {/* Close button */}
+              <motion.button
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                exit={{ scale: 0, rotate: 180 }}
+                transition={{ type: 'spring', damping: 20, delay: 0.1 }}
+                className="absolute top-8 right-8 w-14 h-14 rounded-full bg-accent text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform z-10"
+                onClick={() => setIsOpen(false)}
+              >
+                <X size={28} />
+              </motion.button>
+            </motion.div>
+          </>
+        )}
+    </AnimatePresence>
+    </>
   )
 }
 

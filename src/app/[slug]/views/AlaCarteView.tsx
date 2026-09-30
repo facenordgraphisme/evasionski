@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { PortableText } from "@portabletext/react";
-import { Check, X, Euro, MapPin, Clock } from 'lucide-react';
+import { Check, X, Euro, MapPin, Clock, ArrowLeft } from 'lucide-react';
 import { getServerTranslations } from '@/i18n/server';
 import Link from 'next/link';
 import SejourTabs from '@/components/SejourTabs';
@@ -64,15 +64,25 @@ export default async function AlaCarteView({ data, settings }: AlaCarteViewProps
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-background" />
         </div>
 
-        <div className="container mx-auto px-6 relative z-10 text-center">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 text-gradient uppercase">
-            {at(data.heroTitle || data.title)}
-          </h1>
-          {data.heroSubtitle && (
-            <p className="text-xl md:text-2xl text-accent font-medium max-w-3xl mx-auto">
-              {at(data.heroSubtitle)}
-            </p>
-          )}
+        <div className="container mx-auto px-6 relative z-10 pt-32 max-w-5xl">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-accent font-bold mb-8 hover:gap-4 transition-all duration-300"
+          >
+            <ArrowLeft size={20} />
+            {at("RETOUR À L'ACCUEIL")}
+          </Link>
+
+          <div className="text-center">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 text-gradient uppercase">
+              {at(data.heroTitle || data.title)}
+            </h1>
+            {data.heroSubtitle && (
+              <p className="text-xl md:text-2xl text-accent font-medium max-w-3xl mx-auto">
+                {at(data.heroSubtitle)}
+              </p>
+            )}
+          </div>
         </div>
       </section>
 

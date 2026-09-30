@@ -6,10 +6,10 @@ import { getServerTranslations } from '@/i18n/server';
 import SejourTabs from '@/components/SejourTabs';
 import RichContent from '@/components/RichContent';
 import BlogCard from '@/components/BlogCard';
-import CheckoutButton from '@/components/CheckoutButton';
 import SejourFAQ from '@/components/SejourFAQ';
 import SejourGallery from '@/components/SejourGallery';
 import MobileCTA from '@/components/MobileCTA';
+import SejourUpcomingSorties from '@/components/SejourUpcomingSorties';
 
 interface SejourViewProps {
   sejour: any;
@@ -30,6 +30,13 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
   const priceString = sejour.priceEncadrement || sejour.basePrice || '0';
   const numericPrice = parseFloat(priceString.replace(/[^0-9.]/g, '')) || 0;
+
+  // Pages de listing d'activités qui doivent avoir "Retour à l'accueil"
+  const listingPages = [
+    'ski-randonnee-hautes-alpes-journee',
+    'ski-hors-piste-station-hautes-alpes'
+  ];
+  const isListingPage = listingPages.includes(sejour.slug);
 
   const getLevelLabel = (level?: string) => {
     const map: Record<string, string> = {
@@ -135,11 +142,11 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
         <div className="container relative z-10 px-6 pt-32 max-w-5xl">
           <Link
-            href={`/${sejour.activityType || ''}`}
+            href={isListingPage ? "/" : "/stages-et-raids-a-ski-de-randonnee-hautes-alpes"}
             className="inline-flex items-center gap-2 text-accent font-bold mb-8 hover:gap-4 transition-all duration-300"
           >
             <ArrowLeft size={20} />
-            {at("RETOUR À L'ACTIVITÉ")}
+            {isListingPage ? at("RETOUR À L'ACCUEIL") : at("RETOUR À L'ACTIVITÉ")}
           </Link>
 
           <div className="flex flex-wrap gap-4 mb-8">
@@ -251,26 +258,8 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                     </div>
                   )}
 
-                  {/* CTA */}
-                  <div className="p-6 space-y-3 border-t border-border">
-                    {numericPrice > 0 ? (
-                      <>
-                        <CheckoutButton
-                          title={at(sejour.title)}
-                          price={numericPrice}
-                          image={sejour.image}
-                          slug={sejour.slug}
-                          scrollToId="prochains-departs"
-                        />
-                        <Link href="/evasion-ski-hautes-alpes-contact" className="w-full block text-center text-foreground/50 hover:text-foreground/80 py-2 text-[11px] font-bold uppercase tracking-widest transition-colors">
-                          {at('Demander un devis personnalisé')}
-                        </Link>
-                      </>
-                    ) : (
-                      <Link href="/evasion-ski-hautes-alpes-contact" className="btn-primary w-full block text-center py-4 text-sm font-bold uppercase tracking-widest">
-                        {at('Réserver ce séjour')}
-                      </Link>
-                    )}
+                  {/* Info téléphone */}
+                  <div className="p-6 border-t border-border">
                     <p className="text-[9px] text-center text-foreground/30 font-bold uppercase tracking-widest">
                       {at('Conseils & Réservation par téléphone possible')}
                     </p>
@@ -286,61 +275,12 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                       <span className="text-[10px] font-black uppercase tracking-[0.25em] text-accent">{at('Prochains Départs')}</span>
                     </div>
 
-                    <div className="p-5 space-y-2">
-                      {sejour.upcomingSorties && sejour.upcomingSorties.length > 0 ? (
-                        sejour.upcomingSorties.map((s: any, i: number) => {
-                          const dateDebut = new Date(s.dateDebut).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
-                          const dateFin = s.dateFin && s.dateFin !== s.dateDebut
-                            ? ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}`
-                            : '';
-                          const dateDisplay = `${dateDebut}${dateFin}`;
-
-                          const sortieTitle = s.titrePersonnalise || sejour.title;
-                          const sortieNiveau = s.niveau || sejour.niveauDefaut;
-                          const cardContent = (
-                            <>
-                              {/* Date bullet */}
-                              <div className={`w-2 h-2 rounded-full shrink-0 mt-1 ${s.complet || s.placesDisponibles === 0 ? 'bg-foreground/20' : 'bg-accent'}`} />
-                              <div className="flex-1 min-w-0 space-y-1">
-                                <div>
-                                  <span className="font-bold text-sm text-foreground block">{at(sortieTitle)}</span>
-                                  <span className="text-xs text-foreground/60 font-medium">{dateDisplay}</span>
-                                </div>
-                                <div className="flex items-center gap-2 text-[10px] text-foreground/40 font-medium">
-                                  <span>{s.placesDisponibles} / {s.placesTotales} {at('places')}</span>
-                                  {sortieNiveau && <span className="text-accent font-bold">• {getLevelLabel(sortieNiveau)}</span>}
-                                  {s.prix && <span className="text-accent font-bold">• {s.prix}</span>}
-                                </div>
-                              </div>
-                              {s.complet || s.placesDisponibles === 0 ? (
-                                <span className="text-[9px] font-black uppercase text-red-400 bg-red-500/10 px-2.5 py-1 rounded-full border border-red-500/20 shrink-0">{at('Complet')}</span>
-                              ) : (
-                                <span className="text-[9px] font-black uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 shrink-0">{at('Dispo')}</span>
-                              )}
-                            </>
-                          );
-
-                          // Toutes les dates avec un slug sont cliquables
-                          return s.slug ? (
-                            <Link
-                              key={s._id || i}
-                              href={`/sorties/${s.slug}`}
-                              className={`flex items-center gap-4 p-4 rounded-2xl border transition-all cursor-pointer ${s.complet || s.placesDisponibles === 0 ? 'border-border bg-foreground/[0.02] opacity-60' : 'border-accent/20 bg-accent/[0.03] hover:bg-accent/[0.06]'}`}
-                            >
-                              {cardContent}
-                            </Link>
-                          ) : (
-                            <div key={s._id || i} className={`flex items-center gap-4 p-4 rounded-2xl border transition-all ${s.complet || s.placesDisponibles === 0 ? 'border-border bg-foreground/[0.02] opacity-60' : 'border-accent/20 bg-accent/[0.03] hover:bg-accent/[0.06]'}`}>
-                              {cardContent}
-                            </div>
-                          );
-                        })
-                      ) : (
-                        <div className="py-6 text-center">
-                          <Calendar size={24} className="text-foreground/20 mx-auto mb-3" />
-                          <p className="text-xs font-bold text-foreground/40 uppercase tracking-widest">{at('Dates sur demande')}</p>
-                        </div>
-                      )}
+                    <div className="p-5">
+                      <SejourUpcomingSorties
+                        sorties={sejour.upcomingSorties || []}
+                        sejourTitle={sejour.title}
+                        sejourNiveauDefaut={sejour.niveauDefaut}
+                      />
                     </div>
 
                     {/* Info partage / groupes — 2 colonnes compactes */}

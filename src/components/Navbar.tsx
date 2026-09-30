@@ -141,9 +141,9 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
           <div className="relative w-16 h-16 transition-transform duration-500 group-hover:scale-110">
             {mounted && (
               <img
-                src={resolvedTheme === 'dark' && !isScrolled ? "/logo.webp?v=2" : "/logo-black.webp?v=2"}
+                src={!isScrolled ? "/logo.webp?v=2" : "/logo-black.webp?v=2"}
                 alt="ÉvasionSki"
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain transition-opacity duration-300"
               />
             )}
           </div>

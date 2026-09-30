@@ -206,27 +206,15 @@ const UpcomingSorties = ({
                   </div>
 
                   {(() => {
-                    // Si un lien Outplanners existe, bouton de réservation avec popup
-                    if (s.outplannersLink) {
-                      return (
-                        <button
-                          onClick={() => {
-                            setSelectedBooking({
-                              url: s.outplannersLink!,
-                              title: at(s.titrePersonnalise || s.sejour?.title)
-                            })
-                            setIsBookingPopupOpen(true)
-                          }}
-                          className="w-full py-4 bg-accent text-white hover:bg-accent/90 transition-all rounded-2xl text-center text-xs font-black uppercase tracking-widest shadow-lg hover:shadow-accent/50"
-                        >
-                          {at('Réserver ma place')}
-                        </button>
-                      );
-                    }
+                    // Déterminer le lien selon le type
+                    let href = `/${s.sejour?.slug}` // Par défaut : page du séjour
 
-                    // Sinon, lien vers la page de détail
-                    const isJournee = s.sejour?.categorie === 'journee-ski-rando' || s.sejour?.categorie === 'journee-freerando'
-                    const href = isJournee && s.slug ? `/sorties/${s.slug}` : `/${s.sejour?.slug}`
+                    // Si c'est une journée, aller vers la page de listing de l'activité
+                    if (s.sejour?.categorie === 'journee-ski-rando') {
+                      href = '/ski-randonnee-hautes-alpes-journee'
+                    } else if (s.sejour?.categorie === 'journee-freerando') {
+                      href = '/ski-hors-piste-station-hautes-alpes'
+                    }
 
                     return (
                       <Link

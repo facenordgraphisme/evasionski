@@ -55,6 +55,16 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
   const massif = sortie.massifSpecifique || sortie.sejour?.massifs?.[0]
   const niveau = sortie.niveau || sortie.sejour?.niveauDefaut
 
+  // Déterminer le lien de retour selon la catégorie
+  const getBackLink = () => {
+    if (sortie.sejour?.categorie === 'journee-ski-rando') {
+      return '/ski-randonnee-hautes-alpes-journee'
+    } else if (sortie.sejour?.categorie === 'journee-freerando') {
+      return '/ski-hors-piste-station-hautes-alpes'
+    }
+    return '/' // Par défaut, page d'accueil
+  }
+
   // Format dates
   const dateDebut = new Date(sortie.dateDebut).toLocaleDateString('fr-FR', {
     weekday: 'long',
@@ -120,7 +130,7 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
 
         <div className="container relative z-10 px-6 pt-32 max-w-5xl">
           <Link
-            href="/"
+            href={getBackLink()}
             className="inline-flex items-center gap-2 text-accent font-bold mb-8 hover:gap-4 transition-all duration-300"
           >
             <ChevronLeft size={20} />

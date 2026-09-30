@@ -398,8 +398,16 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
 
                 <div className="space-y-4">
                   {selectedDaySorties.map((sortie) => {
-                    const isJournee = sortie.sejour.categorie === 'journee-ski-rando' || sortie.sejour.categorie === 'journee-freerando'
-                    const href = isJournee && sortie.slug ? `/sorties/${sortie.slug}` : `/${sortie.sejour.slug}`
+                    // Déterminer le lien selon le type
+                    let href = `/${sortie.sejour.slug}` // Par défaut : page du séjour
+
+                    // Si c'est une journée, aller vers la page de listing de l'activité
+                    if (sortie.sejour.categorie === 'journee-ski-rando') {
+                      href = '/ski-randonnee-hautes-alpes-journee'
+                    } else if (sortie.sejour.categorie === 'journee-freerando') {
+                      href = '/ski-hors-piste-station-hautes-alpes'
+                    }
+
                     const image = sortie.image || sortie.sejour?.image
 
                     return (

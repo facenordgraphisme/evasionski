@@ -42,7 +42,7 @@ const WhatsAppButton = ({ phoneNumber, whatsappNumber, whatsappText }: WhatsAppB
       animate={{ scale: 1, opacity: 1 }}
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
-      className="fixed bottom-8 left-8 z-100 w-16 h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-2xl transition-shadow hover:shadow-[0_0_20px_rgba(37,211,102,0.5)] group"
+      className="hidden lg:flex fixed bottom-8 left-8 z-100 w-16 h-16 bg-[#25D366] text-white rounded-full items-center justify-center shadow-2xl transition-shadow hover:shadow-[0_0_20px_rgba(37,211,102,0.5)] group"
       aria-label={at("Contacter sur WhatsApp")}
     >
       <MessageCircle size={32} className="fill-current" />

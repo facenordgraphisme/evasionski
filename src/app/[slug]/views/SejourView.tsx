@@ -280,6 +280,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                         sorties={sejour.upcomingSorties || []}
                         sejourTitle={sejour.title}
                         sejourNiveauDefaut={sejour.niveauDefaut}
+                        sejourImage={sejour.image}
                       />
                     </div>
 

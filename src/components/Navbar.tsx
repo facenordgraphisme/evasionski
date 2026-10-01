@@ -512,8 +512,9 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
                       open: { opacity: 1, x: 0 },
                       closed: { opacity: 0, x: 50 }
                     }}
-                    className="pt-10"
+                    className="pt-10 space-y-4"
                   >
+                    {/* Language Toggle */}
                     <button
                       onClick={() => setLanguage(language === 'fr' ? 'en' : 'fr')}
                       className="inline-flex items-center gap-4 px-8 py-4 rounded-full border border-border font-black bg-card shadow-lg uppercase text-xs tracking-widest hover:scale-105 transition-transform"
@@ -525,6 +526,26 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
                       />
                       {language === 'fr' ? 'English Version' : 'Version Française'}
                     </button>
+
+                    {/* Theme Toggle */}
+                    {mounted && (
+                      <button
+                        onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                        className="inline-flex items-center gap-4 px-8 py-4 rounded-full border border-border font-black bg-card shadow-lg uppercase text-xs tracking-widest hover:scale-105 transition-transform"
+                      >
+                        {resolvedTheme === 'dark' ? (
+                          <>
+                            <span className="text-2xl">☀️</span>
+                            {at({ fr: 'Mode Clair', en: 'Light Mode' })}
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-2xl">🌙</span>
+                            {at({ fr: 'Mode Sombre', en: 'Dark Mode' })}
+                          </>
+                        )}
+                      </button>
+                    )}
                   </motion.div>
 
                 </motion.div>

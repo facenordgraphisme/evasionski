@@ -1,10 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { Calendar, Eye } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import BookingPopup from './BookingPopup'
+import SortieModal from './SortieModal'
 
 interface Sortie {
   _id: string
@@ -18,22 +18,30 @@ interface Sortie {
   placesTotales: number
   complet: boolean
   outplannersLink?: string
+  image?: string
+  lieuRdv?: string
+  heureRdv?: string
+  denivelePositif?: number
 }
 
 interface SejourUpcomingSortiesProps {
   sorties: Sortie[]
   sejourTitle: string
   sejourNiveauDefaut?: string
+  sejourImage?: string
 }
 
 export default function SejourUpcomingSorties({
   sorties,
   sejourTitle,
-  sejourNiveauDefaut
+  sejourNiveauDefaut,
+  sejourImage
 }: SejourUpcomingSortiesProps) {
   const { at } = useLanguage()
   const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false)
   const [selectedBooking, setSelectedBooking] = useState<{ url: string, title: string } | null>(null)
+  const [selectedSortie, setSelectedSortie] = useState<Sortie | null>(null)
+  const [isSortieModalOpen, setIsSortieModalOpen] = useState(false)
 
   const getLevelLabel = (level?: string) => {
     const map: Record<string, string> = {
@@ -136,16 +144,17 @@ export default function SejourUpcomingSorties({
 
                 {/* Boutons d'action */}
                 <div className="flex items-center gap-2 shrink-0">
-                  {/* Bouton Voir */}
-                  {s.slug && (
-                    <Link
-                      href={`/sorties/${s.slug}`}
-                      className="px-4 py-2 bg-foreground/5 hover:bg-foreground/10 text-foreground text-xs font-bold uppercase tracking-widest rounded-lg transition-all flex items-center gap-2 whitespace-nowrap"
-                    >
-                      <Eye size={14} />
-                      {at('Voir')}
-                    </Link>
-                  )}
+                  {/* Bouton Voir - Ouvre le modal */}
+                  <button
+                    onClick={() => {
+                      setSelectedSortie(s)
+                      setIsSortieModalOpen(true)
+                    }}
+                    className="px-4 py-2 bg-foreground/5 hover:bg-foreground/10 text-foreground text-xs font-bold uppercase tracking-widest rounded-lg transition-all flex items-center gap-2 whitespace-nowrap"
+                  >
+                    <Eye size={14} />
+                    {at('Voir')}
+                  </button>
 
                   {/* Bouton Réserver - Toujours afficher si pas complet */}
                   {!(s.complet || s.placesDisponibles === 0) && (
@@ -162,6 +171,25 @@ export default function SejourUpcomingSorties({
           )
         })}
       </div>
+
+      {/* Modal détails sortie */}
+      {selectedSortie && (
+        <SortieModal
+          isOpen={isSortieModalOpen}
+          onClose={() => {
+            setIsSortieModalOpen(false)
+            setSelectedSortie(null)
+          }}
+          sortie={selectedSortie}
+          sejourTitle={sejourTitle}
+          sejourImage={sejourImage}
+          onReserver={() => {
+            setIsSortieModalOpen(false)
+            handleReserverClick(selectedSortie)
+          }}
+          getLevelLabel={getLevelLabel}
+        />
+      )}
 
       {/* Popup de réservation */}
       {selectedBooking && (

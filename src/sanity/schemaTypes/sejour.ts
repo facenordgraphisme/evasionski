@@ -6,6 +6,28 @@ export const sejourType = defineType({
   title: 'Catalogue des Séjours',
   type: 'document',
   icon: Mountain,
+  groups: [
+    {
+      name: 'hero',
+      title: '🎯 Bloc Hero',
+    },
+    {
+      name: 'contenu',
+      title: '📝 Onglets Contenu',
+    },
+    {
+      name: 'fiche',
+      title: '📊 Fiche Technique',
+    },
+    {
+      name: 'faq',
+      title: '❓ FAQ',
+    },
+    {
+      name: 'options',
+      title: '⚙️ Options & SEO',
+    },
+  ],
   fields: [
     defineField({
       name: 'title',
@@ -13,6 +35,7 @@ export const sejourType = defineType({
       type: 'string',
       description: 'Ex: Ski de randonnée aux Orres',
       validation: (Rule) => Rule.required(),
+      group: 'hero',
     }),
     defineField({
       name: 'slug',
@@ -23,6 +46,7 @@ export const sejourType = defineType({
         maxLength: 96,
       },
       validation: (Rule) => Rule.required(),
+      group: 'hero',
     }),
     defineField({
       name: 'categorie',
@@ -37,6 +61,7 @@ export const sejourType = defineType({
       },
       description: 'Catégorie principale de ce séjour.',
       validation: (Rule) => Rule.required(),
+      group: 'fiche',
     }),
     defineField({
       name: 'massifs',
@@ -44,6 +69,7 @@ export const sejourType = defineType({
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'massif' }] }],
       description: 'Sélectionnez un ou plusieurs massifs.',
+      group: 'fiche',
     }),
     defineField({
       name: 'niveauDefaut',
@@ -58,12 +84,14 @@ export const sejourType = defineType({
         ],
       },
       description: 'Niveau technique par défaut (peut être surchargé au niveau de chaque date).',
+      group: 'fiche',
     }),
     defineField({
       name: 'duree',
       title: 'Durée',
       type: 'string',
       description: 'Ex: 1 jour, 3 jours, 5 jours',
+      group: 'fiche',
     }),
     defineField({
       name: 'image',
@@ -71,6 +99,7 @@ export const sejourType = defineType({
       type: 'image',
       options: { hotspot: true },
       validation: (Rule) => Rule.required(),
+      group: 'hero',
     }),
     defineField({
       name: 'gallery',
@@ -88,6 +117,7 @@ export const sejourType = defineType({
           ],
         },
       ],
+      group: 'hero',
     }),
     defineField({
       name: 'description',
@@ -95,12 +125,14 @@ export const sejourType = defineType({
       type: 'text',
       rows: 4,
       description: 'Résumé affiché sur les cartes et en haut de page.',
+      group: 'hero',
     }),
     defineField({
       name: 'prixDefaut',
       title: 'Prix par défaut (affichage)',
       type: 'string',
       description: 'Ex: À partir de 95€/pers (pour l\'affichage sur les cartes)',
+      group: 'fiche',
     }),
 
     // CONTENU INTRO
@@ -120,6 +152,7 @@ export const sejourType = defineType({
         { type: 'image' },
       ],
       description: 'Texte d\'introduction affiché en haut de la page.',
+      group: 'contenu',
     }),
 
     // ONGLET ESSENTIEL - Version structurée
@@ -127,6 +160,7 @@ export const sejourType = defineType({
       name: 'essentielStructure',
       title: 'Onglet — Essentiel (Structuré) ✨',
       type: 'object',
+      group: 'contenu',
       fields: [
         defineField({
           name: 'tarifs',
@@ -205,6 +239,7 @@ export const sejourType = defineType({
         { type: 'image' },
       ],
       description: '⚠️ Utilisez plutôt "Essentiel (Structuré)" ci-dessus pour un meilleur contrôle',
+      group: 'contenu',
     }),
 
     // ONGLET PROGRAMME - Version structurée
@@ -212,6 +247,7 @@ export const sejourType = defineType({
       name: 'programmeStructure',
       title: 'Onglet — Programme (Structuré) ✨',
       type: 'array',
+      group: 'contenu',
       of: [
         {
           type: 'object',
@@ -271,6 +307,7 @@ export const sejourType = defineType({
         { type: 'image' },
       ],
       description: '⚠️ Utilisez plutôt "Programme (Structuré)" ci-dessus pour un meilleur contrôle',
+      group: 'contenu',
     }),
 
     // ONGLET MATÉRIEL
@@ -289,6 +326,7 @@ export const sejourType = defineType({
         },
       ],
       description: 'Description générale du matériel.',
+      group: 'contenu',
     }),
     defineField({
       name: 'materielInclus',
@@ -296,6 +334,7 @@ export const sejourType = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Liste à puces du matériel fourni.',
+      group: 'contenu',
     }),
     defineField({
       name: 'materielNonInclus',
@@ -303,12 +342,14 @@ export const sejourType = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Liste à puces du matériel à apporter.',
+      group: 'contenu',
     }),
     defineField({
       name: 'materielPdf',
       title: 'Matériel — PDF téléchargeable',
       type: 'file',
       options: { accept: '.pdf' },
+      group: 'contenu',
     }),
 
     // ONGLET INFOS PRATIQUES
@@ -327,6 +368,7 @@ export const sejourType = defineType({
         },
       ],
       description: 'Informations pratiques (hébergement, RDV, etc.).',
+      group: 'contenu',
     }),
 
     // ONGLET BUDGET
@@ -345,6 +387,7 @@ export const sejourType = defineType({
         },
       ],
       description: 'Explications sur le budget.',
+      group: 'contenu',
     }),
     defineField({
       name: 'budgetInclus',
@@ -352,6 +395,7 @@ export const sejourType = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Liste à puces des prestations incluses.',
+      group: 'contenu',
     }),
     defineField({
       name: 'budgetNonInclus',
@@ -359,6 +403,7 @@ export const sejourType = defineType({
       type: 'array',
       of: [{ type: 'string' }],
       description: 'Liste à puces des frais non inclus.',
+      group: 'contenu',
     }),
 
     // FAQs
@@ -366,6 +411,7 @@ export const sejourType = defineType({
       name: 'faqs',
       title: 'Questions Fréquentes (FAQs)',
       type: 'array',
+      group: 'faq',
       of: [
         {
           type: 'object',
@@ -417,6 +463,7 @@ export const sejourType = defineType({
       type: 'boolean',
       initialValue: false,
       description: 'Cochez pour masquer les dates sur la page (ex: séjour sur demande uniquement).',
+      group: 'options',
     }),
 
     // SEO
@@ -425,6 +472,7 @@ export const sejourType = defineType({
       title: 'SEO — Titre',
       type: 'string',
       description: 'Si vide, utilise le titre du séjour.',
+      group: 'options',
     }),
     defineField({
       name: 'seoDescription',
@@ -432,6 +480,7 @@ export const sejourType = defineType({
       type: 'text',
       rows: 3,
       description: 'Meta description pour les moteurs de recherche.',
+      group: 'options',
     }),
   ],
   preview: {

@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { X, MapPin, Calendar, Clock, TrendingUp, Mountain } from 'lucide-react'
@@ -16,7 +18,7 @@ interface SortieModalProps {
     lieuRdv?: string
     heureRdv?: string
     niveau?: string
-    denivelePositif?: number
+    denivele?: string
     prix: string
     placesDisponibles: number
     placesTotales: number
@@ -43,6 +45,20 @@ export default function SortieModal({
   const titre = sortie.titrePersonnalise || sejourTitle
   const image = sortie.image || sejourImage
 
+  // Bloquer le scroll du body quand le modal est ouvert
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+
+    // Cleanup: remettre le scroll quand le composant est démonté
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [isOpen])
+
   // Format date
   const dateDebut = new Date(sortie.dateDebut).toLocaleDateString('fr-FR', {
     weekday: 'long',
@@ -57,7 +73,10 @@ export default function SortieModal({
       })
     : null
 
-  return (
+  if (typeof document === 'undefined') return null
+
+  // Portail vers <body> : la sidebar sticky crée un contexte d'empilement qui piège le z-index
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -67,7 +86,7 @@ export default function SortieModal({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110]"
           />
 
           {/* Modal */}
@@ -75,10 +94,10 @@ export default function SortieModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-2xl max-h-[85vh] overflow-y-auto glass rounded-[32px] shadow-2xl border border-border z-[90]"
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[90%] max-w-2xl max-h-[90vh] sm:max-h-[85vh] overflow-y-auto glass rounded-[24px] sm:rounded-[32px] shadow-2xl border border-border z-[120]"
           >
             {/* Header avec image */}
-            <div className="relative h-64 rounded-t-[32px] overflow-hidden">
+            <div className="relative h-48 sm:h-64 rounded-t-[24px] sm:rounded-t-[32px] overflow-hidden">
               {image && (
                 <Image
                   src={image}
@@ -92,22 +111,22 @@ export default function SortieModal({
               {/* Close button */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition-all"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/20 transition-all z-10"
               >
-                <X size={20} />
+                <X size={18} className="sm:w-5 sm:h-5" />
               </button>
 
               {/* Title */}
-              <div className="absolute bottom-6 left-6 right-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 pr-8">
                   {at(titre)}
                 </h2>
                 {(sortie.complet || sortie.placesDisponibles === 0) ? (
-                  <span className="inline-block px-3 py-1 bg-red-500 text-white text-xs font-black uppercase tracking-widest rounded-full">
+                  <span className="inline-block px-2.5 sm:px-3 py-1 bg-red-500 text-white text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-full">
                     {at('Complet')}
                   </span>
                 ) : (
-                  <span className="inline-block px-3 py-1 bg-emerald-500 text-white text-xs font-black uppercase tracking-widest rounded-full">
+                  <span className="inline-block px-2.5 sm:px-3 py-1 bg-emerald-500 text-white text-[10px] sm:text-xs font-black uppercase tracking-widest rounded-full">
                     {sortie.placesDisponibles} {at('places disponibles')}
                   </span>
                 )}
@@ -115,7 +134,7 @@ export default function SortieModal({
             </div>
 
             {/* Content */}
-            <div className="p-8 space-y-6">
+            <div className="p-5 sm:p-8 space-y-5 sm:space-y-6">
               {/* Date */}
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
@@ -178,17 +197,17 @@ export default function SortieModal({
               )}
 
               {/* Dénivelé */}
-              {sortie.denivelePositif && (
+              {sortie.denivele && (
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
                     <Mountain size={24} className="text-accent" />
                   </div>
                   <div>
                     <div className="text-xs font-bold uppercase tracking-widest text-foreground/60 mb-1">
-                      {at('Dénivelé positif')}
+                      {at('Dénivelé')}
                     </div>
                     <div className="font-bold text-foreground">
-                      {sortie.denivelePositif}m D+
+                      {sortie.denivele}
                     </div>
                   </div>
                 </div>
@@ -224,6 +243,7 @@ export default function SortieModal({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

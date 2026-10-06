@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ChevronLeft, ChevronRight, Calendar, MapPin, Users, X } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Calendar, MapPin, Users, X, ArrowRight } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 
 interface Sortie {
@@ -250,9 +250,12 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
               return (
                 <motion.button
                   key={dateKey}
-                  onClick={() => sorties.length > 0 && setSelectedDate(dateKey)}
-                  onMouseEnter={(e) => {
-                    if (sorties.length > 0) {
+                  onClick={() => {
+                    setHoveredDate(null)
+                    if (sorties.length > 0) setSelectedDate(dateKey)
+                  }}
+                  onPointerEnter={(e) => {
+                    if (e.pointerType === 'mouse' && sorties.length > 0) {
                       setHoveredDate(dateKey)
                       const rect = e.currentTarget.getBoundingClientRect()
                       setTooltipPosition({
@@ -261,7 +264,7 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                       })
                     }
                   }}
-                  onMouseLeave={() => setHoveredDate(null)}
+                  onPointerLeave={() => setHoveredDate(null)}
                   className={`
                     relative aspect-[4/3] rounded-xl p-1.5 md:p-2 transition-all
                     ${isCurrentMonth ? 'text-foreground' : 'text-foreground/30'}
@@ -371,7 +374,7 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-3xl max-h-[80vh] overflow-y-auto glass rounded-[40px] p-8 shadow-2xl border border-border z-50"
+                className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] sm:w-[95%] max-w-3xl max-h-[85vh] sm:max-h-[80vh] overflow-y-auto glass rounded-[28px] sm:rounded-[40px] p-5 sm:p-8 shadow-2xl border border-border z-50"
               >
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
                   <div>
@@ -416,25 +419,25 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                         href={href}
                         className="block glass rounded-3xl border border-border hover:border-accent/50 transition-all group overflow-hidden"
                       >
-                        <div className="flex items-start gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4">
                           {/* Image */}
                           {image && (
-                            <div className="relative w-32 h-32 shrink-0 rounded-2xl overflow-hidden">
+                            <div className="relative w-full h-36 sm:w-32 sm:h-32 shrink-0 sm:rounded-2xl overflow-hidden">
                               <Image
                                 src={image}
                                 alt={sortie.titrePersonnalise || sortie.sejour.title}
                                 fill
-                                sizes="128px"
+                                sizes="(max-width: 640px) 100vw, 128px"
                                 className="object-cover group-hover:scale-110 transition-transform duration-500"
                               />
                             </div>
                           )}
 
                           {/* Content */}
-                          <div className="flex-1 py-6 pr-6">
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
+                          <div className="flex-1 min-w-0 p-4 sm:py-6 sm:pl-0 sm:pr-6">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex flex-wrap items-center gap-2 mb-2">
                                   <span className={`px-3 py-1 ${getCategoryColor(sortie.sejour.categorie)} text-white text-xs font-black uppercase tracking-widest rounded-full`}>
                                     {getCategoryLabel(sortie.sejour.categorie)}
                                   </span>
@@ -443,11 +446,14 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                                       {at({ fr: 'Complet', en: 'Full' })}
                                     </span>
                                   )}
+                                  <span className="sm:hidden ml-auto text-xl font-black text-accent whitespace-nowrap">
+                                    {sortie.prix}
+                                  </span>
                                 </div>
                                 <h4 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
                                   {at(sortie.titrePersonnalise || sortie.sejour.title)}
                                 </h4>
-                                <div className="flex flex-wrap gap-4 text-sm text-foreground/60">
+                                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-foreground/60">
                                   {sortie.sejour.massifs && sortie.sejour.massifs.length > 0 && (
                                     <div className="flex items-center gap-1">
                                       <MapPin size={14} className="text-accent" />
@@ -459,9 +465,13 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                                     {sortie.placesDisponibles} / {sortie.placesTotales} {at({ fr: 'places', en: 'spots' })}
                                   </div>
                                 </div>
+                                <span className="mt-4 flex sm:inline-flex w-full sm:w-auto items-center justify-center gap-2 px-5 py-2.5 bg-accent group-hover:bg-accent/90 text-white text-xs font-bold uppercase tracking-widest rounded-xl shadow-lg transition-all">
+                                  {at({ fr: 'Voir le séjour', en: 'View trip' })}
+                                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                </span>
                               </div>
-                              <div className="text-right">
-                                <div className="text-2xl font-black text-accent">
+                              <div className="hidden sm:block text-right shrink-0">
+                                <div className="text-2xl font-black text-accent whitespace-nowrap">
                                   {sortie.prix}
                                 </div>
                               </div>

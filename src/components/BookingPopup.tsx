@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -12,6 +13,9 @@ interface BookingPopupProps {
 }
 
 export default function BookingPopup({ isOpen, onClose, bookingUrl, title }: BookingPopupProps) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
   // Fermer avec Escape
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -27,7 +31,9 @@ export default function BookingPopup({ isOpen, onClose, bookingUrl, title }: Boo
     }
   }, [isOpen, onClose])
 
-  return (
+  if (!mounted) return null
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -74,6 +80,7 @@ export default function BookingPopup({ isOpen, onClose, bookingUrl, title }: Boo
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }

@@ -21,7 +21,7 @@ interface Sortie {
   image?: string
   lieuRdv?: string
   heureRdv?: string
-  denivelePositif?: number
+  denivele?: string
 }
 
 interface SejourUpcomingSortiesProps {
@@ -130,7 +130,7 @@ export default function SejourUpcomingSorties({
               </div>
 
               {/* Détails + Boutons */}
-              <div className="flex items-center justify-between gap-4 pl-5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pl-5">
                 {/* Détails (places, niveau, prix) */}
                 <div className="flex items-center gap-3 text-[10px] font-medium">
                   <span className="text-foreground/60">
@@ -143,14 +143,14 @@ export default function SejourUpcomingSorties({
                 </div>
 
                 {/* Boutons d'action */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:shrink-0">
                   {/* Bouton Voir - Ouvre le modal */}
                   <button
                     onClick={() => {
                       setSelectedSortie(s)
                       setIsSortieModalOpen(true)
                     }}
-                    className="px-4 py-2 bg-foreground/5 hover:bg-foreground/10 text-foreground text-xs font-bold uppercase tracking-widest rounded-lg transition-all flex items-center gap-2 whitespace-nowrap"
+                    className="px-4 py-2 bg-foreground/5 hover:bg-foreground/10 text-foreground text-xs font-bold uppercase tracking-widest rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap"
                   >
                     <Eye size={14} />
                     {at('Voir')}

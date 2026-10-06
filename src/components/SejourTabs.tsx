@@ -33,6 +33,11 @@ interface BudgetStructure {
   nonInclus: string[]
 }
 
+interface MaterielStructure {
+  inclus: string[]
+  nonInclus: string[]
+}
+
 interface ProgrammeJour {
   jour: string
   titre?: string
@@ -46,6 +51,7 @@ interface Tab {
   pdf?: string | null
   structure?: EssentielStructure | null
   budgetStructure?: BudgetStructure | null
+  materielStructure?: MaterielStructure | null
   programmeStructure?: ProgrammeJour[] | null
 }
 
@@ -237,6 +243,7 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
     (tab.content && tab.content.length > 0) ||
     tab.pdf ||
     (tab.budgetStructure && (tab.budgetStructure.inclus.length > 0 || tab.budgetStructure.nonInclus.length > 0)) ||
+    (tab.materielStructure && (tab.materielStructure.inclus.length > 0 || tab.materielStructure.nonInclus.length > 0)) ||
     (tab.programmeStructure && tab.programmeStructure.length > 0) ||
     tab.structure
   )
@@ -250,12 +257,12 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
   return (
     <div className="glass rounded-[40px] border border-border shadow-xl overflow-hidden">
       {/* Tab buttons */}
-      <div className="flex flex-wrap gap-2 px-8 pt-8 pb-6 border-b border-border bg-foreground/[0.02]">
+      <div className="flex flex-wrap gap-2 px-4 md:px-8 pt-6 md:pt-8 pb-4 md:pb-6 border-b border-border bg-foreground/[0.02]">
         {visibleTabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-5 py-2.5 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-300 ${
+            className={`px-4 md:px-5 py-2 md:py-2.5 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest transition-all duration-300 ${
               activeTab === tab.id
                 ? 'bg-accent text-slate-900 shadow-lg shadow-accent/20'
                 : 'bg-foreground/5 text-foreground/50 hover:bg-foreground/10 hover:text-foreground/80'
@@ -268,7 +275,7 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
 
       {/* Tab content */}
       {current && (
-        <div className="px-8 py-8 prose-custom max-w-none animate-in fade-in duration-300">
+        <div className="px-4 md:px-8 py-6 md:py-8 prose-custom max-w-none animate-in fade-in duration-300">
           
           {/* Custom Essentiel Tab Layout */}
           {activeTab === 'essentiel' && (current.structure || current.content) ? (
@@ -450,54 +457,129 @@ export default function SejourTabs({ tabs }: SejourTabsProps) {
                 );
               })()}
             </div>
-          ) : activeTab === 'inclus' && current.budgetStructure ? (
+          ) : activeTab === 'inclus' && (current.content || current.budgetStructure) ? (
             /* Custom Budget Inclus/Non Inclus Layout */
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Section Inclus */}
-              {current.budgetStructure.inclus.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-black uppercase tracking-tight text-foreground mb-4 flex items-center gap-3">
-                    <span className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </span>
-                    {language === 'en' ? 'Included' : 'Inclus'}
-                  </h3>
-                  <ul className="space-y-3">
-                    {current.budgetStructure.inclus.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm">
-                        <svg className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        <span className="flex-1 leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+            <div className="space-y-8">
+              {/* Texte libre d'abord */}
+              {current.content && current.content.length > 0 && (
+                <div className="prose-custom">
+                  <PortableText value={current.content} components={portableTextComponents} />
                 </div>
               )}
 
-              {/* Section Non Inclus */}
-              {current.budgetStructure.nonInclus.length > 0 && (
-                <div>
-                  <h3 className="text-lg font-black uppercase tracking-tight text-foreground mb-4 flex items-center gap-3">
-                    <span className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
-                      <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </span>
-                    {language === 'en' ? 'Not Included' : 'Non Inclus'}
-                  </h3>
-                  <ul className="space-y-3">
-                    {current.budgetStructure.nonInclus.map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm">
-                        <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                        </svg>
-                        <span className="flex-1 leading-relaxed">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+              {/* Listes structurées ensuite */}
+              {current.budgetStructure && (current.budgetStructure.inclus.length > 0 || current.budgetStructure.nonInclus.length > 0) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Section Inclus */}
+                  {current.budgetStructure.inclus.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-foreground mb-4 flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                        {language === 'en' ? 'Included' : 'Inclus'}
+                      </h3>
+                      <ul className="space-y-3">
+                        {current.budgetStructure.inclus.map((item, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm">
+                            <svg className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span className="flex-1 leading-relaxed">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Section Non Inclus */}
+                  {current.budgetStructure.nonInclus.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-foreground mb-4 flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </span>
+                        {language === 'en' ? 'Not Included' : 'Non Inclus'}
+                      </h3>
+                      <ul className="space-y-3">
+                        {current.budgetStructure.nonInclus.map((item, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm">
+                            <svg className="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                            </svg>
+                            <span className="flex-1 leading-relaxed">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ) : activeTab === 'materiel' && (current.content || current.materielStructure) ? (
+            /* Custom Materiel Layout */
+            <div className="space-y-8">
+              {/* Texte libre d'abord */}
+              {current.content && current.content.length > 0 && (
+                <div className="prose-custom">
+                  <PortableText value={current.content} components={portableTextComponents} />
+                </div>
+              )}
+
+              {/* Listes structurées ensuite */}
+              {current.materielStructure && (current.materielStructure.inclus.length > 0 || current.materielStructure.nonInclus.length > 0) && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Section Inclus */}
+                  {current.materielStructure.inclus.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-foreground mb-4 flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                        {language === 'en' ? 'Provided' : 'Fourni'}
+                      </h3>
+                      <ul className="space-y-3">
+                        {current.materielStructure.inclus.map((item, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm">
+                            <svg className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span className="flex-1 leading-relaxed">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Section Non Inclus */}
+                  {current.materielStructure.nonInclus.length > 0 && (
+                    <div>
+                      <h3 className="text-lg font-black uppercase tracking-tight text-foreground mb-4 flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                        </span>
+                        {language === 'en' ? 'To Bring' : 'À Prévoir'}
+                      </h3>
+                      <ul className="space-y-3">
+                        {current.materielStructure.nonInclus.map((item, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-foreground/80 text-sm">
+                            <svg className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                            <span className="flex-1 leading-relaxed">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

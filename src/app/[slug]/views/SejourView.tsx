@@ -67,7 +67,11 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
       id: 'materiel',
       label: at('Matériel et assurances'),
       content: sejour.materiel ? translatePortableText(sejour.materiel) : null,
-      pdf: sejour.materielPdf ?? null
+      pdf: sejour.materielPdf ?? null,
+      materielStructure: (sejour.materielInclus || sejour.materielNonInclus) ? {
+        inclus: sejour.materielInclus || [],
+        nonInclus: sejour.materielNonInclus || []
+      } : null
     },
     {
       id: 'inclus',
@@ -84,6 +88,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     tab.content !== null ||
     tab.pdf !== null ||
     tab.budgetStructure !== null ||
+    tab.materielStructure !== null ||
     (tab.programmeStructure && Array.isArray(tab.programmeStructure) && tab.programmeStructure.length > 0)
   );
 

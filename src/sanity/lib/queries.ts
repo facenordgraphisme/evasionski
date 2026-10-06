@@ -297,7 +297,12 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
     niveau,
     placesDisponibles,
     placesTotales,
-    complet
+    complet,
+    outplannersLink,
+    lieuRdv,
+    heureRdv,
+    denivele,
+    "image": image.asset->url
   },
   seoTitle,
   seoDescription

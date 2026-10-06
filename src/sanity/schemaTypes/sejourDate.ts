@@ -261,23 +261,23 @@ export const sejourDateType = defineType({
         }
       }
 
-      // Status prefix
-      let statusPrefix = ''
+      // Status emoji
+      let statusEmoji = ''
       let subtitle = ''
 
       if (complet || placesDisponibles === 0) {
-        statusPrefix = '🔴 [COMPLET] '
+        statusEmoji = '🔴 '
         subtitle = '⚠️ COMPLET - Plus de place'
       } else if (placesDisponibles <= 2) {
-        statusPrefix = '⚠️ [DERNIÈRES PLACES] '
+        statusEmoji = '⚠️ '
         subtitle = `🔥 ${placesDisponibles}/${placesTotales} places • ${prix}`
       } else {
-        statusPrefix = '🟢 [DISPO] '
+        statusEmoji = '🟢 '
         subtitle = `✔ ${placesDisponibles}/${placesTotales} places • ${prix}`
       }
 
       return {
-        title: `${statusPrefix}${mainTitle}${dateStr}`,
+        title: `${statusEmoji}${mainTitle}${dateStr}`,
         subtitle,
         media,
       }

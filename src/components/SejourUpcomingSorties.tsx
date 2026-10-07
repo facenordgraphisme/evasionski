@@ -130,9 +130,9 @@ export default function SejourUpcomingSorties({
               </div>
 
               {/* Détails + Boutons */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pl-5">
+              <div className="flex flex-col gap-3 pl-5">
                 {/* Détails (places, niveau, prix) */}
-                <div className="flex items-center gap-3 text-[10px] font-medium">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] font-medium">
                   <span className="text-foreground/60">
                     {s.placesDisponibles} / {s.placesTotales} {at('places')}
                   </span>
@@ -143,7 +143,7 @@ export default function SejourUpcomingSorties({
                 </div>
 
                 {/* Boutons d'action */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:shrink-0">
+                <div className="flex flex-col items-stretch gap-2">
                   {/* Bouton Voir - Ouvre le modal */}
                   <button
                     onClick={() => {

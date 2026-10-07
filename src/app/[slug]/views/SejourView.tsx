@@ -48,7 +48,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     return level ? map[level] || level : '';
   };
 
-  const hasTabs = sejour.essentielStructure || sejour.essentiel || sejour.programmeStructure || sejour.programme || sejour.materiel || sejour.inclus || sejour.budget || sejour.infosPratiques;
+  const hasTabs = sejour.essentielStructure || sejour.essentiel || sejour.programmeStructure || sejour.programme || sejour.materiel || sejour.materielInclus || sejour.materielNonInclus || sejour.budgetInclus || sejour.budgetNonInclus || sejour.infosPratiques;
 
   const allTabs = [
     {
@@ -76,7 +76,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     {
       id: 'inclus',
       label: at('Inclus / Non inclus'),
-      content: sejour.inclus ? translatePortableText(sejour.inclus) : (sejour.budget ? translatePortableText(sejour.budget) : null),
+      content: null,
       budgetStructure: (sejour.budgetInclus || sejour.budgetNonInclus) ? {
         inclus: sejour.budgetInclus || [],
         nonInclus: sejour.budgetNonInclus || []
@@ -85,10 +85,10 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
   ] as const;
 
   const tabs = allTabs.filter((tab: any) =>
-    tab.content !== null ||
-    tab.pdf !== null ||
-    tab.budgetStructure !== null ||
-    tab.materielStructure !== null ||
+    tab.content != null ||
+    tab.pdf != null ||
+    tab.budgetStructure != null ||
+    tab.materielStructure != null ||
     (tab.programmeStructure && Array.isArray(tab.programmeStructure) && tab.programmeStructure.length > 0)
   );
 

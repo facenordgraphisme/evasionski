@@ -371,38 +371,21 @@ export const sejourType = defineType({
       group: 'contenu',
     }),
 
-    // ONGLET BUDGET
-    defineField({
-      name: 'budget',
-      title: 'Onglet — Budget (Texte libre)',
-      type: 'array',
-      of: [
-        {
-          type: 'block',
-          styles: [
-            { title: 'Normal', value: 'normal' },
-            { title: 'H2', value: 'h2' },
-            { title: 'H3', value: 'h3' },
-          ],
-        },
-      ],
-      description: 'Explications sur le budget.',
-      group: 'contenu',
-    }),
+    // ONGLET INCLUS / NON INCLUS
     defineField({
       name: 'budgetInclus',
-      title: 'Budget — Inclus',
+      title: 'Onglet Inclus / Non inclus — Inclus ✅',
       type: 'array',
       of: [{ type: 'string' }],
-      description: 'Liste à puces des prestations incluses.',
+      description: 'Une ligne par prestation incluse (affichée avec une coche verte).',
       group: 'contenu',
     }),
     defineField({
       name: 'budgetNonInclus',
-      title: 'Budget — Non inclus',
+      title: 'Onglet Inclus / Non inclus — Non inclus ❌',
       type: 'array',
       of: [{ type: 'string' }],
-      description: 'Liste à puces des frais non inclus.',
+      description: 'Une ligne par élément non inclus (affiché avec une croix rouge).',
       group: 'contenu',
     }),
 

@@ -287,7 +287,6 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
       essentiel: sejour.essentiel && sejour.essentiel.length > 0 ? sejour.essentiel : fallbackSejours[slug].essentiel,
       programme: sejour.programme && sejour.programme.length > 0 ? sejour.programme : fallbackSejours[slug].programme,
       materiel: sejour.materiel && sejour.materiel.length > 0 ? sejour.materiel : fallbackSejours[slug].materiel,
-      inclus: sejour.inclus && sejour.inclus.length > 0 ? sejour.inclus : fallbackSejours[slug].inclus,
       faqs: sejour.faqs && sejour.faqs.length > 0 ? sejour.faqs : fallbackSejours[slug].faqs,
     };
   } else if (!sejour && fallbackSejours[slug]) {

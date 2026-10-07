@@ -28,7 +28,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
   const videoSrc = slugVideoMap[sejour.slug];
 
-  const priceString = sejour.priceEncadrement || sejour.basePrice || '0';
+  const priceString = sejour.basePrice || sejour.priceEncadrement || '0';
   const numericPrice = parseFloat(priceString.replace(/[^0-9.]/g, '')) || 0;
 
   // Pages de listing d'activités qui doivent avoir "Retour à l'accueil"
@@ -250,7 +250,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
                         <span className="text-[9px] font-black uppercase tracking-widest">{at('Tarif')}</span>
                       </div>
                       <span className="text-lg font-bold text-highlight leading-tight">
-                        {at(sejour.priceEncadrement) || at(sejour.basePrice) || '—'}
+                        {at(sejour.basePrice) || at(sejour.priceEncadrement) || '—'}
                       </span>
                     </div>
                   </div>

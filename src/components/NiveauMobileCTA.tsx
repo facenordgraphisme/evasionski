@@ -17,13 +17,14 @@ export default function NiveauMobileCTA() {
 
   return (
     <div
-      className={`lg:hidden fixed bottom-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        isVisible ? 'translate-y-0' : 'translate-y-full'
+      className={`fixed bottom-0 left-0 right-0 z-[100] transition-all duration-300 lg:bottom-6 lg:left-1/2 lg:right-auto lg:-translate-x-1/2 lg:w-[min(640px,calc(100%-16rem))] ${
+        isVisible ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0 pointer-events-none lg:translate-y-[150%]'
       }`}
     >
+      {/* Desktop : barre flottante centrée pour ne pas recouvrir les boutons WhatsApp et Retour en haut */}
       <Link
         href="/niveau-en-ski"
-        className="flex items-center justify-between gap-4 w-full px-6 py-4 bg-accent text-white shadow-2xl border-t-2 border-white/20 active:scale-95 transition-transform"
+        className="flex items-center justify-between gap-4 w-full px-6 py-4 bg-accent text-white shadow-2xl border-t-2 border-white/20 lg:border-0 lg:rounded-full lg:pl-4 lg:pr-3 lg:py-3 lg:hover:brightness-105 active:scale-95 transition-all"
       >
         <div className="flex items-center gap-3 min-w-0">
           <span className="w-10 h-10 shrink-0 rounded-full bg-white/20 flex items-center justify-center">

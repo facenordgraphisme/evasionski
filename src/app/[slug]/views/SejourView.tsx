@@ -8,7 +8,7 @@ import RichContent from '@/components/RichContent';
 import BlogCard from '@/components/BlogCard';
 import SejourFAQ from '@/components/SejourFAQ';
 import SejourGallery from '@/components/SejourGallery';
-import MobileCTA from '@/components/MobileCTA';
+import NiveauMobileCTA from '@/components/NiveauMobileCTA';
 import SejourUpcomingSorties from '@/components/SejourUpcomingSorties';
 
 interface SejourViewProps {
@@ -332,11 +332,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
       )}
 
       {/* Mobile CTA */}
-      <MobileCTA
-        prix={sejour.priceEncadrement || sejour.basePrice}
-        complet={false}
-        scrollToId="prochains-departs"
-      />
+      <NiveauMobileCTA />
     </div>
   );
 }

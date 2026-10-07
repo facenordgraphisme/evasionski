@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Eye } from 'lucide-react'
+import { Calendar, Eye, ChevronDown } from 'lucide-react'
 import { useLanguage } from '@/context/LanguageContext'
 import BookingPopup from './BookingPopup'
 import SortieModal from './SortieModal'
+
+const INITIAL_COUNT = 3
 
 interface Sortie {
   _id: string
@@ -42,6 +44,7 @@ export default function SejourUpcomingSorties({
   const [selectedBooking, setSelectedBooking] = useState<{ url: string, title: string } | null>(null)
   const [selectedSortie, setSelectedSortie] = useState<Sortie | null>(null)
   const [isSortieModalOpen, setIsSortieModalOpen] = useState(false)
+  const [showAll, setShowAll] = useState(false)
 
   const getLevelLabel = (level?: string) => {
     const map: Record<string, string> = {
@@ -80,7 +83,7 @@ export default function SejourUpcomingSorties({
   return (
     <>
       <div className="space-y-2">
-        {sorties.map((s: Sortie, i: number) => {
+        {(showAll ? sorties : sorties.slice(0, INITIAL_COUNT)).map((s: Sortie, i: number) => {
           const dateDebut = new Date(s.dateDebut).toLocaleDateString('fr-FR', {
             day: '2-digit',
             month: 'short',
@@ -171,6 +174,18 @@ export default function SejourUpcomingSorties({
           )
         })}
       </div>
+
+      {sorties.length > INITIAL_COUNT && (
+        <button
+          onClick={() => setShowAll(!showAll)}
+          className="mt-3 w-full py-2.5 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-widest text-accent hover:bg-accent/5 rounded-lg transition-all"
+        >
+          {showAll
+            ? at({ fr: 'Voir moins', en: 'Show less' })
+            : `${at({ fr: 'Voir plus', en: 'Show more' })} (${sorties.length - INITIAL_COUNT})`}
+          <ChevronDown size={14} className={`transition-transform ${showAll ? 'rotate-180' : ''}`} />
+        </button>
+      )}
 
       {/* Modal détails sortie */}
       {selectedSortie && (

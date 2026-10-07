@@ -11,6 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { at } = await getServerTranslations();
   return {
     title: `${at('Activités')} | ÉvasionSki`,
+    alternates: { canonical: '/activites' },
     description: at('Découvrez toutes les activités de ski proposées par Toni Mancini : Engagement privé, Ski de randonnée journée, Freerando et Stages/Raids à ski. Encadrement professionnel.'),
   };
 }

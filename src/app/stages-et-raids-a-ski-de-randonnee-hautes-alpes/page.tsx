@@ -9,6 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `${at({ fr: 'Stages et raids à ski de randonnée', en: 'Ski touring stages & raids' })} | ÉvasionSki`,
+    alternates: { canonical: '/stages-et-raids-a-ski-de-randonnee-hautes-alpes' },
     description: at({
       fr: 'Découvrez nos stages et raids à ski de randonnée dans les Hautes-Alpes. Du Queyras à la Norvège, vivez des aventures inoubliables.',
       en: 'Discover our ski touring stages and raids in the Hautes-Alpes. From Queyras to Norway, live unforgettable adventures.'

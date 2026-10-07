@@ -9,6 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     title: `${at({ fr: 'Calendrier des sorties', en: 'Schedule Calendar' })} | ÉvasionSki`,
+    alternates: { canonical: '/calendrier' },
     description: at({
       fr: 'Consultez le calendrier de toutes nos sorties de ski de randonnée, freerando et raids à ski dans les Hautes-Alpes.',
       en: 'Check the calendar of all our ski touring, freerando and ski raid trips in the Hautes-Alpes.'

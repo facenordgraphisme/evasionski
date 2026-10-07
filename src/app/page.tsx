@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import PresentationSection from "@/components/PresentationSection";
@@ -17,6 +18,10 @@ import { mockHome, mockSorties, mockTestimonials, mockPosts, mockActivities, moc
 
 // Cache cette page pendant 60 secondes (ISR) pour réduire les appels API Sanity
 export const revalidate = 60;
+
+export const metadata: Metadata = {
+  alternates: { canonical: '/' },
+};
 
 export default async function Home() {
   let homeData = null;

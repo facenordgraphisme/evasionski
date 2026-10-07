@@ -41,7 +41,14 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const { slug } = await props.params;
+  const metadata = await buildMetadata(props);
+  if (!metadata.title) return metadata;
+  return { ...metadata, alternates: { canonical: `/${slug}` } };
+}
+
+async function buildMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const sParams = await searchParams;
   const { at } = await getServerTranslations();

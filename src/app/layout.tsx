@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 import { client } from "@/sanity/lib/client";
 import { contactQuery, activitiesQuery, settingsQuery } from "@/sanity/lib/queries";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import { SITE_URL } from "@/utils/site";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -38,6 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
       : (settingsData?.seoDescription || "Moniteur de Ski de Randonnée Toni Mancini. Alpinisme, ski de randonnée, escalade et voyages.");
 
     return {
+      metadataBase: new URL(SITE_URL),
       title,
       description,
       icons: {
@@ -47,13 +49,17 @@ export async function generateMetadata(): Promise<Metadata> {
         ],
         apple: '/logo.png',
       },
-      openGraph: settingsData?.seoImage ? {
-        images: [{ url: settingsData.seoImage }],
-      } : undefined,
+      openGraph: {
+        siteName: 'ÉvasionSki',
+        locale: 'fr_FR',
+        type: 'website',
+        images: settingsData?.seoImage ? [{ url: settingsData.seoImage }] : undefined,
+      },
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {
+      metadataBase: new URL(SITE_URL),
       title: "ÉvasionSki | Toni Mancini",
       icons: {
         icon: [

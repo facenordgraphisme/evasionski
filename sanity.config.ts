@@ -1,5 +1,7 @@
 import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
+import { presentationTool } from 'sanity/presentation'
+import { presentationOptions } from './src/sanity/presentation'
 import { visionTool } from '@sanity/vision'
 import { frFRLocale } from '@sanity/locale-fr-fr'
 import { media } from 'sanity-plugin-media'
@@ -18,7 +20,8 @@ export default defineConfig({
   icon: StudioLogo,
   theme: studioTheme,
   plugins: [
-    structureTool({ structure }), 
+    structureTool({ structure }),
+    presentationTool(presentationOptions),
     visionTool(),
     frFRLocale(),
     media(),

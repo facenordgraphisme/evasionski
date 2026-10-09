@@ -1,4 +1,5 @@
-import { createClient } from 'next-sanity'
+import { createClient, type FilterDefault } from 'next-sanity'
+import { draftMode } from 'next/headers'
 import * as mock from './mockData'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'your-project-id'
@@ -15,6 +16,34 @@ const sanityClient = createClient({
   perspective: 'published', // Seulement le contenu publié
   stega: false, // Pas de données d'édition
 })
+
+// Stega (marqueurs invisibles du mode visuel) : uniquement sur les textes affichés.
+// Les valeurs comparées dans le code (catégorie, niveau, slug, dates, numéros…) ne doivent pas être encodées.
+const STEGA_TEXT_KEY = /^(title|titre|titrePersonnalise|description|descriptionPersonnalisee|excerpt|text|quote|question|questionFr|questionEn|answer|answerFr|answerEn|jour|lieuRdv|heureRdv|denivele|footerDescription)$|(Title|Subtitle|Description|Badge|Accent)$/
+const STEGA_TEXT_PARENT = /^(essentielStructure|budgetInclus|budgetNonInclus|materielInclus|materielNonInclus|programmeStructure|faqs|presentationCards|adventureFeatures|adventureFaqs)$/
+
+const stegaFilter: FilterDefault = (props) => {
+  if (props.sourceDocument._type === 'niveauSki') return false // titres utilisés comme clés de liens
+  const keys = props.sourcePath.filter((p): p is string => typeof p === 'string')
+  const last = keys[keys.length - 1]
+  const isText = (last && STEGA_TEXT_KEY.test(last)) || keys.some((k) => STEGA_TEXT_PARENT.test(k))
+  return isText ? props.filterDefault(props) : false
+}
+
+const draftClient = sanityClient.withConfig({
+  token: process.env.SANITY_API_TOKEN,
+  useCdn: false,
+  perspective: 'drafts',
+  stega: { enabled: true, studioUrl: '/studio', filter: stegaFilter },
+})
+
+export async function isDraftMode() {
+  try {
+    return (await draftMode()).isEnabled
+  } catch {
+    return false // hors requête (build, script)
+  }
+}
 
 export const client = {
   ...sanityClient,
@@ -96,6 +125,10 @@ export const client = {
       console.log('Unmatched mock query, fallback to live:', query);
     }
     
+    if (await isDraftMode()) {
+      // En aperçu, les pages masquées restent visibles pour pouvoir les préparer
+      return draftClient.fetch(query.replace(/ && (sejour->)?masquer != true/g, ''), params);
+    }
     return sanityClient.fetch(query, params);
   }
 } as any;

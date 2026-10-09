@@ -6,8 +6,10 @@ import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
 
-import { client } from "@/sanity/lib/client";
-import { contactQuery, activitiesQuery, settingsQuery } from "@/sanity/lib/queries";
+import { client, isDraftMode } from "@/sanity/lib/client";
+import { VisualEditing } from "next-sanity/visual-editing";
+import DraftModeBanner from "@/components/DraftModeBanner";
+import { contactQuery, activitiesQuery, settingsQuery, hiddenSejourSlugsQuery } from "@/sanity/lib/queries";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { SITE_URL } from "@/utils/site";
 
@@ -84,10 +86,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [contactData, activitiesData, settingsData] = await Promise.all([
+  const [contactData, activitiesData, settingsData, hiddenSlugs, isDraft] = await Promise.all([
     client.fetch(contactQuery),
     client.fetch(activitiesQuery),
-    client.fetch(settingsQuery)
+    client.fetch(settingsQuery),
+    client.fetch(hiddenSejourSlugsQuery).catch(() => []),
+    isDraftMode(),
   ]);
   const phoneNumber = contactData?.phone;
   const whatsappNumber = settingsData?.whatsappNumber;
@@ -104,7 +108,7 @@ export default async function RootLayout({
         >
           <LanguageProvider>
             <AnnouncementBanner settings={settingsData} />
-            <Navbar sanityActivities={activitiesData} />
+            <Navbar sanityActivities={activitiesData} hiddenSlugs={hiddenSlugs ?? []} />
             {children}
             <Footer contactData={contactData} settingsData={settingsData} />
             <WhatsAppButton
@@ -113,6 +117,12 @@ export default async function RootLayout({
               whatsappText={whatsappText}
             />
             <ScrollToTop />
+            {isDraft && (
+              <>
+                <VisualEditing />
+                <DraftModeBanner />
+              </>
+            )}
           </LanguageProvider>
         </ThemeProvider>
       </body>

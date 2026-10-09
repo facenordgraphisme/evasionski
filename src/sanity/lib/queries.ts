@@ -75,7 +75,7 @@ export const testimonialsQuery = groq`*[_type == "testimonial"] | order(_created
   "avatar": avatar.asset->url
 }`
 
-export const sortiesQuery = groq`*[_type == "sejourDate" && dateDebut >= now()] | order(dateDebut asc) {
+export const sortiesQuery = groq`*[_type == "sejourDate" && sejour->masquer != true && dateDebut >= now()] | order(dateDebut asc) {
   _id,
   "slug": slug.current,
   titrePersonnalise,
@@ -134,7 +134,7 @@ export const sortiesQuery = groq`*[_type == "sejourDate" && dateDebut >= now()] 
 }`
 
 // Query pour récupérer une sortie spécifique par slug
-export const sortieBySlugQuery = groq`*[_type == "sejourDate" && slug.current == $slug][0] {
+export const sortieBySlugQuery = groq`*[_type == "sejourDate" && sejour->masquer != true && slug.current == $slug][0] {
   _id,
   "slug": slug.current,
   titrePersonnalise,
@@ -205,7 +205,7 @@ export const sortieBySlugQuery = groq`*[_type == "sejourDate" && slug.current ==
   }
 }`
 
-export const sejoursQuery = groq`*[_type == "sejour"] | order(title asc) {
+export const sejoursQuery = groq`*[_type == "sejour" && masquer != true] | order(title asc) {
   title,
   "slug": slug.current,
   categorie,
@@ -217,7 +217,7 @@ export const sejoursQuery = groq`*[_type == "sejour"] | order(title asc) {
   description
 }`
 
-export const sejoursByCategoryQuery = groq`*[_type == "sejour" && categorie == $categorie] | order(title asc) {
+export const sejoursByCategoryQuery = groq`*[_type == "sejour" && masquer != true && categorie == $categorie] | order(title asc) {
   title,
   "slug": slug.current,
   categorie,
@@ -229,8 +229,12 @@ export const sejoursByCategoryQuery = groq`*[_type == "sejour" && categorie == $
   description
 }`
 
+export const hiddenSejourSlugsQuery = groq`*[_type == "sejour" && masquer == true].slug.current`
+
+// Pas de filtre `masquer` ici : la page doit savoir qu'un séjour est masqué pour ne pas retomber sur fallbackData.
 export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $slug][0] {
   _id,
+  masquer,
   title,
   "slug": slug.current,
   categorie,
@@ -283,7 +287,7 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
     answer,
     answerEn
   },
-  "upcomingSorties": *[_type == "sejourDate" && sejour._ref == ^._id && dateDebut >= now()] | order(dateDebut asc) {
+  "upcomingSorties": *[_type == "sejourDate" && sejour->masquer != true && sejour._ref == ^._id && dateDebut >= now()] | order(dateDebut asc) {
     _id,
     "slug": slug.current,
     titrePersonnalise,
@@ -304,7 +308,7 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
   seoDescription
 }`
 
-export const postsBySejourQuery = groq`*[_type == "post" && relatedSejour._ref == $sejourId] | order(publishedAt desc)[0...6] {
+export const postsBySejourQuery = groq`*[_type == "post" && masquer != true && relatedSejour._ref == $sejourId] | order(publishedAt desc)[0...6] {
   title,
   "slug": slug.current,
   "date": publishedAt,
@@ -314,7 +318,7 @@ export const postsBySejourQuery = groq`*[_type == "post" && relatedSejour._ref =
   excerpt
 }`
 
-export const postsByActivityQuery = groq`*[_type == "post" && (activityType == $activityType || activityType->_ref == $activityType || activityType->type == $activityType || activityType->slug.current == $activityType) && !(relatedSejour._ref in $excludedIds)] | order(publishedAt desc)[0...6] {
+export const postsByActivityQuery = groq`*[_type == "post" && masquer != true && (activityType == $activityType || activityType->_ref == $activityType || activityType->type == $activityType || activityType->slug.current == $activityType) && !(relatedSejour._ref in $excludedIds)] | order(publishedAt desc)[0...6] {
   title,
   "slug": slug.current,
   "date": publishedAt,
@@ -388,14 +392,14 @@ export const activitiesQuery = groq`[
     "slug": "ski-randonnee-hautes-alpes-journee",
     "description": "Des sorties à la journée pour s'évader, découvrir de nouveaux massifs et s'initier ou se perfectionner.",
     "price": "95€ / pers",
-    "image": *[_type == "sejour" && categorie == "journee-ski-rando"][0].image.asset->url
+    "image": *[_type == "sejour" && masquer != true && categorie == "journee-ski-rando"][0].image.asset->url
   },
   {
     "title": "Freerando & Hors-piste",
     "slug": "ski-hors-piste-station-hautes-alpes",
     "description": "Profitez des remontées mécaniques pour accéder à de longs hors-pistes et de superbes combes sauvages.",
     "price": "95€ / pers",
-    "image": *[_type == "sejour" && categorie == "journee-freerando"][0].image.asset->url
+    "image": *[_type == "sejour" && masquer != true && categorie == "journee-freerando"][0].image.asset->url
   },
   {
     "title": "Stages et raids à ski",
@@ -406,7 +410,7 @@ export const activitiesQuery = groq`[
   }
 ]`
 
-export const blogTeaserQuery = groq`*[_type == "post"] | order(publishedAt desc)[0...$limit] {
+export const blogTeaserQuery = groq`*[_type == "post" && masquer != true] | order(publishedAt desc)[0...$limit] {
   title,
   "slug": slug.current,
   "date": publishedAt,
@@ -453,7 +457,7 @@ export const contactQuery = groq`*[_type == "contact"][0] {
   location
 }`
 
-export const postsQuery = groq`*[_type == "post"] | order(publishedAt desc) {
+export const postsQuery = groq`*[_type == "post" && masquer != true] | order(publishedAt desc) {
   title,
   "slug": slug.current,
   "date": publishedAt,
@@ -465,10 +469,10 @@ export const postsQuery = groq`*[_type == "post"] | order(publishedAt desc) {
   "tags": tags[]->name
 }`
 
-export const postSlugsQuery = groq`*[_type == "post"]{ "slug": slug.current }`
+export const postSlugsQuery = groq`*[_type == "post" && masquer != true]{ "slug": slug.current }`
 
 export const postsPageQuery = groq`{
-  "posts": *[_type == "post"
+  "posts": *[_type == "post" && masquer != true
     && (!defined($category) || $category in tags[]->slug.current)
     && (!defined($massif) || $massif in tags[]->slug.current)
   ] | order(publishedAt desc) [$start...$end] {
@@ -481,7 +485,7 @@ export const postsPageQuery = groq`{
     "imageName": mainImage.imageName,
     excerpt
   },
-  "total": count(*[_type == "post"
+  "total": count(*[_type == "post" && masquer != true
     && (!defined($category) || $category in tags[]->slug.current)
     && (!defined($massif) || $massif in tags[]->slug.current)
   ])
@@ -500,7 +504,7 @@ export const massifsQuery = groq`*[_type == "massif"] | order(ordre asc, nom asc
   ordre
 }`
 
-export const postBySlugQuery = groq`*[_type == "post" && slug.current == $slug][0] {
+export const postBySlugQuery = groq`*[_type == "post" && masquer != true && slug.current == $slug][0] {
   title,
   "slug": slug.current,
   "date": publishedAt,
@@ -511,11 +515,11 @@ export const postBySlugQuery = groq`*[_type == "post" && slug.current == $slug][
   body,
   "gallery": gallery[]{alt, "url": asset->url},
   "tags": tags[]->{ name, "slug": slug.current, tagType },
-  "prevPost": *[_type == "post" && (publishedAt < ^.publishedAt || (publishedAt == ^.publishedAt && _createdAt < ^._createdAt))] | order(publishedAt desc, _createdAt desc)[0] {
+  "prevPost": *[_type == "post" && masquer != true && (publishedAt < ^.publishedAt || (publishedAt == ^.publishedAt && _createdAt < ^._createdAt))] | order(publishedAt desc, _createdAt desc)[0] {
     title,
     "slug": slug.current
   },
-  "nextPost": *[_type == "post" && (publishedAt > ^.publishedAt || (publishedAt == ^.publishedAt && _createdAt > ^._createdAt))] | order(publishedAt asc, _createdAt asc)[0] {
+  "nextPost": *[_type == "post" && masquer != true && (publishedAt > ^.publishedAt || (publishedAt == ^.publishedAt && _createdAt > ^._createdAt))] | order(publishedAt asc, _createdAt asc)[0] {
     title,
     "slug": slug.current
   }

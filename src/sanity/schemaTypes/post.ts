@@ -8,6 +8,13 @@ export const postType = defineType({
   icon: FileText,
   fields: [
     defineField({
+      name: 'masquer',
+      title: '🙈 Masquer cet article du site',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Activé : l\'article est invisible pour les visiteurs (lien, blog, accueil, Google). Pensez à publier après avoir changé ce réglage.',
+    }),
+    defineField({
       name: 'title',
       title: 'Titre',
       type: 'string',
@@ -150,4 +157,13 @@ export const postType = defineType({
       description: 'Optionnel. Galerie de photos qui s\'affichera automatiquement en bas de l\'article.',
     }),
   ],
+  preview: {
+    select: { title: 'title', masquer: 'masquer', media: 'mainImage' },
+    prepare({ title, masquer, media }) {
+      return {
+        title: `${masquer ? '🙈 [Masqué] ' : ''}${title || 'Sans titre'}`,
+        media,
+      }
+    },
+  },
 })

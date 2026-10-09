@@ -6,10 +6,10 @@ import { SITE_URL } from '@/utils/site'
 
 export const revalidate = 3600
 
-type Entry = { slug: string; updatedAt?: string }
+type Entry = { slug: string; updatedAt?: string; masquer?: boolean }
 
-const sejoursQuery = groq`*[_type == "sejour" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`
-const postsQuery = groq`*[_type == "post" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`
+const sejoursQuery = groq`*[_type == "sejour" && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt, masquer }`
+const postsQuery = groq`*[_type == "post" && masquer != true && defined(slug.current)]{ "slug": slug.current, "updatedAt": _updatedAt }`
 
 const staticPages: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
   { path: '', priority: 1, changeFrequency: 'weekly' },
@@ -34,7 +34,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const sejourSlugs = new Map<string, string | undefined>()
   for (const slug of Object.keys(fallbackSejours)) sejourSlugs.set(slug, undefined)
-  for (const s of sejours ?? []) sejourSlugs.set(s.slug, s.updatedAt)
+  for (const s of sejours ?? []) {
+    if (s.masquer) sejourSlugs.delete(s.slug)
+    else sejourSlugs.set(s.slug, s.updatedAt)
+  }
 
   const staticPaths = new Set(staticPages.map((p) => p.path))
 

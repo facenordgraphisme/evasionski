@@ -30,6 +30,14 @@ export const sejourType = defineType({
   ],
   fields: [
     defineField({
+      name: 'masquer',
+      title: 'Masquer cette page du site',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Activé : la page est invisible pour les visiteurs (lien, menus, listes, calendrier, Google).',
+      group: ['hero', 'contenu', 'fiche', 'faq', 'options'],
+    }),
+    defineField({
       name: 'title',
       title: 'Titre du séjour',
       type: 'string',

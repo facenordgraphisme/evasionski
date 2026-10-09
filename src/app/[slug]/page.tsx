@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import React, { Suspense } from 'react';
-import { client } from "@/sanity/lib/client";
+import { client, isDraftMode } from "@/sanity/lib/client";
 import { notFound } from 'next/navigation';
 import { getServerTranslations } from '@/i18n/server';
 
@@ -129,6 +129,10 @@ async function buildMetadata({ params, searchParams }: PageProps): Promise<Metad
     post = fetchedPost;
   } catch (err) {
     console.error("Sanity query error in generateMetadata:", err);
+  }
+
+  if (sejour?.masquer) {
+    return { robots: { index: false, follow: false } };
   }
 
   if (sejour && fallbackSejours[slug]) {
@@ -284,6 +288,10 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
     post = fetchedPost;
   } catch (err) {
     console.error("Sanity query error in DynamicSlugPage:", err);
+  }
+
+  if (sejour?.masquer && !(await isDraftMode())) {
+    notFound();
   }
 
   if (sejour && fallbackSejours[slug]) {

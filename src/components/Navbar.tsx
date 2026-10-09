@@ -10,7 +10,7 @@ import { useLanguage } from '@/context/LanguageContext'
 import { usePathname } from 'next/navigation'
 import gsap from 'gsap'
 
-const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
+const Navbar = ({ sanityActivities, hiddenSlugs = [] }: { sanityActivities?: any[]; hiddenSlugs?: string[] } = {}) => {
   const pathname = usePathname()
   const { theme, setTheme, resolvedTheme } = useTheme()
   const { language, setLanguage, t, at } = useLanguage()
@@ -67,6 +67,8 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  const isVisibleItem = (item: { slug: string }) => !hiddenSlugs.includes(item.slug)
+
   const journeeSubmenuItems = [
     {
       title: { fr: "À la carte / Engagement Privé", en: "Custom / Private guiding" },
@@ -83,7 +85,7 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
       slug: "ski-hors-piste-station-hautes-alpes",
       image: "/photos/DSC_6612.jpg"
     },
-  ]
+  ].filter(isVisibleItem)
 
   const stagesSubmenuItems = [
     {
@@ -116,7 +118,7 @@ const Navbar = ({ sanityActivities }: { sanityActivities?: any[] } = {}) => {
       slug: "ski-de-randonnee-engagement-prive",
       image: "/images/hero.jpg"
     },
-  ]
+  ].filter(isVisibleItem)
 
   const infosSubmenuItems = [
     { title: { fr: "Évaluer son niveau", en: "Evaluate your level" }, slug: "niveau-en-ski" },

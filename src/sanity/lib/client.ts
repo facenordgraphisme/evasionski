@@ -19,7 +19,7 @@ const sanityClient = createClient({
 
 // Stega (marqueurs invisibles du mode visuel) : uniquement sur les textes affichés.
 // Les valeurs comparées dans le code (catégorie, niveau, slug, dates, numéros…) ne doivent pas être encodées.
-const STEGA_TEXT_KEY = /^(title|titre|titrePersonnalise|description|descriptionPersonnalisee|excerpt|text|quote|question|questionFr|questionEn|answer|answerFr|answerEn|jour|lieuRdv|heureRdv|denivele|footerDescription)$|(Title|Subtitle|Description|Badge|Accent)$/
+const STEGA_TEXT_KEY = /^(title|titre|titrePersonnalise|description|descriptionPersonnalisee|excerpt|text|quote|question|questionFr|questionEn|answer|answerFr|answerEn|jour|lieuRdv|heureRdv|denivele|fraisSejour|footerDescription)$|(Title|Subtitle|Description|Badge|Accent)$/
 const STEGA_TEXT_PARENT = /^(essentielStructure|budgetInclus|budgetNonInclus|materielInclus|materielNonInclus|programmeStructure|faqs|presentationCards|adventureFeatures|adventureFaqs)$/
 
 const stegaFilter: FilterDefault = (props) => {

@@ -246,6 +246,7 @@ export const sejourBySlugQuery = groq`*[_type == "sejour" && slug.current == $sl
   "duration": duree,
   prixDefaut,
   "basePrice": prixDefaut,
+  "priceFraisSejour": fraisSejour,
   "image": image.asset->url,
   description,
   hideUpcomingSorties,

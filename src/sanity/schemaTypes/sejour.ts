@@ -142,6 +142,13 @@ export const sejourType = defineType({
       description: 'Ex: À partir de 95€/pers (pour l\'affichage sur les cartes)',
       group: 'fiche',
     }),
+    defineField({
+      name: 'fraisSejour',
+      title: 'Frais de séjour',
+      type: 'string',
+      description: 'Ligne affichée sous le tarif dans la fiche technique. Ex : À partir de 400€ (pension complète). Laisser vide pour ne pas l\'afficher.',
+      group: 'fiche',
+    }),
 
     // CONTENU INTRO
     defineField({

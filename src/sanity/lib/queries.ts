@@ -609,6 +609,18 @@ export const legalPagesQuery = groq`*[_type == "legalPages"][0]{
   cgvEn
 }`
 
+export const stagesRaidsPageQuery = groq`*[_type == "stagesRaidsPage"][0]{
+  "heroImage": heroImage.asset->url,
+  badge,
+  badgeEn,
+  title,
+  titleEn,
+  description,
+  descriptionEn,
+  seoTitle,
+  seoDescription
+}`
+
 export const calendarPageQuery = groq`*[_type == "calendarPage"][0]{
   "heroImage": heroImage.asset->url,
   badge,

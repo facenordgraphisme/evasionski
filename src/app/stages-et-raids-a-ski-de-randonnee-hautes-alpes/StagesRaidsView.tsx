@@ -19,12 +19,30 @@ interface Sejour {
   description: string
 }
 
-interface StagesRaidsViewProps {
-  sejours: Sejour[]
+export interface StagesRaidsPageData {
+  heroImage?: string
+  badge?: string
+  badgeEn?: string
+  title?: string
+  titleEn?: string
+  description?: string
+  descriptionEn?: string
+  seoTitle?: string
+  seoDescription?: string
 }
 
-export default function StagesRaidsView({ sejours }: StagesRaidsViewProps) {
+interface StagesRaidsViewProps {
+  sejours: Sejour[]
+  page?: StagesRaidsPageData | null
+}
+
+export default function StagesRaidsView({ sejours, page }: StagesRaidsViewProps) {
   const { at } = useLanguage()
+
+  const heroTitle = at({
+    fr: page?.title || 'Stages et raids à ski',
+    en: page?.titleEn || 'Ski touring stages & raids',
+  })
 
   const getNiveauLabel = (niveau: string) => {
     const map: Record<string, string> = {
@@ -41,8 +59,8 @@ export default function StagesRaidsView({ sejours }: StagesRaidsViewProps) {
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] overflow-hidden mb-24">
         <Image
-          src="/images/stages_raids_hub.jpg"
-          alt={at({ fr: 'Stages et raids à ski', en: 'Ski touring stages & raids' })}
+          src={page?.heroImage || '/images/stages_raids_hub.jpg'}
+          alt={heroTitle}
           fill
           sizes="100vw"
           className="object-cover"
@@ -53,15 +71,15 @@ export default function StagesRaidsView({ sejours }: StagesRaidsViewProps) {
         <div className="absolute inset-0 flex items-end">
           <div className="container mx-auto px-6 pb-16">
             <span className="text-accent font-bold tracking-widest uppercase text-sm mb-4 block">
-              {at({ fr: 'Immersion totale', en: 'Full immersion' })}
+              {at({ fr: page?.badge || 'Immersion totale', en: page?.badgeEn || 'Full immersion' })}
             </span>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-gradient max-w-4xl">
-              {at({ fr: 'Stages et raids à ski', en: 'Ski touring stages & raids' })}
+              {heroTitle}
             </h1>
             <p className="text-xl text-foreground/80 max-w-2xl leading-relaxed">
               {at({
-                fr: 'De refuge en gîte, vivez des raids à ski d\'exception de plusieurs jours. Du Queyras aux Alpes de Lyngen en Norvège, découvrez les plus beaux massifs.',
-                en: 'From hut to lodge, experience exceptional multi-day ski raids. From Queyras to the Lyngen Alps in Norway, discover the most beautiful mountain ranges.'
+                fr: page?.description || 'De refuge en gîte, vivez des raids à ski d\'exception de plusieurs jours. Du Queyras aux Alpes de Lyngen en Norvège, découvrez les plus beaux massifs.',
+                en: page?.descriptionEn || 'From hut to lodge, experience exceptional multi-day ski raids. From Queyras to the Lyngen Alps in Norway, discover the most beautiful mountain ranges.'
               })}
             </p>
           </div>

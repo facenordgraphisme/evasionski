@@ -7,6 +7,7 @@ const page = (title: string, href: string) =>
 const mainDocuments = defineDocuments([
   { route: '/', filter: `_type == "home"` },
   { route: '/calendrier', filter: `_type == "calendarPage"` },
+  { route: '/stages-et-raids-a-ski-de-randonnee-hautes-alpes', filter: `_type == "stagesRaidsPage"` },
   { route: '/activites', filter: `_type == "activitiesPage"` },
   { route: '/niveau-en-ski', filter: `_type == "niveauSki"` },
   { route: '/a-propos-moniteur-de-ski-de-randonnee', filter: `_type == "guide"` },
@@ -19,6 +20,7 @@ const mainDocuments = defineDocuments([
 const locations = {
   home: page('Accueil', '/'),
   calendarPage: page('Calendrier', '/calendrier'),
+  stagesRaidsPage: page('Stages & Raids', '/stages-et-raids-a-ski-de-randonnee-hautes-alpes'),
   activitiesPage: page('Activités', '/activites'),
   niveauSki: page('Niveau en ski', '/niveau-en-ski'),
   guide: page('À propos', '/a-propos-moniteur-de-ski-de-randonnee'),

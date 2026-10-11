@@ -73,6 +73,12 @@ export const structure = (S: StructureBuilder) =>
         .child(S.document().schemaType('aLaCarte').documentId('ski-de-randonnee-engagement-prive').title('Page À la Carte')),
 
       S.listItem()
+        .title('Page Stages & Raids')
+        .id('stagesRaidsPage')
+        .icon(Mountain)
+        .child(S.document().schemaType('stagesRaidsPage').documentId('stagesRaidsPage').title('Page Stages & Raids')),
+
+      S.listItem()
         .title('Catalogue des Séjours')
         .id('sejour')
         .icon(Package)

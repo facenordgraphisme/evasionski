@@ -161,7 +161,8 @@ const UpcomingSorties = ({
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                {/* Dégradé sombre fixe (indépendant du thème) pour garder le texte lisible sur la neige */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/55 via-45% to-transparent to-75%" />
                 
                 {/* Badges */}
                 <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
@@ -177,29 +178,29 @@ const UpcomingSorties = ({
 
                 <div className="absolute inset-0 p-8 flex flex-col justify-end">
                   <div className="space-y-4 mb-6">
-                    <div className="flex items-center gap-3 text-accent font-bold uppercase tracking-[0.2em] text-xs">
+                    <div className="flex items-center gap-3 text-amber-400 font-bold uppercase tracking-[0.2em] text-xs drop-shadow">
                       <Calendar size={14} />
                       {new Date(s.dateDebut).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short', year: 'numeric' })}
                       {s.dateFin && s.dateFin !== s.dateDebut && ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short' })}`}
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground tracking-tight leading-snug">
+                    <h3 className="text-2xl font-bold text-white tracking-tight leading-snug drop-shadow-md">
                       {at(s.titrePersonnalise || s.sejour?.title)}
                     </h3>
-                    <div className="flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-widest text-foreground/60">
+                    <div className="flex flex-wrap gap-4 text-[10px] font-bold uppercase tracking-widest text-white/80">
                       {s.sejour?.massifs && s.sejour.massifs.length > 0 && (
                         <div className="flex items-center gap-1">
-                          <MapPin size={12} className="text-accent" />
+                          <MapPin size={12} className="text-amber-400" />
                           {at(s.sejour.massifs[0])}
                         </div>
                       )}
                       {s.sejour?.duree && (
                         <div className="flex items-center gap-1">
-                          <Clock size={12} className="text-accent" />
+                          <Clock size={12} className="text-amber-400" />
                           {at(s.sejour.duree)}
                         </div>
                       )}
                       <div className="flex items-center gap-1">
-                        <Users size={12} className="text-accent" />
+                        <Users size={12} className="text-amber-400" />
                         {s.placesDisponibles} / {s.placesTotales} {at('places')}
                       </div>
                     </div>
@@ -219,7 +220,7 @@ const UpcomingSorties = ({
                     return (
                       <Link
                         href={href}
-                        className="w-full py-4 bg-foreground text-background hover:bg-accent hover:text-white transition-all rounded-2xl text-center text-xs font-black uppercase tracking-widest"
+                        className="w-full py-4 bg-white text-slate-950 hover:bg-accent hover:text-white transition-all rounded-2xl text-center text-xs font-black uppercase tracking-widest"
                       >
                         {at('Découvrir la sortie')}
                       </Link>

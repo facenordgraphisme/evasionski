@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -54,9 +54,29 @@ const DAY_NAMES = {
   en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 }
 
+// --- Dates sans fuseau horaire ---------------------------------------------
+// Les dates Sanity sont des chaînes "YYYY-MM-DD" (jour civil, sans heure).
+// On ne passe JAMAIS par l'heure locale de l'appareil : tous les calculs se font
+// en UTC pur, ce qui donne le même résultat sur le serveur et sur n'importe quel
+// téléphone, quel que soit son fuseau.
+const pad = (n: number) => String(n).padStart(2, '0')
+const toKey = (d: Date) => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`
+const fromKey = (key: string) => {
+  const [y, m, d] = key.slice(0, 10).split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d))
+}
+// "Aujourd'hui" vu depuis les Hautes-Alpes
+const parisTodayKey = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris' }).format(new Date())
+
 export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
   const { at, language } = useLanguage()
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [view, setView] = useState(() => {
+    const t = fromKey(parisTodayKey())
+    return { year: t.getUTCFullYear(), month: t.getUTCMonth() }
+  })
+  // Calculé après le montage pour éviter tout écart serveur / navigateur à l'hydratation
+  const [todayKey, setTodayKey] = useState<string | null>(null)
+  useEffect(() => { setTodayKey(parisTodayKey()) }, [])
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [hoveredDate, setHoveredDate] = useState<string | null>(null)
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
@@ -94,12 +114,7 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
   }
 
   // Calendar calculations
-  const year = currentDate.getFullYear()
-  const month = currentDate.getMonth()
-  const firstDay = new Date(year, month, 1)
-  const lastDay = new Date(year, month + 1, 0)
-  const startDate = new Date(firstDay)
-  startDate.setDate(startDate.getDate() - firstDay.getDay())
+  const { year, month } = view
 
   const monthNames = MONTH_NAMES[language as keyof typeof MONTH_NAMES] || MONTH_NAMES.fr
   const dayNames = DAY_NAMES[language as keyof typeof DAY_NAMES] || DAY_NAMES.fr
@@ -108,16 +123,17 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
   const sortiesByDate = useMemo(() => {
     const map: Record<string, Sortie[]> = {}
     sorties.forEach(sortie => {
-      const startDate = new Date(sortie.dateDebut)
-      const endDate = sortie.dateFin ? new Date(sortie.dateFin) : startDate
+      if (!sortie.dateDebut) return
+      const start = fromKey(sortie.dateDebut)
+      const end = sortie.dateFin ? fromKey(sortie.dateFin) : start
 
-      // Add sortie to all dates in range
-      let currentDate = new Date(startDate)
-      while (currentDate <= endDate) {
-        const dateKey = currentDate.toISOString().split('T')[0]
+      // Add sortie to all dates in range (garde-fou : 60 jours max)
+      const cursor = new Date(start)
+      for (let i = 0; cursor <= end && i < 60; i++) {
+        const dateKey = toKey(cursor)
         if (!map[dateKey]) map[dateKey] = []
         map[dateKey].push(sortie)
-        currentDate.setDate(currentDate.getDate() + 1)
+        cursor.setUTCDate(cursor.getUTCDate() + 1)
       }
     })
     return map
@@ -126,34 +142,30 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
   // Generate calendar days
   const calendarDays = useMemo(() => {
     const days = []
-    const current = new Date(startDate)
+    const firstDay = new Date(Date.UTC(year, month, 1))
+    // Grille qui commence le dimanche (colonne DIM)
+    const current = new Date(Date.UTC(year, month, 1 - firstDay.getUTCDay()))
 
     for (let i = 0; i < 42; i++) {
-      const dateKey = current.toISOString().split('T')[0]
-      const isCurrentMonth = current.getMonth() === month
-      const isToday = new Date().toDateString() === current.toDateString()
-      const daySorties = sortiesByDate[dateKey] || []
-
+      const dateKey = toKey(current)
       days.push({
-        date: new Date(current),
         dateKey,
-        day: current.getDate(),
-        isCurrentMonth,
-        isToday,
-        sorties: daySorties
+        day: current.getUTCDate(),
+        isCurrentMonth: current.getUTCMonth() === month,
+        isToday: dateKey === todayKey,
+        sorties: sortiesByDate[dateKey] || []
       })
-
-      current.setDate(current.getDate() + 1)
+      current.setUTCDate(current.getUTCDate() + 1)
     }
     return days
-  }, [startDate, month, sortiesByDate])
+  }, [year, month, todayKey, sortiesByDate])
 
   const prevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1))
+    setView(({ year, month }) => (month === 0 ? { year: year - 1, month: 11 } : { year, month: month - 1 }))
   }
 
   const nextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1))
+    setView(({ year, month }) => (month === 11 ? { year: year + 1, month: 0 } : { year, month: month + 1 }))
   }
 
   const selectedDaySorties = selectedDate ? sortiesByDate[selectedDate] || [] : []
@@ -238,13 +250,11 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
 
           {/* Calendar Grid */}
           <div className="grid grid-cols-7 gap-1 md:gap-2">
-            {calendarDays.map(({ date, dateKey, day, isCurrentMonth, isToday, sorties }) => {
+            {calendarDays.map(({ dateKey, day, isCurrentMonth, isToday, sorties }) => {
               // Check if this day is part of a multi-day event
               const hasMultiDay = sorties.some(s => {
                 if (!s.dateFin || s.dateFin === s.dateDebut) return false
-                const start = new Date(s.dateDebut)
-                const end = new Date(s.dateFin)
-                return (end.getTime() - start.getTime()) > 86400000 // > 1 day
+                return (fromKey(s.dateFin).getTime() - fromKey(s.dateDebut).getTime()) > 86400000 // > 1 day
               })
 
               return (
@@ -380,7 +390,8 @@ export default function CalendarView({ sorties, pageData }: CalendarViewProps) {
                   <div>
                     <div className="flex items-center gap-2 text-accent text-sm font-bold uppercase tracking-widest mb-2">
                       <Calendar size={16} />
-                      {new Date(selectedDate).toLocaleDateString('fr-FR', {
+                      {fromKey(selectedDate).toLocaleDateString(language === 'en' ? 'en-GB' : 'fr-FR', {
+                        timeZone: 'UTC',
                         weekday: 'long',
                         day: 'numeric',
                         month: 'long',

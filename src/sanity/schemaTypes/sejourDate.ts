@@ -21,7 +21,7 @@ export const sejourDateType = defineType({
       type: 'slug',
       options: {
         source: (doc: any) => {
-          const date = doc.dateDebut ? new Date(doc.dateDebut).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' }).replace(/\s/g, '-') : ''
+          const date = doc.dateDebut ? new Date(doc.dateDebut).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short' }).replace(/\s/g, '-') : ''
           return `sortie-${date}`
         },
         maxLength: 96,
@@ -252,9 +252,9 @@ export const sejourDateType = defineType({
       // Format dates
       let dateStr = ''
       if (dateDebut) {
-        const debut = new Date(dateDebut).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
+        const debut = new Date(dateDebut).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short' })
         if (dateFin && dateFin !== dateDebut) {
-          const fin = new Date(dateFin).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })
+          const fin = new Date(dateFin).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short' })
           dateStr = ` • ${debut} → ${fin}`
         } else {
           dateStr = ` • ${debut}`

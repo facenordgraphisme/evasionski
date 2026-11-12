@@ -179,8 +179,8 @@ const UpcomingSorties = ({
                   <div className="space-y-4 mb-6">
                     <div className="flex items-center gap-3 text-accent font-bold uppercase tracking-[0.2em] text-xs">
                       <Calendar size={14} />
-                      {new Date(s.dateDebut).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
-                      {s.dateFin && s.dateFin !== s.dateDebut && ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}`}
+                      {new Date(s.dateDebut).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short', year: 'numeric' })}
+                      {s.dateFin && s.dateFin !== s.dateDebut && ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short' })}`}
                     </div>
                     <h3 className="text-2xl font-bold text-foreground tracking-tight leading-snug">
                       {at(s.titrePersonnalise || s.sejour?.title)}

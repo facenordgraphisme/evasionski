@@ -66,14 +66,14 @@ export default function SortieDetailView({ sortie }: SortieDetailViewProps) {
   }
 
   // Format dates
-  const dateDebut = new Date(sortie.dateDebut).toLocaleDateString('fr-FR', {
+  const dateDebut = new Date(sortie.dateDebut).toLocaleDateString('fr-FR', { timeZone: 'UTC',
     weekday: 'long',
     day: '2-digit',
     month: 'long',
     year: 'numeric'
   })
   const dateFin = sortie.dateFin && sortie.dateFin !== sortie.dateDebut
-    ? new Date(sortie.dateFin).toLocaleDateString('fr-FR', {
+    ? new Date(sortie.dateFin).toLocaleDateString('fr-FR', { timeZone: 'UTC',
         weekday: 'long',
         day: '2-digit',
         month: 'long',

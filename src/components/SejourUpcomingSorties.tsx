@@ -84,13 +84,13 @@ export default function SejourUpcomingSorties({
     <>
       <div className="space-y-2">
         {(showAll ? sorties : sorties.slice(0, INITIAL_COUNT)).map((s: Sortie, i: number) => {
-          const dateDebut = new Date(s.dateDebut).toLocaleDateString('fr-FR', {
+          const dateDebut = new Date(s.dateDebut).toLocaleDateString('fr-FR', { timeZone: 'UTC',
             day: '2-digit',
             month: 'short',
             year: 'numeric'
           })
           const dateFin = s.dateFin && s.dateFin !== s.dateDebut
-            ? ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' })}`
+            ? ` - ${new Date(s.dateFin).toLocaleDateString('fr-FR', { timeZone: 'UTC', day: '2-digit', month: 'short' })}`
             : ''
           const dateDisplay = `${dateDebut}${dateFin}`
           const sortieTitle = s.titrePersonnalise || sejourTitle

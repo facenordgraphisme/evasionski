@@ -98,6 +98,7 @@ const nextConfig: NextConfig = {
 
       // Doublons internes : une seule URL par page
       ['/prochaines-sorties', '/calendrier'],
+      ['/prochaines-sorties/:slug', '/sorties/:slug'],
       ['/conditions-generales-de-vente', '/cgv'],
       ['/confidentialite', '/politique-de-confidentialite'],
     ]

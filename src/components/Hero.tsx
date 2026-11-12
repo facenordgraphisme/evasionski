@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '@/context/LanguageContext'
+import ResponsiveVideoSources from '@/components/ResponsiveVideoSources'
 
 // Register ScrollTrigger client-side
 if (typeof window !== 'undefined') {
@@ -127,14 +128,15 @@ const Hero = ({
         {videoSrc ? (
           <video
             ref={videoRef}
-            src={videoSrc}
             autoPlay
             muted
             playsInline
             loop
             poster={bgImage}
             className="absolute inset-0 w-full h-full object-cover scale-[1.08]"
-          />
+          >
+            <ResponsiveVideoSources src={videoSrc} />
+          </video>
         ) : (
           <div
             style={{ backgroundImage: `url(${bgImage})` }}

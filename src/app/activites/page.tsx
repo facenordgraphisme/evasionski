@@ -10,9 +10,9 @@ import { getServerTranslations } from '@/i18n/server';
 export async function generateMetadata(): Promise<Metadata> {
   const { at } = await getServerTranslations();
   return {
-    title: `${at('Activités')} | ÉvasionSki`,
+    title: `${at({ fr: 'Ski de randonnée, freerando et raids : nos activités', en: 'Ski touring, freerando and raids: our activities' })} | ÉvasionSki`,
     alternates: { canonical: '/activites' },
-    description: at('Découvrez toutes les activités de ski proposées par Toni Mancini : Engagement privé, Ski de randonnée journée, Freerando et Stages/Raids à ski. Encadrement professionnel.'),
+    description: at({ fr: 'Sorties privées, journées de ski de randonnée, freerando et stages ou raids à ski dans les Hautes-Alpes, encadrés par Toni Mancini, moniteur diplômé.', en: 'Private outings, ski touring days, freerando and multi-day ski trips in the Hautes-Alpes, guided by state-certified instructor Toni Mancini.' }),
   };
 }
 

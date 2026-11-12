@@ -125,7 +125,7 @@ const Navbar = ({ sanityActivities, hiddenSlugs = [] }: { sanityActivities?: any
     { title: { fr: "Qui suis-je", en: "Who am I" }, slug: "a-propos-moniteur-de-ski-de-randonnee" },
     { title: { fr: "Contact", en: "Contact" }, slug: "evasion-ski-hautes-alpes-contact" },
     { title: { fr: "Carnet de montagne-Blog", en: "Mountain notebook-Blog" }, slug: "blog-explorez-les-hautes-alpes-a-ski" },
-    { title: { fr: "Conditions & CGV", en: "Terms & Conditions" }, slug: "conditions-generales-de-vente" },
+    { title: { fr: "Conditions & CGV", en: "Terms & Conditions" }, slug: "cgv" },
   ]
 
   return (

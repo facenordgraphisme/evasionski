@@ -10,6 +10,9 @@ import SejourFAQ from '@/components/SejourFAQ';
 import SejourGallery from '@/components/SejourGallery';
 import NiveauMobileCTA from '@/components/NiveauMobileCTA';
 import SejourUpcomingSorties from '@/components/SejourUpcomingSorties';
+import { SITE_URL } from '@/utils/site';
+import { TONI, breadcrumb, firstPrice, CATEGORY_LABELS } from '@/utils/schema';
+import ResponsiveVideoSources from '@/components/ResponsiveVideoSources';
 
 interface SejourViewProps {
   sejour: any;
@@ -92,24 +95,45 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
     (tab.programmeStructure && Array.isArray(tab.programmeStructure) && tab.programmeStructure.length > 0)
   );
 
+  const price = firstPrice(sejour.basePrice) || firstPrice(sejour.upcomingSorties?.[0]?.prix);
+  const pageUrl = `${SITE_URL}/${sejour.slug}`;
+  const categoryLabel = CATEGORY_LABELS[sejour.categorie];
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "TouristTrip",
-    "name": at(sejour.title),
-    "description": sejour.description ? at(sejour.description) : undefined,
-    "image": sejour.image || undefined,
-    "touristType": sejour.activityType ? at(sejour.activityType) : undefined,
-    "offers": sejour.basePrice ? {
-      "@type": "Offer",
-      "price": sejour.basePrice.replace(/[^0-9]/g, ''),
-      "priceCurrency": "EUR",
-      "description": at("Tarif de base")
-    } : undefined,
-    "provider": {
-      "@type": "Person",
-      "name": "Toni Mancini",
-      "jobTitle": "Moniteur de Ski de Randonnée"
-    }
+    "@graph": [
+      {
+        "@type": "TouristTrip",
+        "@id": `${pageUrl}#trip`,
+        "name": at(sejour.title),
+        "url": pageUrl,
+        "description": sejour.description ? at(sejour.description) : undefined,
+        "image": sejour.image || undefined,
+        "touristType": categoryLabel ? at(categoryLabel) : undefined,
+        "offers": price ? {
+          "@type": "Offer",
+          "price": price,
+          "priceCurrency": "EUR",
+          "url": pageUrl,
+          "availability": sejour.upcomingSorties?.length ? "https://schema.org/InStock" : "https://schema.org/PreOrder",
+        } : undefined,
+        "itinerary": sejour.programmeStructure?.length ? {
+          "@type": "ItemList",
+          "itemListElement": sejour.programmeStructure.map((day: { jour?: string; titre?: string }, i: number) => ({
+            "@type": "ListItem",
+            "position": i + 1,
+            "name": [day.jour, day.titre].filter(Boolean).map((v) => at(v)).join(" : "),
+          })),
+        } : undefined,
+        "provider": TONI,
+      },
+      breadcrumb([
+        { name: "Accueil", path: "/" },
+        ...(!isListingPage && sejour.categorie === "stage-raid"
+          ? [{ name: "Stages & raids", path: "/stages-et-raids-a-ski-de-randonnee-hautes-alpes" }]
+          : []),
+        { name: at(sejour.title), path: `/${sejour.slug}` },
+      ]),
+    ],
   };
 
   return (
@@ -124,14 +148,15 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
             <video
-              src={videoSrc}
               autoPlay
               muted
               playsInline
               loop
               poster={sejour.image}
               className="absolute inset-0 w-full h-full object-cover"
-            />
+            >
+              <ResponsiveVideoSources src={videoSrc} />
+            </video>
           ) : sejour.image ? (
             <Image
               src={sejour.image}
@@ -156,7 +181,7 @@ export default async function SejourView({ sejour, relatedPosts }: SejourViewPro
 
           <div className="flex flex-wrap gap-4 mb-8">
             <span className="px-4 py-1.5 bg-accent text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg">
-              {at(sejour.activityType)}
+              {categoryLabel ? at(categoryLabel) : at(sejour.activityType)}
             </span>
             {sejour.massif && (
               <span className="px-3 py-1 bg-background/50 text-white text-[10px] font-bold uppercase tracking-wider rounded-full backdrop-blur-md border border-white/10 flex items-center gap-1">

@@ -95,9 +95,26 @@ const nextConfig: NextConfig = {
       ['/en/category/:path*', BLOG],
       ['/en', '/'],
       ['/en/:path*', '/'],
+
+      // Doublons internes : une seule URL par page
+      ['/prochaines-sorties', '/calendrier'],
+      ['/conditions-generales-de-vente', '/cgv'],
+      ['/confidentialite', '/politique-de-confidentialite'],
     ]
 
     return legacy.map(([source, destination]) => ({ source, destination, permanent: true }))
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path((?!studio).*)',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+        ],
+      },
+    ]
   },
 };
 

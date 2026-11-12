@@ -32,6 +32,7 @@ import AlaCarteView from './views/AlaCarteView';
 
 // Import local fallback data
 import { fallbackSejours, fallbackActivities } from "@/utils/fallbackData";
+import { TONI, BUSINESS_ID } from "@/utils/schema";
 
 // Cache les pages pendant 60 secondes (ISR) pour réduire les appels API Sanity
 export const revalidate = 60;
@@ -57,29 +58,40 @@ async function buildMetadata({ params, searchParams }: PageProps): Promise<Metad
   if (slug === 'a-propos-moniteur-de-ski-de-randonnee') {
     const data = await client.fetch(guideQuery).catch(() => null);
     const title = `${at(data?.titleNormal || 'Toni')} ${at(data?.titleAccent || 'Mancini')} - Moniteur de Ski | ÉvasionSki`;
-    const description = data?.quote ? `"${at(data.quote)}"` : "Toni Mancini, moniteur de ski indépendant.";
+    const description = at({
+      fr: "Toni Mancini, moniteur de ski diplômé d'État aux Orres : son parcours, sa vision du ski de randonnée et de la freerando dans les Hautes-Alpes.",
+      en: "Toni Mancini, state-certified ski instructor in Les Orres: his background and approach to ski touring and freerando in the Hautes-Alpes.",
+    });
     return { title, description };
   }
 
   if (slug === 'evasion-ski-hautes-alpes-contact') {
-    const data = await client.fetch(contactQuery).catch(() => null);
-    const title = `${at(data?.title || 'Contact')} | ÉvasionSki`;
-    const description = data?.description ? at(data.description) : "Contactez Toni Mancini, moniteur de ski.";
+    const title = `${at({ fr: 'Contact – Moniteur de ski de randonnée Hautes-Alpes', en: 'Contact – Ski touring instructor Hautes-Alpes' })} | ÉvasionSki`;
+    const description = at({
+      fr: "Un projet de sortie, de stage ou de raid à ski ? Contactez Toni Mancini, moniteur de ski de randonnée aux Orres (Hautes-Alpes), par téléphone ou formulaire.",
+      en: "Planning a ski touring day, trip or raid? Contact Toni Mancini, ski touring instructor in Les Orres (Hautes-Alpes), by phone or form.",
+    });
     return { title, description };
   }
 
   if (slug === 'niveau-en-ski') {
     return {
-      title: `${at('Évaluer son niveau en ski')} | ÉvasionSki`,
-      description: at("Évaluez votre niveau technique et physique pour vos sorties et raids en ski de randonnée."),
+      title: `${at({ fr: 'Quel niveau pour le ski de randonnée ?', en: 'What level for ski touring?' })} | ÉvasionSki`,
+      description: at({
+        fr: "Débutant, intermédiaire, confirmé ou expert : évaluez votre niveau technique et physique pour choisir la bonne sortie, le bon stage ou le bon raid à ski.",
+        en: "Beginner, intermediate, advanced or expert: assess your technical and physical level to choose the right ski touring day, trip or raid.",
+      }),
     };
   }
 
   if (slug === 'blog-explorez-les-hautes-alpes-a-ski') {
     const pageNumber = Math.max(1, Number(sParams.page) || 1);
     return {
-      title: `${at('Blog')}${pageNumber > 1 ? ` - Page ${pageNumber}` : ''} | ÉvasionSki`,
-      description: at("Retrouvez les récits d'aventures et conditions dans les Alpes du Sud."),
+      title: `${at({ fr: 'Blog ski de randonnée : conseils et récits', en: 'Ski touring blog: tips and stories' })}${pageNumber > 1 ? ` - Page ${pageNumber}` : ''} | ÉvasionSki`,
+      description: at({
+        fr: "Conseils de moniteur pour débuter et progresser en ski de randonnée, choisir son matériel, et récits de sorties dans les Hautes-Alpes et en Norvège.",
+        en: "Instructor tips to start and progress in ski touring, choose your gear, and trip reports from the Hautes-Alpes and Norway.",
+      }),
     };
   }
 
@@ -180,7 +192,24 @@ export default async function DynamicSlugPage({ params, searchParams }: PageProp
     } catch (e) {
       console.error(e);
     }
-    return <AboutView guide={guide} settings={settings} />;
+    const personLd = {
+      "@context": "https://schema.org",
+      ...TONI,
+      "image": guide?.image || undefined,
+      "description": "Moniteur de ski indépendant diplômé d'État, spécialiste du ski de randonnée et de la freerando dans les Hautes-Alpes.",
+      "hasCredential": {
+        "@type": "EducationalOccupationalCredential",
+        "credentialCategory": "Diplôme d'État de moniteur de ski",
+      },
+      "worksFor": { "@id": BUSINESS_ID },
+      "knowsAbout": ["Ski de randonnée", "Freerando", "Ski hors-piste", "Raids à ski", "Hautes-Alpes"],
+    };
+    return (
+      <>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personLd) }} />
+        <AboutView guide={guide} settings={settings} />
+      </>
+    );
   }
 
   if (slug === 'evasion-ski-hautes-alpes-contact') {

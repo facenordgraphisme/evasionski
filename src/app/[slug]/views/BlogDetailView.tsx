@@ -7,6 +7,8 @@ import { urlFor } from "@/sanity/lib/image";
 import { getServerTranslations } from '@/i18n/server';
 import ImageGallery from '@/components/ImageGallery';
 import { formatFriendlyDate } from '@/utils/date';
+import { SITE_URL } from '@/utils/site';
+import { TONI, BUSINESS_ID, breadcrumb } from '@/utils/schema';
 
 interface BlogDetailViewProps {
   post: any;
@@ -103,21 +105,33 @@ const components = {
 export default async function BlogDetailView({ post }: BlogDetailViewProps) {
   const { at, t, lang, translatePortableText } = await getServerTranslations();
 
+  const postUrl = `${SITE_URL}/${post.slug}`;
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "headline": at(post.title),
-    "description": post.excerpt ? at(post.excerpt) : undefined,
-    "image": post.image || undefined,
-    "datePublished": post.date || undefined,
-    "author": {
-      "@type": "Person",
-      "name": "Toni Mancini"
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "ÉvasionSki"
-    }
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "headline": at(post.title),
+        "description": post.excerpt ? at(post.excerpt) : undefined,
+        "image": post.image || undefined,
+        "datePublished": post.date || undefined,
+        "url": postUrl,
+        "mainEntityOfPage": postUrl,
+        "inLanguage": "fr-FR",
+        "author": TONI,
+        "publisher": {
+          "@type": "Organization",
+          "@id": BUSINESS_ID,
+          "name": "ÉvasionSki",
+          "logo": { "@type": "ImageObject", "url": `${SITE_URL}/logo.png` }
+        }
+      },
+      breadcrumb([
+        { name: "Accueil", path: "/" },
+        { name: "Blog", path: "/blog-explorez-les-hautes-alpes-a-ski" },
+        { name: at(post.title), path: `/${post.slug}` },
+      ]),
+    ],
   };
 
   const formattedDate = formatFriendlyDate(post.date, lang as 'fr' | 'en');

@@ -1,6 +1,6 @@
 import { groq } from 'next-sanity'
 
-export const homeQuery = groq`*[_type == "home"][0]{
+export const homeQuery = groq`*[_id == "home"][0]{
   heroTitle,
   heroSubtitle,
   heroDescription,
@@ -330,7 +330,7 @@ export const postsByActivityQuery = groq`*[_type == "post" && masquer != true &&
 }`
 
 // Query pour la page À la carte
-export const aLaCarteQuery = groq`*[_type == "aLaCarte"][0] {
+export const aLaCarteQuery = groq`*[_id == "ski-de-randonnee-engagement-prive"][0] {
   title,
   "slug": slug.current,
   heroTitle,
@@ -360,7 +360,7 @@ export const aLaCarteQuery = groq`*[_type == "aLaCarte"][0] {
 }`
 
 // Query pour la page /activites (nouveau schéma Sanity)
-export const activitiesPageQuery = groq`*[_type == "activitiesPage"][0]{
+export const activitiesPageQuery = groq`*[_id == "activitiesPage"][0]{
   pageTitle,
   pageTitleEn,
   pageDescription,
@@ -421,7 +421,7 @@ export const blogTeaserQuery = groq`*[_type == "post" && masquer != true] | orde
   "excerpt": pt::text(body)
 }`
 
-export const guideQuery = groq`*[_type == "guide"][0] {
+export const guideQuery = groq`*[_id == "guide"][0] {
   badge,
   titleNormal,
   titleAccent,
@@ -450,7 +450,7 @@ export const guideQuery = groq`*[_type == "guide"][0] {
   values
 }`
 
-export const contactQuery = groq`*[_type == "contact"][0] {
+export const contactQuery = groq`*[_id == "contact"][0] {
   title,
   description,
   email,
@@ -526,7 +526,7 @@ export const postBySlugQuery = groq`*[_type == "post" && masquer != true && slug
   }
 }`
 
-export const settingsQuery = groq`*[_type == "settings"][0]{
+export const settingsQuery = groq`*[_id == "settings"][0]{
   siteName,
   "logoLight": logoLight.asset->url,
   "logoDark": logoDark.asset->url,
@@ -600,7 +600,7 @@ export const niveauSkiQuery = groq`*[_type == "niveauSki" && _id == "niveauSki"]
 }`
 
 
-export const legalPagesQuery = groq`*[_type == "legalPages"][0]{
+export const legalPagesQuery = groq`*[_id == "legalPages"][0]{
   mentionsLegales,
   mentionsLegalesEn,
   confidentialite,
@@ -609,7 +609,7 @@ export const legalPagesQuery = groq`*[_type == "legalPages"][0]{
   cgvEn
 }`
 
-export const stagesRaidsPageQuery = groq`*[_type == "stagesRaidsPage"][0]{
+export const stagesRaidsPageQuery = groq`*[_id == "stagesRaidsPage"][0]{
   "heroImage": heroImage.asset->url,
   badge,
   badgeEn,
@@ -621,7 +621,7 @@ export const stagesRaidsPageQuery = groq`*[_type == "stagesRaidsPage"][0]{
   seoDescription
 }`
 
-export const calendarPageQuery = groq`*[_type == "calendarPage"][0]{
+export const calendarPageQuery = groq`*[_id == "calendarPage"][0]{
   "heroImage": heroImage.asset->url,
   badge,
   badgeEn,

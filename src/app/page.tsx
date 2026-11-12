@@ -15,6 +15,8 @@ import { client } from "@/sanity/lib/client";
 import { homeQuery, sortiesQuery, testimonialsQuery, blogTeaserQuery, activitiesQuery, settingsQuery } from "@/sanity/lib/queries";
 
 import { mockHome, mockSorties, mockTestimonials, mockPosts, mockActivities, mockSettings } from "@/sanity/lib/mockData";
+import { SITE_URL } from "@/utils/site";
+import { TONI, BUSINESS_ID, realProfiles } from "@/utils/schema";
 
 // Cache cette page pendant 60 secondes (ISR) pour réduire les appels API Sanity
 export const revalidate = 60;
@@ -74,21 +76,39 @@ export default async function Home() {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": settingsData?.siteName || "ÉvasionSki | Toni Mancini",
-    "image": settingsData?.seoImage || undefined,
-    "telephone": settingsData?.phone || undefined,
-    "email": settingsData?.email || undefined,
-    "address": settingsData?.address ? {
-      "@type": "PostalAddress",
-      "streetAddress": settingsData.address
-    } : undefined,
-    "priceRange": "$$",
-    "sameAs": [
-      settingsData?.instagram,
-      settingsData?.facebook,
-      settingsData?.youtube
-    ].filter(Boolean)
+    "@graph": [
+      {
+        "@type": ["LocalBusiness", "SportsActivityLocation"],
+        "@id": BUSINESS_ID,
+        "name": "ÉvasionSki",
+        "alternateName": "ÉvasionSki – Toni Mancini",
+        "description": "Moniteur de ski de randonnée diplômé d'État : journées, stages et raids à ski dans les Hautes-Alpes (Queyras, Écrins, Clarée, Ubaye) et en Norvège.",
+        "url": SITE_URL,
+        "logo": `${SITE_URL}/logo.png`,
+        "image": settingsData?.seoImage || `${SITE_URL}/images/hero.jpg`,
+        "telephone": settingsData?.phone || undefined,
+        "email": settingsData?.email || undefined,
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Les Orres",
+          "postalCode": "05200",
+          "addressRegion": "Hautes-Alpes",
+          "addressCountry": "FR"
+        },
+        "areaServed": ["Hautes-Alpes", "Queyras", "Écrins", "Vallée de la Clarée", "Ubaye", "Les Orres", "Norvège"].map(name => ({ "@type": "Place", "name": name })),
+        "founder": TONI,
+        "priceRange": "€€",
+        "sameAs": realProfiles([settingsData?.instagram, settingsData?.facebook, settingsData?.youtube])
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        "url": SITE_URL,
+        "name": "ÉvasionSki",
+        "inLanguage": "fr-FR",
+        "publisher": { "@id": BUSINESS_ID }
+      }
+    ]
   };
 
   return (

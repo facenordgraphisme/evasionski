@@ -111,7 +111,7 @@ const Footer = ({ contactData, settingsData }: FooterProps) => {
             <h4 className="font-bold mb-6 uppercase tracking-widest text-xs text-foreground/40">{t('footer.navigation') || t('nav.navigation')}</h4>
             <ul className="space-y-4 text-foreground/70 font-medium">
               <li><Link href="/activites" className="hover:text-accent transition-colors">{t('nav.activities')}</Link></li>
-              <li><Link href="/prochaines-sorties" className="hover:text-accent transition-colors">{t('nav.sorties')}</Link></li>
+              <li><Link href="/calendrier" className="hover:text-accent transition-colors">{t('nav.sorties')}</Link></li>
               <li><Link href="/a-propos-moniteur-de-ski-de-randonnee" className="hover:text-accent transition-colors">{t('nav.guide')}</Link></li>
               <li><Link href="/blog-explorez-les-hautes-alpes-a-ski" className="hover:text-accent transition-colors">{t('nav.blog')}</Link></li>
               <li><Link href="/evasion-ski-hautes-alpes-contact" className="hover:text-accent transition-colors">{t('nav.contact')}</Link></li>
@@ -133,7 +133,7 @@ const Footer = ({ contactData, settingsData }: FooterProps) => {
             <p>© {new Date().getFullYear()} {settingsData?.siteName || "ÉvasionSki"}. {language === 'en' && settingsData?.copyrightEn ? settingsData.copyrightEn : (settingsData?.copyright || at('Tous droits réservés.'))}</p>
             <div className="flex gap-8">
               <Link href="/mentions-legales" className="hover:text-accent transition-colors">{at('Mentions Légales')}</Link>
-              <Link href="/confidentialite" className="hover:text-accent transition-colors">{at('Confidentialité')}</Link>
+              <Link href="/politique-de-confidentialite" className="hover:text-accent transition-colors">{at('Confidentialité')}</Link>
             </div>
           </div>
           <div className="text-center text-sm text-foreground/30">

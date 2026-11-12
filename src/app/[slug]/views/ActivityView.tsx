@@ -6,6 +6,7 @@ import { PortableText } from '@portabletext/react';
 import SejourCard from '@/components/SejourCard';
 import { getServerTranslations } from '@/i18n/server';
 import SejourFAQ from '@/components/SejourFAQ';
+import ResponsiveVideoSources from '@/components/ResponsiveVideoSources';
 
 interface ActivityViewProps {
   activity: any;
@@ -29,14 +30,15 @@ export default async function ActivityView({ activity, sejours }: ActivityViewPr
         <div className="absolute inset-0 z-0">
           {videoSrc ? (
             <video
-              src={videoSrc}
               autoPlay
               muted
               playsInline
               loop
               poster={activity.image}
               className="absolute inset-0 w-full h-full object-cover"
-            />
+            >
+              <ResponsiveVideoSources src={videoSrc} />
+            </video>
           ) : activity.image ? (
             <Image 
               src={activity.image}

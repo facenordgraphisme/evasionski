@@ -55,7 +55,8 @@ export async function generateMetadata(): Promise<Metadata> {
         siteName: 'ÉvasionSki',
         locale: 'fr_FR',
         type: 'website',
-        images: settingsData?.seoImage ? [{ url: settingsData.seoImage }] : undefined,
+        // Image de partage par défaut si aucune n'est définie dans Sanity
+        images: [{ url: settingsData?.seoImage || '/og-default.jpg', width: 1200, height: 630 }],
       },
     };
   } catch (error) {

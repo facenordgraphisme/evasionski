@@ -51,13 +51,13 @@ export const client = {
     if (isMockEnabled) {
       const q = query.toLowerCase();
       
-      if (q.includes('_type == "home"') || q.includes('homequery')) {
+      if (q.includes('_type == "home"') || q.includes('_id == "home"') || q.includes('homequery')) {
         return mock.mockHome;
       }
-      if (q.includes('_type == "settings"') || q.includes('settingsquery')) {
+      if (q.includes('_type == "settings"') || q.includes('_id == "settings"') || q.includes('settingsquery')) {
         return mock.mockSettings;
       }
-      if (q.includes('_type == "contact"') || q.includes('contactquery')) {
+      if (q.includes('_type == "contact"') || q.includes('_id == "contact"') || q.includes('contactquery')) {
         return mock.mockContact;
       }
       if (q.includes('_type == "testimonial"')) {
@@ -77,7 +77,7 @@ export const client = {
       }
 
       // Guide query
-      if (q.includes('_type == "guide"') || q.includes('guidequery')) {
+      if (q.includes('_type == "guide"') || q.includes('_id == "guide"') || q.includes('guidequery')) {
         return mock.mockGuide;
       }
 
